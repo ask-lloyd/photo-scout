@@ -211,8 +211,8 @@ export default function PlannerPage() {
               {/* Vertical Timeline */}
               <div className="space-y-0">
                 {/* 1. Arrive & Scout */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col items-center">
+                <div className="flex gap-5 md:gap-5">
+                  <div className="hidden md:flex flex-col items-center">
                     <div className="w-10 h-10 rounded-full bg-[#262626] flex items-center justify-center">
                       <MapPin className="w-5 h-5" style={{ color: "var(--neutral-300)" }} strokeWidth={1.5} />
                     </div>
@@ -249,8 +249,8 @@ export default function PlannerPage() {
                 </div>
 
                 {/* 2. Golden Hour */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col items-center">
+                <div className="flex gap-5 md:gap-5">
+                  <div className="hidden md:flex flex-col items-center">
                     <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">
                       <Star className="w-5 h-5 text-white" strokeWidth={1.5} />
                     </div>
@@ -341,8 +341,8 @@ export default function PlannerPage() {
                 </div>
 
                 {/* 3. Sunset */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col items-center">
+                <div className="flex gap-5 md:gap-5">
+                  <div className="hidden md:flex flex-col items-center">
                     <div className="w-10 h-10 rounded-full bg-amber-600 flex items-center justify-center">
                       <Sunset className="w-5 h-5 text-white" strokeWidth={1.5} />
                     </div>
@@ -376,8 +376,8 @@ export default function PlannerPage() {
                 </div>
 
                 {/* 4. Blue Hour */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col items-center">
+                <div className="flex gap-5 md:gap-5">
+                  <div className="hidden md:flex flex-col items-center">
                     <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
                       <Waves className="w-5 h-5 text-white" strokeWidth={1.5} />
                     </div>
@@ -414,8 +414,8 @@ export default function PlannerPage() {
                 </div>
 
                 {/* 5. Wrap */}
-                <div className="flex gap-5">
-                  <div className="flex flex-col items-center">
+                <div className="flex gap-5 md:gap-5">
+                  <div className="hidden md:flex flex-col items-center">
                     <div className="w-10 h-10 rounded-full bg-[#262626] flex items-center justify-center">
                       <Moon className="w-5 h-5" style={{ color: "var(--neutral-300)" }} strokeWidth={1.5} />
                     </div>
