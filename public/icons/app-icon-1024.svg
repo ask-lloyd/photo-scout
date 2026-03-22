@@ -1,0 +1,27 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#12151E"/>
+      <stop offset="100%" stop-color="#0C0E14"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#E8A225" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#E8A225" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="225" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="225" fill="url(#glow)"/>
+  <g transform="translate(204.8,204.8) scale(9.6)">
+    <circle cx="32" cy="32" r="28" fill="none" stroke="#E8A225" stroke-width="2"/>
+    <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+    <path d="M50 22 L44 34 L46 28 L38 24 Z" fill="#E8A225" opacity="0.75"/>
+    <path d="M50 42 L44 34 L46 40 L44 34 Z" fill="#F2C05E" opacity="0.6"/>
+    <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <circle cx="32" cy="32" r="5" fill="#E8A225"/>
+    <circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+    <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+    <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+</svg>

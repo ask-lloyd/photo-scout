@@ -1,12 +1,14 @@
 {
-  "name": "photo-scout-init",
+  "name": "photo-scout",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"tsx scripts/watch-content.ts\" \"next dev --turbopack\"",
+    "prebuild": "tsx scripts/md-to-json.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "content": "tsx scripts/md-to-json.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -16,10 +18,13 @@
     "date-fns": "^4.1.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.577.0",
+    "maplibre-gl": "^5.21.0",
     "marked": "^17.0.5",
+    "motion": "^12.38.0",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-use-measure": "^2.1.7",
     "shadcn": "^4.1.0",
     "suncalc": "^1.9.0",
     "tailwind-merge": "^3.5.0",

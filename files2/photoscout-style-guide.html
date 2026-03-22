@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoScout — Brand &amp; Style Guide v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Brand Colors */
+  --golden-hour: #E8A225;
+  --golden-hour-light: #F2C05E;
+  --golden-hour-subtle: rgba(232, 162, 37, 0.12);
+  --blue-hour: #3B6FD4;
+  --blue-hour-light: #6B94E0;
+  --blue-hour-subtle: rgba(59, 111, 212, 0.12);
+  --coral: #E06848;
+  --coral-subtle: rgba(224, 104, 72, 0.12);
+  --teal: #2DB88A;
+  --teal-subtle: rgba(45, 184, 138, 0.12);
+  --violet: #8B6CC1;
+  --violet-subtle: rgba(139, 108, 193, 0.12);
+
+  /* Surface Colors */
+  --dark-900: #0C0E14;
+  --dark-800: #12151E;
+  --dark-700: #1A1E2A;
+  --dark-600: #242836;
+  --dark-500: #2E3344;
+  --dark-400: #3D4358;
+
+  /* Text Colors */
+  --neutral-300: #6B7394;
+  --neutral-200: #8E95B0;
+  --neutral-100: #B4BAD0;
+  --white: #F0F2F8;
+  --pure-white: #FFFFFF;
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Figtree', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 40px;
+  --space-4xl: 48px;
+  --space-5xl: 64px;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-default: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+  --duration-map: 800ms;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--dark-900);
+  color: var(--white);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+.container { max-width: 960px; margin: 0 auto; padding: 0 32px; }
+
+header {
+  position: sticky; top: 0; z-index: 50;
+  padding: 14px 32px;
+  background: rgba(12, 14, 20, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--dark-600);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.logo-full { display: flex; align-items: center; gap: 12px; }
+.logo-full .wordmark {
+  font-family: var(--font-display); font-weight: 700; font-size: 22px;
+  color: var(--white); letter-spacing: -0.02em;
+}
+.logo-full .wordmark span { color: var(--golden-hour); }
+.logo-full .tagline {
+  font-family: var(--font-body); font-weight: 400; font-size: 9px;
+  color: var(--neutral-300); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.version-badge {
+  font-family: var(--font-mono); font-size: 11px; color: var(--neutral-300);
+  background: var(--dark-700); padding: 4px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--dark-600);
+}
+
+/* ── Navigation ── */
+nav {
+  padding: 12px 32px; display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--dark-700); background: var(--dark-800);
+  position: sticky; top: 53px; z-index: 40;
+}
+nav a {
+  font-family: var(--font-body); font-size: 12px; font-weight: 400;
+  color: var(--neutral-300); background: transparent;
+  border: 1px solid transparent; padding: 6px 14px; border-radius: var(--radius-md);
+  text-decoration: none; transition: all var(--duration-fast) var(--ease-out);
+}
+nav a:hover, nav a.active {
+  color: var(--golden-hour); background: var(--golden-hour-subtle);
+  border-color: rgba(232, 162, 37, 0.2); font-weight: 600;
+}
+
+/* ── Sections ── */
+section { padding: 48px 0; border-top: 1px solid var(--dark-600); }
+.section-label {
+  font-family: var(--font-mono); font-size: 11px; color: var(--golden-hour);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.section-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 28px;
+  color: var(--white); margin: 6px 0 4px; letter-spacing: -0.01em;
+}
+.section-desc {
+  font-size: 14px; color: var(--neutral-300); max-width: 560px; line-height: 1.6;
+}
+.section-header { margin-bottom: 32px; }
+
+/* ── Grid Helpers ── */
+.grid { display: grid; gap: 12px; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.flex-wrap { display: flex; flex-wrap: wrap; gap: 16px; }
+
+/* ── Cards ── */
+.card {
+  padding: 20px; border-radius: var(--radius-lg);
+  background: var(--dark-800); border: 1px solid var(--dark-600);
+}
+.card-elevated {
+  padding: 32px; border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--dark-800), var(--dark-700));
+  border: 1px solid var(--dark-600);
+}
+.card-title {
+  font-family: var(--font-display); font-weight: 600; font-size: 14px;
+  color: var(--white); margin-bottom: 8px;
+}
+.card-inner {
+  padding: 16px; border-radius: var(--radius-default);
+  background: var(--dark-700);
+}
+
+/* ── Swatches ── */
+.swatch { display: flex; flex-direction: column; gap: 6px; }
+.swatch-color {
+  width: 100%; height: 52px; border-radius: var(--radius-default);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.swatch-color.large { height: 72px; }
+.swatch-name { font-family: var(--font-display); font-weight: 600; font-size: 12px; color: var(--white); }
+.swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--neutral-300); }
+.swatch-role { font-family: var(--font-body); font-size: 11px; color: var(--neutral-200); }
+
+/* ── Typography Samples ── */
+.type-sample { margin-bottom: 20px; }
+.type-meta {
+  display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;
+}
+.type-label { font-family: var(--font-mono); font-size: 10px; color: var(--golden-hour); min-width: 120px; }
+.type-spec { font-family: var(--font-mono); font-size: 10px; color: var(--neutral-300); }
+
+/* ── Icon Grid ── */
+.icon-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 16px; border-radius: var(--radius-default);
+  background: var(--dark-700); border: 1px solid var(--dark-600);
+  min-width: 72px;
+}
+.icon-cell svg { width: 24px; height: 24px; }
+.icon-cell span { font-family: var(--font-mono); font-size: 9px; color: var(--neutral-300); text-align: center; }
+
+/* ── App Icon Previews ── */
+.app-icon-preview { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.app-icon-box {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(145deg, var(--dark-800), var(--dark-900));
+  border: 1px solid rgba(232, 162, 37, 0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative; overflow: hidden;
+}
+.app-icon-box::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(232,162,37,0.08) 0%, transparent 70%);
+}
+.app-icon-label { font-family: var(--font-mono); font-size: 10px; color: var(--neutral-300); }
+
+/* ── Principle Cards ── */
+.principle-icon { font-size: 24px; margin-bottom: 8px; }
+.principle-title { font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--white); margin-bottom: 4px; }
+.principle-desc { font-size: 12px; color: var(--neutral-300); line-height: 1.5; }
+
+/* ── Attribute Row ── */
+.attr-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--golden-hour);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.attr-value { font-size: 13px; color: var(--neutral-100); line-height: 1.6; margin-top: 6px; }
+
+/* ── Condition Badge ── */
+.condition-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: var(--radius-md); background: var(--dark-700);
+}
+.condition-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.condition-label { font-size: 12px; color: var(--white); font-weight: 500; }
+.condition-value { font-family: var(--font-mono); font-size: 10px; color: var(--neutral-300); }
+
+/* ── Component Demo ── */
+.component-card {
+  padding: 24px; border-radius: 14px;
+  background: var(--dark-700); border: 1px solid var(--dark-600);
+  flex: 1 1 280px;
+}
+.component-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--neutral-300);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  display: block; margin-bottom: 16px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  color: var(--dark-900); background: var(--golden-hour);
+  border: none; padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer;
+  box-shadow: 0 2px 12px rgba(232, 162, 37, 0.3);
+}
+.btn-secondary {
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  color: var(--white); background: var(--dark-600);
+  border: 1px solid var(--dark-400); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer;
+}
+.btn-outline {
+  font-family: var(--font-body); font-weight: 500; font-size: 13px;
+  color: var(--golden-hour); background: transparent;
+  border: 1px solid var(--golden-hour); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer;
+}
+
+/* ── Tags ── */
+.tag {
+  font-family: var(--font-body); font-size: 10px; font-weight: 500;
+  color: var(--golden-hour); background: var(--golden-hour-subtle);
+  padding: 2px 8px; border-radius: var(--radius-xs);
+  border: 1px solid rgba(232, 162, 37, 0.15); display: inline-block;
+}
+
+/* ── Score Ring ── */
+.score-ring {
+  width: 64px; height: 64px; border-radius: 50%; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.score-ring-inner {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--dark-700); display: flex; align-items: center; justify-content: center;
+}
+.score-value { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--golden-hour); }
+
+/* ── Alert Cards ── */
+.alert-card { padding: 16px; border-radius: var(--radius-default); }
+.alert-coral { background: var(--coral-subtle); border: 1px solid rgba(224, 104, 72, 0.2); }
+.alert-violet { background: var(--violet-subtle); border: 1px solid rgba(139, 108, 193, 0.2); }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* ── Settings Grid ── */
+.settings-grid { display: flex; gap: 8px; }
+.setting-cell {
+  flex: 1; padding: 8px 4px; border-radius: var(--radius-md);
+  background: var(--dark-600); text-align: center;
+}
+.setting-label { font-family: var(--font-mono); font-size: 9px; color: var(--neutral-300); display: block; }
+.setting-value { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--white); }
+
+/* ── Input Fields ── */
+.input-field {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: var(--radius-md);
+  background: var(--dark-600); border: 1px solid var(--dark-400);
+}
+.input-field.focused {
+  border: 1.5px solid var(--golden-hour);
+  box-shadow: 0 0 0 3px var(--golden-hour-subtle);
+}
+.input-field svg { width: 16px; height: 16px; flex-shrink: 0; }
+.input-placeholder { font-family: var(--font-body); font-size: 13px; color: var(--neutral-300); }
+.input-text { font-family: var(--font-body); font-size: 13px; color: var(--white); }
+
+/* ── UX Pattern Cards ── */
+.ux-card {
+  padding: 16px; border-radius: var(--radius-default);
+  background: var(--dark-800); border: 1px solid var(--dark-600);
+}
+.ux-card-title { font-family: var(--font-display); font-weight: 600; font-size: 13px; color: var(--white); }
+.ux-card-desc { font-size: 12px; color: var(--neutral-200); line-height: 1.5; margin-top: 6px; }
+
+/* ── Code Block ── */
+.code-block {
+  padding: 20px; border-radius: var(--radius-lg);
+  background: var(--dark-800); border: 1px solid var(--dark-600);
+  font-family: var(--font-mono); font-size: 11px; color: var(--neutral-200); line-height: 2.2;
+}
+.code-comment { color: var(--neutral-300); }
+.code-var { color: var(--golden-hour-light); }
+
+/* ── Spacing Demo ── */
+.spacing-demo { display: flex; align-items: flex-end; gap: 8px; }
+.spacing-box {
+  background: var(--golden-hour-subtle); border: 1px solid rgba(232, 162, 37, 0.3);
+  border-radius: 2px;
+}
+.spacing-label { font-family: var(--font-mono); font-size: 9px; color: var(--neutral-300); text-align: center; margin-top: 4px; }
+
+/* ── Radius Demo ── */
+.radius-demo { display: flex; gap: 12px; align-items: center; }
+.radius-box {
+  width: 40px; height: 40px; background: var(--dark-600);
+  border: 1px solid var(--dark-400);
+}
+
+/* ── A11y Checks ── */
+.a11y-check { }
+.a11y-label { font-family: var(--font-body); font-weight: 600; font-size: 12px; color: var(--teal); margin-bottom: 4px; }
+.a11y-desc { font-size: 11px; color: var(--neutral-300); line-height: 1.5; }
+
+/* ── Footer ── */
+footer {
+  margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--dark-600);
+  display: flex; justify-content: space-between; align-items: center;
+}
+footer .meta { font-family: var(--font-mono); font-size: 10px; color: var(--neutral-300); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  header { padding: 12px 16px; }
+  nav { padding: 8px 16px; }
+  section { padding: 32px 0; }
+  .section-title { font-size: 22px; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="logo-full">
+    <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" stroke-width="2"/>
+      <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+      <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+      <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="wordmark">Photo<span>Scout</span></div>
+      <div class="tagline">Light Intelligence</div>
+    </div>
+  </div>
+  <span class="version-badge">Brand Guide v1.0 — March 2026</span>
+</header>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <a href="#overview" class="active">Overview</a>
+  <a href="#logo">Logo System</a>
+  <a href="#icons">App Icons</a>
+  <a href="#colors">Color System</a>
+  <a href="#typography">Typography</a>
+  <a href="#iconography">Iconography</a>
+  <a href="#components">Components</a>
+  <a href="#ux">UX Guide</a>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════ 01: OVERVIEW ═══════════ -->
+<section id="overview">
+  <div class="section-header">
+    <div class="section-label">01</div>
+    <h2 class="section-title">Brand Overview</h2>
+    <p class="section-desc">PhotoScout helps photographers find, plan, and capture the perfect light. The brand embodies the intersection of technical precision and natural beauty.</p>
+  </div>
+
+  <div class="card-elevated" style="margin-bottom: 24px">
+    <div style="display:flex;justify-content:center;margin-bottom:32px">
+      <div class="logo-full" style="transform:scale(1.3)">
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" stroke-width="2"/>
+          <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+          <path d="M50 22 L44 34 L46 28 L38 24 Z" fill="#E8A225" opacity="0.75"/>
+          <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+          <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+          <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <div>
+          <div class="wordmark" style="font-size:30px">Photo<span>Scout</span></div>
+          <div class="tagline">Light Intelligence</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-2" style="gap:24px">
+      <div><div class="attr-label">Brand Voice</div><p class="attr-value">Confident, precise, inspiring. Like a seasoned photographer sharing a field tip.</p></div>
+      <div><div class="attr-label">Core Metaphor</div><p class="attr-value">The golden convergence — where light, weather, and terrain align for the perfect shot.</p></div>
+      <div><div class="attr-label">Audience</div><p class="attr-value">Landscape &amp; nature photographers, from enthusiast to professional. Gear-aware, weather-obsessed.</p></div>
+      <div><div class="attr-label">Personality</div><p class="attr-value">Expert field guide, not a classroom textbook. Warm authority with technical depth.</p></div>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card"><div class="principle-icon">◎</div><div class="principle-title">Precision First</div><div class="principle-desc">Every data point earns its place. No fluff, no vague forecasts.</div></div>
+    <div class="card"><div class="principle-icon">◐</div><div class="principle-title">Light-Centric</div><div class="principle-desc">Light quality is the hero. All UI radiates from this concept.</div></div>
+    <div class="card"><div class="principle-icon">⊞</div><div class="principle-title">Layered Depth</div><div class="principle-desc">Progressive disclosure — simple surface, rich detail beneath.</div></div>
+    <div class="card"><div class="principle-icon">◈</div><div class="principle-title">Field-Ready</div><div class="principle-desc">Optimized for gloved hands, harsh sun, and quick glances.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 02: LOGO ═══════════ -->
+<section id="logo">
+  <div class="section-header">
+    <div class="section-label">02</div>
+    <h2 class="section-title">Logo System</h2>
+    <p class="section-desc">The logomark combines a camera aperture with compass cardinal points — the photographer as explorer. The sun at center represents PhotoScout's light-first philosophy.</p>
+  </div>
+
+  <div class="flex-wrap" style="margin-bottom:32px">
+    <div class="card" style="flex:1 1 300px;text-align:center;padding:40px">
+      <div style="display:inline-flex;align-items:center;gap:12px;margin-bottom:16px">
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" stroke-width="2"/>
+          <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+          <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+          <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+          <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <div style="text-align:left">
+          <div style="font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--white);letter-spacing:-0.02em">Photo<span style="color:var(--golden-hour)">Scout</span></div>
+          <div style="font-family:var(--font-body);font-size:9px;color:var(--neutral-300);letter-spacing:0.12em;text-transform:uppercase;margin-top:1px">Light Intelligence</div>
+        </div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300)">Primary — Dark Background</div>
+    </div>
+    <div class="card" style="flex:1 1 300px;text-align:center;padding:40px;background:#F0F2F8;border-color:#ddd">
+      <div style="display:inline-flex;align-items:center;gap:12px;margin-bottom:16px">
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" stroke-width="2"/>
+          <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+          <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+          <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div style="text-align:left">
+          <div style="font-family:var(--font-display);font-weight:700;font-size:26px;color:#0C0E14;letter-spacing:-0.02em">Photo<span style="color:var(--golden-hour)">Scout</span></div>
+          <div style="font-family:var(--font-body);font-size:9px;color:var(--neutral-300);letter-spacing:0.12em;text-transform:uppercase;margin-top:1px">Light Intelligence</div>
+        </div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300)">Primary — Light Background</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Usage Rules</div>
+    <div class="grid grid-3" style="margin-top:12px">
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">Minimum clear space: 1× mark height on all sides</span></div>
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">Minimum mark size: 24px digital, 8mm print</span></div>
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">Minimum wordmark size: 80px wide</span></div>
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">Never rotate, stretch, or recolor the mark</span></div>
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">On photos: use white wordmark with dark overlay</span></div>
+      <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--golden-hour);font-size:10px;margin-top:3px">●</span><span style="font-size:12px;color:var(--neutral-200);line-height:1.5">Favicon uses mark only at ≤32px</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 03: APP ICONS ═══════════ -->
+<section id="icons">
+  <div class="section-header">
+    <div class="section-label">03</div>
+    <h2 class="section-title">App Icon Kit</h2>
+    <p class="section-desc">Consistent icon presence across all platforms. The mark sits on a dark gradient base with a subtle golden radial glow.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:center;margin-bottom:32px">
+    <div class="app-icon-preview">
+      <div class="app-icon-box" style="width:140px;height:140px;border-radius:31px">
+        <svg width="84" height="84" viewBox="0 0 64 64" fill="none" style="position:relative;z-index:1">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#E8A225" stroke-width="2"/>
+          <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9"/>
+          <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+          <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+          <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="app-icon-label">iOS App Store · 1024×1024</span>
+    </div>
+    <div class="app-icon-preview">
+      <div class="app-icon-box" style="width:90px;height:90px;border-radius:20px">
+        <svg width="54" height="54" viewBox="0 0 64 64" fill="none" style="position:relative;z-index:1">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#E8A225" stroke-width="2"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+          <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="app-icon-label">iOS Home · 180×180</span>
+    </div>
+    <div class="app-icon-preview">
+      <div class="app-icon-box" style="width:60px;height:60px;border-radius:14px">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none" style="position:relative;z-index:1">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#E8A225" stroke-width="2.5"/>
+          <circle cx="32" cy="32" r="5" fill="#E8A225"/>
+          <line x1="32" y1="6" x2="32" y2="11" stroke="#E8A225" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="app-icon-label">Android · 192×192</span>
+    </div>
+    <div class="app-icon-preview">
+      <div class="app-icon-box" style="width:32px;height:32px;border-radius:6px">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" style="position:relative;z-index:1">
+          <circle cx="16" cy="16" r="10" fill="none" stroke="#E8A225" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="3.5" fill="#E8A225"/>
+          <line x1="16" y1="3" x2="16" y2="6" stroke="#E8A225" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="app-icon-label">Favicon · 32×32</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Export Specifications</div>
+    <div class="grid grid-2" style="margin-top:12px">
+      <div class="card-inner"><span style="font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--golden-hour)">iOS</span><p style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300);margin-top:4px;line-height:1.5">1024, 180, 167, 152, 120, 87, 80, 76, 60, 58, 40, 29, 20</p></div>
+      <div class="card-inner"><span style="font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--golden-hour)">Android</span><p style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300);margin-top:4px;line-height:1.5">512 (Play), 192, 144, 96, 72, 48 (mdpi–xxxhdpi)</p></div>
+      <div class="card-inner"><span style="font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--golden-hour)">Web/PWA</span><p style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300);margin-top:4px;line-height:1.5">512, 384, 192, 152, 144, 128, 96, 72, 48, 32, 16</p></div>
+      <div class="card-inner"><span style="font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--golden-hour)">macOS</span><p style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300);margin-top:4px;line-height:1.5">1024, 512, 256, 128, 64, 32, 16 (2× Retina)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 04: COLORS ═══════════ -->
+<section id="colors">
+  <div class="section-header">
+    <div class="section-label">04</div>
+    <h2 class="section-title">Color System</h2>
+    <p class="section-desc">A dark-first palette grounded in the photographer's environment. Primary amber from golden hour. Secondary blue from blue hour. Semantic colors map to weather and condition states.</p>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Brand Colors</h3>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:28px">
+    <div class="swatch"><div class="swatch-color large" style="background:#E8A225;box-shadow:0 4px 24px rgba(232,162,37,0.2)"></div><div class="swatch-name">Golden Hour</div><div class="swatch-hex">#E8A225</div><div class="swatch-role">Primary — CTA, highlights, scores</div></div>
+    <div class="swatch"><div class="swatch-color large" style="background:#3B6FD4;box-shadow:0 4px 24px rgba(59,111,212,0.2)"></div><div class="swatch-name">Blue Hour</div><div class="swatch-hex">#3B6FD4</div><div class="swatch-role">Secondary — links, info, maps</div></div>
+    <div class="swatch"><div class="swatch-color large" style="background:#E06848;box-shadow:0 4px 24px rgba(224,104,72,0.2)"></div><div class="swatch-name">Alert Coral</div><div class="swatch-hex">#E06848</div><div class="swatch-role">Alerts, epic opportunities</div></div>
+    <div class="swatch"><div class="swatch-color large" style="background:#2DB88A;box-shadow:0 4px 24px rgba(45,184,138,0.2)"></div><div class="swatch-name">Scout Teal</div><div class="swatch-hex">#2DB88A</div><div class="swatch-role">Success, optimal conditions</div></div>
+    <div class="swatch"><div class="swatch-color large" style="background:#8B6CC1;box-shadow:0 4px 24px rgba(139,108,193,0.2)"></div><div class="swatch-name">Astro Violet</div><div class="swatch-hex">#8B6CC1</div><div class="swatch-role">Night/astro features, pro tier</div></div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Surface &amp; Background</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#0C0E14"></div><div class="swatch-name">Base</div><div class="swatch-hex">#0C0E14</div></div>
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#12151E"></div><div class="swatch-name">Surface 1</div><div class="swatch-hex">#12151E</div></div>
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#1A1E2A"></div><div class="swatch-name">Surface 2</div><div class="swatch-hex">#1A1E2A</div></div>
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#242836"></div><div class="swatch-name">Surface 3</div><div class="swatch-hex">#242836</div></div>
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#2E3344"></div><div class="swatch-name">Elevated</div><div class="swatch-hex">#2E3344</div></div>
+    <div class="swatch" style="flex:0 0 100px"><div class="swatch-color" style="background:#3D4358"></div><div class="swatch-name">Borders</div><div class="swatch-hex">#3D4358</div></div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Condition Color Mapping</h3>
+  <div class="card">
+    <div class="grid grid-2">
+      <div class="condition-row"><div class="condition-dot" style="background:#E8A225"></div><div><div class="condition-label">Golden Hour / Warm Light</div><div class="condition-value">Light score 70+</div></div></div>
+      <div class="condition-row"><div class="condition-dot" style="background:#3B6FD4"></div><div><div class="condition-label">Blue Hour / Cool Light</div><div class="condition-value">Pre-dawn, post-sunset</div></div></div>
+      <div class="condition-row"><div class="condition-dot" style="background:#E06848"></div><div><div class="condition-label">Epic Alert / Storm Break</div><div class="condition-value">Opportunity score 85+</div></div></div>
+      <div class="condition-row"><div class="condition-dot" style="background:#2DB88A"></div><div><div class="condition-label">Clear / Optimal</div><div class="condition-value">Low cloud, high visibility</div></div></div>
+      <div class="condition-row"><div class="condition-dot" style="background:#8B6CC1"></div><div><div class="condition-label">Astro Window</div><div class="condition-value">Dark sky, Milky Way visible</div></div></div>
+      <div class="condition-row"><div class="condition-dot" style="background:#6B7394"></div><div><div class="condition-label">Overcast / Flat</div><div class="condition-value">Light score &lt; 30</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 05: TYPOGRAPHY ═══════════ -->
+<section id="typography">
+  <div class="section-header">
+    <div class="section-label">05</div>
+    <h2 class="section-title">Typography</h2>
+    <p class="section-desc">Three-font system: Syne for display and brand moments, Figtree for readable body/UI text, IBM Plex Mono for data and technical values.</p>
+  </div>
+
+  <div class="card-elevated" style="margin-bottom:24px">
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Display XL</span><span class="type-spec">Syne · 800 · 36px</span></div><p style="font-family:var(--font-display);font-weight:800;font-size:36px;letter-spacing:-0.02em">Chase the Golden Hour</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Display LG</span><span class="type-spec">Syne · 700 · 28px</span></div><p style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.01em">Light Quality Score: 87</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Heading</span><span class="type-spec">Syne · 600 · 20px</span></div><p style="font-family:var(--font-display);font-weight:600;font-size:20px">Camera Settings Advisor</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Subheading</span><span class="type-spec">Figtree · 600 · 16px</span></div><p style="font-family:var(--font-body);font-weight:600;font-size:16px;color:var(--neutral-100)">Opportunity Scout — 7-Day Forecast</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Body</span><span class="type-spec">Figtree · 400 · 14px</span></div><p style="font-family:var(--font-body);font-weight:400;font-size:14px;color:var(--neutral-200)">Warm dramatic side-light with broken cumulus creating god rays. Visibility excellent at 32km. Humidity 45% — ideal for saturated color.</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Caption</span><span class="type-spec">Figtree · 400 · 12px</span></div><p style="font-family:var(--font-body);font-weight:400;font-size:12px;color:var(--neutral-300)">Updated 3 minutes ago · Data from Open-Meteo</p></div>
+    <div class="type-sample"><div class="type-meta"><span class="type-label">Data/Value</span><span class="type-spec">IBM Plex Mono · 500 · 14px</span></div><p style="font-family:var(--font-mono);font-weight:500;font-size:14px;color:var(--golden-hour)">ƒ/11 · 1/250s · ISO 200 · 5600K</p></div>
+    <div class="type-sample" style="margin-bottom:0"><div class="type-meta"><span class="type-label">Label/Tag</span><span class="type-spec">IBM Plex Mono · 400 · 11px</span></div><p style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--neutral-300);letter-spacing:0.06em">GOLDEN HOUR · 18:42–19:15 · WEST</p></div>
+  </div>
+</section>
+
+<!-- ═══════════ 06: ICONOGRAPHY ═══════════ -->
+<section id="iconography">
+  <div class="section-header">
+    <div class="section-label">06</div>
+    <h2 class="section-title">Iconography</h2>
+    <p class="section-desc">Lucide icons (24×24 base, 1.5px stroke) as the icon system. Custom icons follow the same grid and stroke weight.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px">
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><span>Sun</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>Moon</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>Camera</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span>Cloud</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Map Pin</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Compass</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="14.31" y1="8" x2="20.05" y2="17.94"/><line x1="9.69" y1="8" x2="21.17" y2="8"/><line x1="7.38" y1="12" x2="13.12" y2="2.06"/><line x1="9.69" y1="16" x2="3.95" y2="6.06"/><line x1="14.31" y1="16" x2="2.83" y2="16"/><line x1="16.62" y1="12" x2="10.88" y2="21.94"/></svg><span>Aperture</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Clock</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Alert</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Star</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg><span>Sliders</span></div>
+    <div class="icon-cell"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4BAD0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 07: COMPONENTS ═══════════ -->
+<section id="components">
+  <div class="section-header">
+    <div class="section-label">07</div>
+    <h2 class="section-title">UI Components</h2>
+    <p class="section-desc">Core component patterns for the PhotoScout interface. Dark-first palette with golden hour accents for active/important states.</p>
+  </div>
+
+  <div class="flex-wrap" style="gap:20px">
+    <!-- Light Score Card -->
+    <div class="component-card">
+      <span class="component-label">Light Quality Score</span>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="score-ring" style="background:conic-gradient(#E8A225 0deg, #E8A225 313.2deg, #242836 313.2deg)">
+          <div class="score-ring-inner"><span class="score-value">87</span></div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--white)">Warm Dramatic Side-Light</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300);margin-top:4px">GOLDEN HOUR · 18:42–19:15</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <span class="tag">God Rays</span><span class="tag">Warm</span><span class="tag">Dramatic</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camera Settings -->
+    <div class="component-card">
+      <span class="component-label">Camera Settings Card</span>
+      <div class="settings-grid" style="margin-bottom:12px">
+        <div class="setting-cell"><span class="setting-label">ƒ</span><span class="setting-value">11</span></div>
+        <div class="setting-cell"><span class="setting-label">SS</span><span class="setting-value">1/250</span></div>
+        <div class="setting-cell"><span class="setting-label">ISO</span><span class="setting-value">200</span></div>
+        <div class="setting-cell"><span class="setting-label">WB</span><span class="setting-value">5600K</span></div>
+      </div>
+      <div style="padding:8px 12px;border-radius:8px;background:var(--golden-hour-subtle);border:1px solid rgba(232,162,37,0.15);font-size:11px;color:var(--golden-hour-light)">💡 Use a polarizer to deepen sky contrast at this sun angle</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="component-card">
+      <span class="component-label">Button System</span>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn-primary">Plan This Shot</button>
+        <button class="btn-secondary">View on Map</button>
+        <button class="btn-outline">Upgrade to Pro</button>
+      </div>
+    </div>
+
+    <!-- Opportunity Alert -->
+    <div class="component-card">
+      <span class="component-label">Opportunity Alert</span>
+      <div class="alert-card alert-coral">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="alert-dot" style="background:#E06848;box-shadow:0 0 8px #E06848"></span>
+          <span style="font-family:var(--font-display);font-weight:600;font-size:13px;color:#E06848">Epic Sunset Incoming</span>
+        </div>
+        <p style="font-size:12px;color:var(--neutral-100);line-height:1.5;margin-bottom:8px">Storm break + mid-level cloud deck clearing from the west. High probability of dramatic color.</p>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--neutral-300)">Tomorrow · 18:30–19:10 · Score: 92</span>
+      </div>
+    </div>
+
+    <!-- Astro Window -->
+    <div class="component-card">
+      <span class="component-label">Astro Window Card</span>
+      <div class="alert-card alert-violet">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:16px">🌌</span>
+          <span style="font-family:var(--font-display);font-weight:600;font-size:13px;color:#8B6CC1">Milky Way Window</span>
+          <span style="font-family:var(--font-mono);font-size:9px;color:#8B6CC1;background:rgba(139,108,193,0.15);padding:2px 6px;border-radius:4px;margin-left:auto">PRO</span>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--neutral-200)">01:15 – 04:30 · New Moon · Bortle 3</div>
+        <div style="font-size:11px;color:var(--neutral-300);margin-top:4px">Galactic core rises 35° ESE at peak</div>
+      </div>
+    </div>
+
+    <!-- Input Fields -->
+    <div class="component-card">
+      <span class="component-label">Input Field</span>
+      <div class="input-field" style="margin-bottom:10px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7394" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="input-placeholder">Search locations or coordinates…</span>
+      </div>
+      <div class="input-field focused">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8A225" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="input-text">Enchanted Rock, TX</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 08: UX GUIDE ═══════════ -->
+<section id="ux">
+  <div class="section-header">
+    <div class="section-label">08</div>
+    <h2 class="section-title">UX Guide</h2>
+    <p class="section-desc">Design principles, interaction patterns, and layout guidelines for a tool that's intuitive in the field and powerful at the desk.</p>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Information Architecture</h3>
+  <div class="grid grid-3" style="margin-bottom:28px">
+    <div class="card"><span style="font-size:16px">◎</span> <span style="font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--golden-hour)">Scout</span><p style="font-size:12px;color:var(--neutral-200);line-height:1.5;margin-top:8px">Today's conditions, light score, camera settings. The default home view. Glanceable, real-time.</p></div>
+    <div class="card"><span style="font-size:16px">◐</span> <span style="font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--golden-hour)">Map</span><p style="font-size:12px;color:var(--neutral-200);line-height:1.5;margin-top:8px">Interactive sun/moon/weather map with time scrubber. Mapbox GL with custom dark basemap.</p></div>
+    <div class="card"><span style="font-size:16px">⚡</span> <span style="font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--golden-hour)">Opportunities</span><p style="font-size:12px;color:var(--neutral-200);line-height:1.5;margin-top:8px">7-day forecast scanner. Cards sorted by score. Push notification triggers. Pro feature.</p></div>
+    <div class="card"><span style="font-size:16px">◈</span> <span style="font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--golden-hour)">Planner</span><p style="font-size:12px;color:var(--neutral-200);line-height:1.5;margin-top:8px">Shot planning timeline. Pick location + date, get minute-by-minute light windows.</p></div>
+    <div class="card"><span style="font-size:16px">◆</span> <span style="font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--golden-hour)">Spots</span><p style="font-size:12px;color:var(--neutral-200);line-height:1.5;margin-top:8px">Community locations with EXIF data. Browse, save, contribute. Discovery engine.</p></div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Key UX Patterns</h3>
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">
+    <div class="ux-card"><div class="ux-card-title">Progressive Disclosure</div><div class="ux-card-desc">Surface the Light Score and character tag at the top level. Tap to expand the full condition breakdown (cloud layers, humidity, sun angle, etc).</div></div>
+    <div class="ux-card"><div class="ux-card-title">Glanceable in Field</div><div class="ux-card-desc">Critical info (score, settings, time) visible without scrolling. High contrast, large type for data values. Works with sunglasses on.</div></div>
+    <div class="ux-card"><div class="ux-card-title">Time Scrubber Pattern</div><div class="ux-card-desc">Horizontal scrubber on map and planner views. Dragging updates sun position, shadow casting, light score, and settings in real-time.</div></div>
+    <div class="ux-card"><div class="ux-card-title">Opportunity Cards</div><div class="ux-card-desc">Card-based layout for 7-day opportunities. Color-coded edge by type. Score badge top-right. Swipe to dismiss or save.</div></div>
+    <div class="ux-card"><div class="ux-card-title">Pro Gating</div><div class="ux-card-desc">Free users see blurred previews of pro content with a frosted glass overlay and gentle upgrade prompt. Never block, always tease.</div></div>
+    <div class="ux-card"><div class="ux-card-title">Dark Basemap</div><div class="ux-card-desc">Custom Mapbox style: desaturated terrain, subtle contours, minimal labels. Golden hour warm tint option. Never bright white map.</div></div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Motion &amp; Animation</h3>
+  <div class="code-block" style="margin-bottom:28px">
+    <div class="code-comment">/* Easing curves */</div>
+    <div class="code-var">--ease-out: cubic-bezier(0.16, 1, 0.3, 1);</div>
+    <div class="code-var">--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);</div>
+    <div class="code-var">--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);</div>
+    <br>
+    <div class="code-comment">/* Duration scale */</div>
+    <div class="code-var">--duration-fast: 120ms;    <span style="color:var(--neutral-300)">/* hover, toggle */</span></div>
+    <div class="code-var">--duration-normal: 200ms;  <span style="color:var(--neutral-300)">/* cards, panels */</span></div>
+    <div class="code-var">--duration-slow: 350ms;    <span style="color:var(--neutral-300)">/* modals, map transitions */</span></div>
+    <div class="code-var">--duration-map: 800ms;     <span style="color:var(--neutral-300)">/* map fly-to, sun sweep */</span></div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--white);margin-bottom:12px">Accessibility Requirements</h3>
+  <div class="card">
+    <div class="grid grid-2" style="gap:16px">
+      <div class="a11y-check"><div class="a11y-label">✓ WCAG 2.1 AA minimum</div><div class="a11y-desc">All text meets 4.5:1 contrast on dark surfaces. Large text (18px+) meets 3:1.</div></div>
+      <div class="a11y-check"><div class="a11y-label">✓ Touch targets ≥ 44px</div><div class="a11y-desc">All interactive elements meet minimum touch target for outdoor/gloved use.</div></div>
+      <div class="a11y-check"><div class="a11y-label">✓ Reduce motion support</div><div class="a11y-desc">Respect prefers-reduced-motion. Disable animations, map transitions become instant.</div></div>
+      <div class="a11y-check"><div class="a11y-label">✓ Screen reader support</div><div class="a11y-desc">All data visualizations have aria-label with text equivalent.</div></div>
+      <div class="a11y-check"><div class="a11y-label">✓ High contrast mode</div><div class="a11y-desc">Optional toggle increases border and text contrast.</div></div>
+      <div class="a11y-check"><div class="a11y-label">✓ Color-blind safe</div><div class="a11y-desc">Never rely on color alone. All conditions have icon + label. Scores use shape + number.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="logo-full" style="transform:scale(0.75);transform-origin:left center">
+    <svg width="24" height="24" viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" stroke-width="2"/>
+      <circle cx="32" cy="32" r="5" fill="#E8A225"/><circle cx="32" cy="32" r="2.5" fill="#12151E"/>
+      <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="wordmark" style="font-size:16px">Photo<span>Scout</span></div>
+    </div>
+  </div>
+  <span class="meta">Brand Guide v1.0 · Confidential · March 2026</span>
+</footer>
+
+</div>
+
+<script>
+// Smooth scroll nav
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('nav a').forEach(n => n.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+// Scroll spy
+const sections = document.querySelectorAll('section[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -75% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
