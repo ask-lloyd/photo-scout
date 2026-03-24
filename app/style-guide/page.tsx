@@ -33,18 +33,18 @@ const NAV_ITEMS = [
 function LogoSVG({ size = 48, full = false }: { size?: number; full?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" strokeWidth="2" />
-      <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9" />
-      {full && <path d="M50 22 L44 34 L46 28 L38 24 Z" fill="#E8A225" opacity="0.75" />}
-      <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" strokeWidth="1.5" strokeDasharray="3 5" />
-      <circle cx="32" cy="32" r="5" fill="#E8A225" />
+      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#D4872D" strokeWidth="2" />
+      <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#D4872D" opacity="0.9" />
+      {full && <path d="M50 22 L44 34 L46 28 L38 24 Z" fill="#D4872D" opacity="0.75" />}
+      <circle cx="32" cy="32" r="10" fill="none" stroke="#D4872D" strokeWidth="1.5" strokeDasharray="3 5" />
+      <circle cx="32" cy="32" r="5" fill="#D4872D" />
       <circle cx="32" cy="32" r="2.5" fill="#12151E" />
-      <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" strokeWidth="2" strokeLinecap="round" />
+      <line x1="32" y1="6" x2="32" y2="10" stroke="#D4872D" strokeWidth="2" strokeLinecap="round" />
       {full && (
         <>
-          <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-          <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-          <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="32" y1="54" x2="32" y2="58" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="6" y1="32" x2="10" y2="32" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="54" y1="32" x2="58" y2="32" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
         </>
       )}
     </svg>
@@ -54,10 +54,10 @@ function LogoSVG({ size = 48, full = false }: { size?: number; full?: boolean })
 function LogoMarkSmall({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" strokeWidth="2" />
-      <circle cx="32" cy="32" r="5" fill="#E8A225" />
+      <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#D4872D" strokeWidth="2" />
+      <circle cx="32" cy="32" r="5" fill="#D4872D" />
       <circle cx="32" cy="32" r="2.5" fill="#12151E" />
-      <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" strokeWidth="2" strokeLinecap="round" />
+      <line x1="32" y1="6" x2="32" y2="10" stroke="#D4872D" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -102,12 +102,12 @@ export default function StyleGuidePage() {
       <header style={{ position: "sticky", top: 0, zIndex: 50, padding: "14px 32px", background: "rgba(12, 14, 20, 0.92)", backdropFilter: "blur(20px)", borderBottom: "1px solid var(--dark-600)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#E8A225" strokeWidth="2" />
-            <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9" />
-            <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" strokeWidth="1.5" strokeDasharray="3 5" />
-            <circle cx="32" cy="32" r="5" fill="#E8A225" />
+            <circle cx="32" cy="32" r="28" fill="#12151E" stroke="#D4872D" strokeWidth="2" />
+            <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#D4872D" opacity="0.9" />
+            <circle cx="32" cy="32" r="10" fill="none" stroke="#D4872D" strokeWidth="1.5" strokeDasharray="3 5" />
+            <circle cx="32" cy="32" r="5" fill="#D4872D" />
             <circle cx="32" cy="32" r="2.5" fill="#12151E" />
-            <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" strokeWidth="2" strokeLinecap="round" />
+            <line x1="32" y1="6" x2="32" y2="10" stroke="#D4872D" strokeWidth="2" strokeLinecap="round" />
           </svg>
           <div>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 22, color: "var(--white)", letterSpacing: "-0.02em" }}>
@@ -135,7 +135,7 @@ export default function StyleGuidePage() {
               fontWeight: activeSection === item.id ? 600 : 400,
               color: activeSection === item.id ? "var(--golden-hour)" : "var(--neutral-300)",
               background: activeSection === item.id ? "var(--golden-hour-subtle)" : "transparent",
-              border: activeSection === item.id ? "1px solid rgba(232, 162, 37, 0.2)" : "1px solid transparent",
+              border: activeSection === item.id ? "1px solid rgba(212, 135, 45, 0.2)" : "1px solid transparent",
               padding: "6px 14px",
               borderRadius: "var(--radius-md)",
               cursor: "pointer",
@@ -263,23 +263,23 @@ export default function StyleGuidePage() {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   width: icon.w, height: icon.w, borderRadius: icon.r,
                   background: "linear-gradient(145deg, var(--dark-800), var(--dark-900))",
-                  border: "1px solid rgba(232, 162, 37, 0.2)",
+                  border: "1px solid rgba(212, 135, 45, 0.2)",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
                   position: "relative", overflow: "hidden",
                 }}>
-                  <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 40%, rgba(232,162,37,0.08) 0%, transparent 70%)" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 40%, rgba(212,135,45,0.08) 0%, transparent 70%)" }} />
                   <svg width={icon.svgSize} height={icon.svgSize} viewBox="0 0 64 64" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                    <circle cx="32" cy="32" r="28" fill="none" stroke="#E8A225" strokeWidth="2" />
-                    {icon.full && <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#E8A225" opacity="0.9" />}
-                    {icon.full && <circle cx="32" cy="32" r="10" fill="none" stroke="#E8A225" strokeWidth="1.5" strokeDasharray="3 5" />}
-                    <circle cx="32" cy="32" r="5" fill="#E8A225" />
+                    <circle cx="32" cy="32" r="28" fill="none" stroke="#D4872D" strokeWidth="2" />
+                    {icon.full && <path d="M32 12 L38 24 L32 20 L26 24 Z" fill="#D4872D" opacity="0.9" />}
+                    {icon.full && <circle cx="32" cy="32" r="10" fill="none" stroke="#D4872D" strokeWidth="1.5" strokeDasharray="3 5" />}
+                    <circle cx="32" cy="32" r="5" fill="#D4872D" />
                     <circle cx="32" cy="32" r="2.5" fill="#12151E" />
-                    <line x1="32" y1="6" x2="32" y2="10" stroke="#E8A225" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="32" y1="6" x2="32" y2="10" stroke="#D4872D" strokeWidth="2" strokeLinecap="round" />
                     {icon.full && (
                       <>
-                        <line x1="32" y1="54" x2="32" y2="58" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-                        <line x1="6" y1="32" x2="10" y2="32" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-                        <line x1="54" y1="32" x2="58" y2="32" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+                        <line x1="32" y1="54" x2="32" y2="58" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+                        <line x1="6" y1="32" x2="10" y2="32" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+                        <line x1="54" y1="32" x2="58" y2="32" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
                       </>
                     )}
                   </svg>
@@ -292,15 +292,15 @@ export default function StyleGuidePage() {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 width: 32, height: 32, borderRadius: 6,
                 background: "linear-gradient(145deg, var(--dark-800), var(--dark-900))",
-                border: "1px solid rgba(232, 162, 37, 0.2)",
+                border: "1px solid rgba(212, 135, 45, 0.2)",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
                 position: "relative", overflow: "hidden",
               }}>
-                <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 40%, rgba(232,162,37,0.08) 0%, transparent 70%)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 40%, rgba(212,135,45,0.08) 0%, transparent 70%)" }} />
                 <svg width="20" height="20" viewBox="0 0 32 32" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                  <circle cx="16" cy="16" r="10" fill="none" stroke="#E8A225" strokeWidth="1.5" />
-                  <circle cx="16" cy="16" r="3.5" fill="#E8A225" />
-                  <line x1="16" y1="3" x2="16" y2="6" stroke="#E8A225" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="16" cy="16" r="10" fill="none" stroke="#D4872D" strokeWidth="1.5" />
+                  <circle cx="16" cy="16" r="3.5" fill="#D4872D" />
+                  <line x1="16" y1="3" x2="16" y2="6" stroke="#D4872D" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </div>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--neutral-300)" }}>Favicon · 32×32</span>
@@ -332,7 +332,7 @@ export default function StyleGuidePage() {
           <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 15, color: "var(--white)", marginBottom: 12 }}>Brand Colors</h3>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16, marginBottom: 28 }}>
             {[
-              { color: "#E8A225", name: "Golden Hour", role: "Primary — CTA, highlights, scores" },
+              { color: "#D4872D", name: "Golden Hour", role: "Primary — CTA, highlights, scores" },
               { color: "#3B6FD4", name: "Blue Hour", role: "Secondary — links, info, maps" },
               { color: "#E06848", name: "Alert Coral", role: "Alerts, epic opportunities" },
               { color: "#2DB88A", name: "Scout Teal", role: "Success, optimal conditions" },
@@ -369,7 +369,7 @@ export default function StyleGuidePage() {
           <div style={{ padding: 20, borderRadius: "var(--radius-lg)", background: "var(--dark-800)", border: "1px solid var(--dark-600)" }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
               {[
-                { color: "#E8A225", label: "Golden Hour / Warm Light", value: "Light score 70+" },
+                { color: "#D4872D", label: "Golden Hour / Warm Light", value: "Light score 70+" },
                 { color: "#3B6FD4", label: "Blue Hour / Cool Light", value: "Pre-dawn, post-sunset" },
                 { color: "#E06848", label: "Epic Alert / Storm Break", value: "Opportunity score 85+" },
                 { color: "#2DB88A", label: "Clear / Optimal", value: "Low cloud, high visibility" },
@@ -454,7 +454,7 @@ export default function StyleGuidePage() {
             <div style={{ padding: 24, borderRadius: 14, background: "var(--dark-700)", border: "1px solid var(--dark-600)", flex: "1 1 280px" }}>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--neutral-300)", letterSpacing: "0.06em", textTransform: "uppercase" as const, display: "block", marginBottom: 16 }}>Light Quality Score</span>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 64, height: 64, borderRadius: "50%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", background: "conic-gradient(#E8A225 0deg, #E8A225 313.2deg, #242836 313.2deg)" }}>
+                <div style={{ width: 64, height: 64, borderRadius: "50%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", background: "conic-gradient(#D4872D 0deg, #D4872D 313.2deg, #242836 313.2deg)" }}>
                   <div style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--dark-700)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 22, color: "var(--golden-hour)" }}>87</span>
                   </div>
@@ -464,7 +464,7 @@ export default function StyleGuidePage() {
                   <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--neutral-300)", marginTop: 4 }}>GOLDEN HOUR · 18:42–19:15</div>
                   <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
                     {["God Rays", "Warm", "Dramatic"].map((tag) => (
-                      <span key={tag} style={{ fontFamily: "var(--font-body)", fontSize: 10, fontWeight: 500, color: "var(--golden-hour)", background: "var(--golden-hour-subtle)", padding: "2px 8px", borderRadius: "var(--radius-xs)", border: "1px solid rgba(232, 162, 37, 0.15)", display: "inline-block" }}>{tag}</span>
+                      <span key={tag} style={{ fontFamily: "var(--font-body)", fontSize: 10, fontWeight: 500, color: "var(--golden-hour)", background: "var(--golden-hour-subtle)", padding: "2px 8px", borderRadius: "var(--radius-xs)", border: "1px solid rgba(212, 135, 45, 0.15)", display: "inline-block" }}>{tag}</span>
                     ))}
                   </div>
                 </div>
@@ -487,7 +487,7 @@ export default function StyleGuidePage() {
                   </div>
                 ))}
               </div>
-              <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--golden-hour-subtle)", border: "1px solid rgba(232,162,37,0.15)", fontSize: 11, color: "var(--golden-hour-light)" }}>
+              <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--golden-hour-subtle)", border: "1px solid rgba(212,135,45,0.15)", fontSize: 11, color: "var(--golden-hour-light)" }}>
                 <Lightbulb className="w-4 h-4 inline mr-1" style={{ color: "var(--golden-hour-light)" }} strokeWidth={1.5} /> Use a polarizer to deepen sky contrast at this sun angle
               </div>
             </div>
@@ -537,7 +537,7 @@ export default function StyleGuidePage() {
                 <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--neutral-300)" }}>Search locations or coordinates…</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: "var(--radius-md)", background: "var(--dark-600)", border: "1.5px solid var(--golden-hour)", boxShadow: "0 0 0 3px var(--golden-hour-subtle)" }}>
-                <Search size={16} color="#E8A225" style={{ flexShrink: 0 }} />
+                <Search size={16} color="#D4872D" style={{ flexShrink: 0 }} />
                 <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--white)" }}>Enchanted Rock, TX</span>
               </div>
             </div>

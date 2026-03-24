@@ -12,11 +12,11 @@ interface TimelineWindow extends Omit<LightWindow, "start" | "end"> {
 function getPhaseColor(phase: string): { bg: string; border: string; text: string } {
   switch (phase) {
     case "golden_hour":
-      return { bg: "var(--golden-hour-subtle)", border: "rgba(232, 162, 37, 0.3)", text: "var(--golden-hour-light)" };
+      return { bg: "var(--golden-hour-subtle)", border: "rgba(212, 135, 45, 0.3)", text: "var(--golden-hour-light)" };
     case "blue_hour":
       return { bg: "var(--blue-hour-subtle)", border: "rgba(59, 111, 212, 0.3)", text: "var(--blue-hour-light)" };
     case "daylight":
-      return { bg: "var(--golden-hour-subtle)", border: "rgba(232, 162, 37, 0.2)", text: "var(--golden-hour-light)" };
+      return { bg: "var(--golden-hour-subtle)", border: "rgba(212, 135, 45, 0.2)", text: "var(--golden-hour-light)" };
     case "midday":
       return { bg: "var(--coral-subtle)", border: "rgba(224, 104, 72, 0.2)", text: "var(--coral)" };
     case "twilight":

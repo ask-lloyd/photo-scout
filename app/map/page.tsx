@@ -424,7 +424,7 @@ export default function MapPage() {
         justify-content: center; color: #fff; font-size: 11px;
         font-weight: 700; cursor: pointer;
         border: 2px solid rgba(255,255,255,0.2);
-        box-shadow: 0 0 6px rgba(0,0,0,0.5), 0 0 2px rgba(232,162,37,0.3);
+        box-shadow: 0 0 6px rgba(0,0,0,0.5), 0 0 2px rgba(212,135,45,0.3);
         transition: transform 0.15s;
       `;
       el.textContent = String(spot.score);

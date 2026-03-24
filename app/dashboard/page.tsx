@@ -388,7 +388,7 @@ export default function Dashboard() {
                         className="mt-4 px-3 py-2 rounded-lg text-xs"
                         style={{
                           background: "var(--golden-hour-subtle)",
-                          border: "1px solid rgba(232, 162, 37, 0.15)",
+                          border: "1px solid rgba(212, 135, 45, 0.15)",
                           color: "var(--golden-hour-light)",
                         }}
                       >
@@ -474,9 +474,9 @@ export default function Dashboard() {
                         style={{
                           background: "var(--dark-700)",
                           border: isGoldenPM
-                            ? "1px solid rgba(232, 162, 37, 0.4)"
+                            ? "1px solid rgba(212, 135, 45, 0.4)"
                             : "1px solid var(--dark-600)",
-                          boxShadow: isGoldenPM ? "0 0 20px rgba(232, 162, 37, 0.1)" : undefined,
+                          boxShadow: isGoldenPM ? "0 0 20px rgba(212, 135, 45, 0.1)" : undefined,
                         }}
                       >
                         <div className="text-xs font-semibold mb-1" style={{ color: phaseColor(p.phase) }}>

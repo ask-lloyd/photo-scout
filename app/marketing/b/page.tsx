@@ -534,8 +534,8 @@ export default function MarketingB() {
                 className="rounded-xl p-8 h-full"
                 style={{
                   background: "var(--dark-800)",
-                  border: "1px solid rgba(232, 162, 37, 0.3)",
-                  boxShadow: "0 0 40px rgba(232, 162, 37, 0.06)",
+                  border: "1px solid rgba(212, 135, 45, 0.3)",
+                  boxShadow: "0 0 40px rgba(212, 135, 45, 0.06)",
                 }}
               >
                 <div
@@ -636,88 +636,19 @@ export default function MarketingB() {
               pricing
             </h2>
             <p className="text-base" style={{ color: "var(--neutral-200)" }}>
-              Start free. Upgrade when you are ready.
+              Choose the plan that fits your workflow.
             </p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[640px] mx-auto">
-            {/* Free */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Lifetime */}
             <AnimatedSection delay={0.1}>
-              <div
-                className="rounded-xl p-8 h-full flex flex-col"
-                style={{
-                  background: "var(--dark-800)",
-                  border: "1px solid var(--dark-600)",
-                }}
-              >
-                <h3
-                  className="font-heading font-bold text-xl mb-1"
-                  style={{ color: "var(--white)" }}
-                >
-                  Free
-                </h3>
-                <div
-                  className="text-sm mb-6"
-                  style={{ color: "var(--neutral-200)" }}
-                >
-                  For casual shooters
-                </div>
-                <div className="font-heading font-bold text-4xl mb-6" style={{ color: "var(--white)" }}>
-                  $0
-                  <span
-                    className="text-base font-normal ml-1"
-                    style={{ color: "var(--neutral-300)" }}
-                  >
-                    /mo
-                  </span>
-                </div>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {[
-                    "Real-time light score",
-                    "Basic camera settings",
-                    "Sun/moon tracking",
-                    "3-day forecast",
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2 text-sm"
-                      style={{ color: "var(--neutral-200)" }}
-                    >
-                      <Check
-                        className="w-4 h-4 shrink-0"
-                        style={{ color: "var(--teal)" }}
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  className="w-full py-3 rounded-lg font-heading font-bold text-sm cursor-pointer transition-colors"
-                  style={{
-                    background: "var(--dark-700)",
-                    color: "var(--white)",
-                    border: "1px solid var(--dark-600)",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "var(--dark-600)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "var(--dark-700)")
-                  }
-                >
-                  Get Started
-                </button>
-              </div>
-            </AnimatedSection>
-
-            {/* Pro */}
-            <AnimatedSection delay={0.2}>
               <div
                 className="rounded-xl p-8 h-full flex flex-col relative"
                 style={{
                   background: "var(--dark-800)",
-                  border: "1px solid rgba(232, 162, 37, 0.4)",
-                  boxShadow: "0 0 50px rgba(232, 162, 37, 0.08)",
+                  border: "1px solid rgba(212, 135, 45, 0.4)",
+                  boxShadow: "0 0 50px rgba(212, 135, 45, 0.08)",
                 }}
               >
                 {/* Badge */}
@@ -728,37 +659,28 @@ export default function MarketingB() {
                     color: "var(--dark-900)",
                   }}
                 >
-                  Most Popular
+                  Recommended
                 </div>
                 <h3
                   className="font-heading font-bold text-xl mb-1"
                   style={{ color: "var(--golden-hour)" }}
                 >
-                  Pro
+                  Lifetime
                 </h3>
                 <div
                   className="text-sm mb-6"
                   style={{ color: "var(--neutral-200)" }}
                 >
-                  For serious photographers
+                  One-time purchase
                 </div>
                 <div className="font-heading font-bold text-4xl mb-6" style={{ color: "var(--white)" }}>
-                  $4.99
-                  <span
-                    className="text-base font-normal ml-1"
-                    style={{ color: "var(--neutral-300)" }}
-                  >
-                    /mo
-                  </span>
+                  $299.00
                 </div>
                 <ul className="space-y-3 mb-8 flex-1">
                   {[
-                    "Everything in Free",
-                    "Advanced camera settings per gear",
-                    "Opportunity alerts & notifications",
-                    "14-day extended forecast",
-                    "Shot planner & location scouting",
-                    "Cloud layer analysis",
+                    "All features, forever",
+                    "No recurring fees",
+                    "Priority support",
                   ].map((item) => (
                     <li
                       key={item}
@@ -787,7 +709,136 @@ export default function MarketingB() {
                     (e.currentTarget.style.background = "var(--golden-hour)")
                   }
                 >
-                  Start Free Trial
+                  Buy Lifetime
+                </button>
+              </div>
+            </AnimatedSection>
+
+            {/* Monthly */}
+            <AnimatedSection delay={0.2}>
+              <div
+                className="rounded-xl p-8 h-full flex flex-col"
+                style={{
+                  background: "var(--dark-800)",
+                  border: "1px solid var(--dark-600)",
+                }}
+              >
+                <h3
+                  className="font-heading font-bold text-xl mb-1"
+                  style={{ color: "var(--white)" }}
+                >
+                  Monthly
+                </h3>
+                <div
+                  className="text-sm mb-6"
+                  style={{ color: "var(--neutral-200)" }}
+                >
+                  Full access to all features
+                </div>
+                <div className="font-heading font-bold text-4xl mb-6" style={{ color: "var(--white)" }}>
+                  $19.99
+                  <span
+                    className="text-base font-normal ml-1"
+                    style={{ color: "var(--neutral-300)" }}
+                  >
+                    /mo
+                  </span>
+                </div>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {[
+                    "Cancel anytime",
+                    "Regular updates",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2 text-sm"
+                      style={{ color: "var(--neutral-200)" }}
+                    >
+                      <Check
+                        className="w-4 h-4 shrink-0"
+                        style={{ color: "var(--teal)" }}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full py-3 rounded-lg font-heading font-bold text-sm cursor-pointer transition-colors"
+                  style={{
+                    background: "var(--dark-700)",
+                    color: "var(--white)",
+                    border: "1px solid var(--dark-600)",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "var(--dark-600)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "var(--dark-700)")
+                  }
+                >
+                  Subscribe Monthly
+                </button>
+              </div>
+            </AnimatedSection>
+
+            {/* Per Trip */}
+            <AnimatedSection delay={0.3}>
+              <div
+                className="rounded-xl p-8 h-full flex flex-col"
+                style={{
+                  background: "var(--dark-800)",
+                  border: "1px solid var(--dark-600)",
+                }}
+              >
+                <h3
+                  className="font-heading font-bold text-xl mb-1"
+                  style={{ color: "var(--white)" }}
+                >
+                  Per Trip
+                </h3>
+                <div
+                  className="text-sm mb-6"
+                  style={{ color: "var(--neutral-200)" }}
+                >
+                  14-day access pass
+                </div>
+                <div className="font-heading font-bold text-4xl mb-6" style={{ color: "var(--white)" }}>
+                  $59.99
+                </div>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {[
+                    "Perfect for travel photography",
+                    "All features included",
+                    "No commitment",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2 text-sm"
+                      style={{ color: "var(--neutral-200)" }}
+                    >
+                      <Check
+                        className="w-4 h-4 shrink-0"
+                        style={{ color: "var(--teal)" }}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full py-3 rounded-lg font-heading font-bold text-sm cursor-pointer transition-colors"
+                  style={{
+                    background: "var(--dark-700)",
+                    color: "var(--white)",
+                    border: "1px solid var(--dark-600)",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "var(--dark-600)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "var(--dark-700)")
+                  }
+                >
+                  Buy Trip Pass
                 </button>
               </div>
             </AnimatedSection>

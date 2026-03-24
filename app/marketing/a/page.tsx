@@ -9,7 +9,7 @@ import {
   useTransform,
   animate,
 } from "motion/react";
-import { Calendar, Zap, Star as LucideStar, ArrowRight } from "lucide-react";
+import { Calendar, Zap, Star as LucideStar, ArrowRight, Check } from "lucide-react";
 import { Sun } from "@/components/animate-ui/icons/sun";
 import { Star } from "@/components/animate-ui/icons/star";
 
@@ -178,6 +178,89 @@ function CameraSettingsDemo() {
 }
 
 /* ────────────────────────────────────────────
+   Pricing Card
+   ──────────────────────────────────────────── */
+function PricingCard({
+  name,
+  price,
+  suffix,
+  features,
+  highlighted,
+  delay,
+}: {
+  name: string;
+  price: string;
+  suffix?: string;
+  features: string[];
+  highlighted?: boolean;
+  delay: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.1, margin: "100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={`relative bg-surface-800 rounded-xl p-6 md:p-8 ${
+        highlighted
+          ? "border border-solid"
+          : "border border-surface-600"
+      }`}
+      style={
+        highlighted
+          ? {
+              border: "1px solid rgba(212,135,45, 0.4)",
+              boxShadow: "0 0 40px rgba(212,135,45, 0.08)",
+            }
+          : undefined
+      }
+    >
+      {highlighted && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-golden-hour text-surface-900 text-xs font-semibold font-sans px-3 py-1 rounded-full">
+          Recommended
+        </span>
+      )}
+
+      <h3 className="font-heading text-lg font-semibold text-text-primary mb-1">
+        {name}
+      </h3>
+      <p className="mb-6">
+        <span className="font-heading text-3xl font-bold text-text-primary">
+          {price}
+        </span>
+        {suffix && (
+          <span className="text-text-tertiary text-sm font-sans ml-1">
+            {suffix}
+          </span>
+        )}
+      </p>
+
+      <ul className="space-y-3 mb-8">
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2 text-sm text-text-tertiary font-sans">
+            <Check size={16} className="text-golden-hour mt-0.5 shrink-0" />
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <button
+        className={`cursor-pointer w-full font-sans font-semibold text-sm px-5 py-3 rounded-lg transition-all duration-200 ${
+          highlighted
+            ? "bg-golden-hour text-surface-900 hover:bg-golden-hour-light hover:scale-105 shadow-[0_2px_12px_rgba(212,135,45,0.3)]"
+            : "bg-surface-700 text-text-primary border border-surface-600 hover:bg-surface-600 hover:scale-105"
+        }`}
+      >
+        Get Started
+      </button>
+    </motion.div>
+  );
+}
+
+/* ────────────────────────────────────────────
    Social Proof
    ──────────────────────────────────────────── */
 function SocialProof() {
@@ -243,7 +326,7 @@ export default function MarketingVariationA() {
           className="absolute inset-0 opacity-40"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(232,162,37,0.25), transparent 70%), radial-gradient(ellipse 60% 50% at 70% 60%, rgba(59,111,212,0.2), transparent 60%)",
+              "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212,135,45,0.25), transparent 70%), radial-gradient(ellipse 60% 50% at 70% 60%, rgba(59,111,212,0.2), transparent 60%)",
             animation: "heroGradient 10s ease-in-out infinite alternate",
           }}
         />
@@ -252,7 +335,7 @@ export default function MarketingVariationA() {
           className="absolute inset-0 opacity-20"
           style={{
             background:
-              "radial-gradient(ellipse 40% 40% at 30% 50%, rgba(232,162,37,0.3), transparent 60%)",
+              "radial-gradient(ellipse 40% 40% at 30% 50%, rgba(212,135,45,0.3), transparent 60%)",
             animation: "heroGradient 14s ease-in-out infinite alternate-reverse",
           }}
         />
@@ -327,7 +410,7 @@ export default function MarketingVariationA() {
             transition={{ duration: 0.5, delay: 0.7 }}
           >
             <button
-              className="cursor-pointer inline-flex items-center gap-2 font-sans font-semibold text-sm bg-golden-hour text-surface-900 px-7 py-3.5 rounded-lg hover:bg-golden-hour-light hover:scale-105 transition-all duration-200 shadow-[0_2px_12px_rgba(232,162,37,0.3)]"
+              className="cursor-pointer inline-flex items-center gap-2 font-sans font-semibold text-sm bg-golden-hour text-surface-900 px-7 py-3.5 rounded-lg hover:bg-golden-hour-light hover:scale-105 transition-all duration-200 shadow-[0_2px_12px_rgba(212,135,45,0.3)]"
             >
               Start Scouting — Free
               <ArrowRight size={16} />
@@ -400,6 +483,55 @@ export default function MarketingVariationA() {
           </div>
 
           <CameraSettingsDemo />
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section className="py-24 md:py-32">
+        <div className="content-max">
+          <div className="text-center mb-14">
+            <p className="section-label mb-3">Pricing</p>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-primary">
+              Simple, transparent pricing
+            </h2>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-3">
+            <PricingCard
+              name="Lifetime"
+              price="$299.00"
+              features={[
+                "One-time purchase",
+                "All features, forever",
+                "No recurring fees",
+                "Priority support",
+              ]}
+              highlighted
+              delay={0}
+            />
+            <PricingCard
+              name="Monthly"
+              price="$19.99"
+              suffix="/mo"
+              features={[
+                "Full access to all features",
+                "Cancel anytime",
+                "Regular updates",
+              ]}
+              delay={0.1}
+            />
+            <PricingCard
+              name="Per Trip"
+              price="$59.99"
+              features={[
+                "14-day access pass",
+                "Perfect for travel photography",
+                "All features included",
+                "No commitment",
+              ]}
+              delay={0.2}
+            />
+          </div>
         </div>
       </section>
 

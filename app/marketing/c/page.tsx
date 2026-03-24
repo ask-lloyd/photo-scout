@@ -15,6 +15,7 @@ import {
   Camera,
   Aperture,
   ArrowRight,
+  Check,
 } from "lucide-react";
 import { Sun } from "@/components/animate-ui/icons/sun";
 import { MapPin } from "@/components/animate-ui/icons/map-pin";
@@ -61,7 +62,7 @@ function HeroSection() {
         style={{ y: bgY }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-golden-hour/20 via-surface-900 to-blue-hour/20 animate-[gradientShift_12s_ease-in-out_infinite]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(232,162,37,0.15),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(212,135,45,0.15),transparent)]" />
       </motion.div>
 
       <motion.div
@@ -142,8 +143,8 @@ function ScoreRingSection() {
           >
             <defs>
               <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#E8A225" />
-                <stop offset="100%" stopColor="#F2C05E" />
+                <stop offset="0%" stopColor="#D4872D" />
+                <stop offset="100%" stopColor="#E4A55A" />
               </linearGradient>
             </defs>
             {/* Track */}
@@ -329,7 +330,7 @@ function MapPreviewSection() {
             {/* Animated filled arc */}
             <motion.path
               d={arcPath}
-              stroke="#E8A225"
+              stroke="#D4872D"
               strokeWidth="2.5"
               strokeLinecap="round"
               fill="none"
@@ -340,8 +341,8 @@ function MapPreviewSection() {
             {/* Golden sun dot that moves along the path */}
             <motion.circle
               r="7"
-              fill="#E8A225"
-              filter="drop-shadow(0 0 6px rgba(232,162,37,0.6))"
+              fill="#D4872D"
+              filter="drop-shadow(0 0 6px rgba(212,135,45,0.6))"
               initial={{ offsetDistance: "0%" }}
               animate={inView ? { offsetDistance: "100%" } : {}}
               transition={{ duration: 2, delay: 0.4, ease: "easeInOut" }}
@@ -499,7 +500,154 @@ function FeatureRow({
   );
 }
 
-/* ─── Section 6 · CTA ─── */
+/* ─── Section 6 · Pricing ─── */
+
+const PRICING_TIERS = [
+  {
+    name: "Lifetime",
+    price: "$299",
+    decimal: ".00",
+    period: null,
+    highlight: true,
+    badge: "Recommended",
+    features: [
+      "One-time purchase",
+      "All features, forever",
+      "No recurring fees",
+      "Priority support",
+    ],
+    cta: "Get Lifetime Access",
+  },
+  {
+    name: "Monthly",
+    price: "$19",
+    decimal: ".99",
+    period: "/mo",
+    highlight: false,
+    badge: null,
+    features: [
+      "Full access to all features",
+      "Cancel anytime",
+      "Regular updates",
+    ],
+    cta: "Start Monthly",
+  },
+  {
+    name: "Per Trip",
+    price: "$59",
+    decimal: ".99",
+    period: null,
+    highlight: false,
+    badge: null,
+    features: [
+      "14-day access pass",
+      "Perfect for travel photography",
+      "All features included",
+      "No commitment",
+    ],
+    cta: "Buy Trip Pass",
+  },
+];
+
+function PricingSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.1, margin: "-100px" });
+
+  return (
+    <section ref={ref} className="min-h-[80vh] flex items-center justify-center px-6 py-20">
+      <div className="max-w-[960px] mx-auto w-full">
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-text-primary">
+            Simple,{" "}
+            <span className="text-golden-hour">transparent</span>{" "}
+            pricing
+          </h2>
+          <p className="mt-3 text-text-secondary max-w-md mx-auto">
+            One plan for every photographer. No surprises.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {PRICING_TIERS.map((tier, i) => (
+            <motion.div
+              key={tier.name}
+              className={`relative rounded-xl p-8 flex flex-col ${
+                tier.highlight
+                  ? "bg-surface-800 border border-golden-hour/40 shadow-[0_0_40px_rgba(212,135,45,0.08)]"
+                  : "bg-surface-800 border border-surface-600"
+              }`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.55,
+                delay: 0.15 + i * 0.12,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {tier.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold font-heading bg-golden-hour text-surface-900">
+                  {tier.badge}
+                </div>
+              )}
+
+              <h3
+                className={`font-heading font-bold text-xl mb-1 ${
+                  tier.highlight ? "text-golden-hour" : "text-text-primary"
+                }`}
+              >
+                {tier.name}
+              </h3>
+
+              <div className="font-heading font-bold text-4xl text-text-primary mt-2 mb-6">
+                {tier.price}
+                <span className="text-lg">{tier.decimal}</span>
+                {tier.period && (
+                  <span className="text-base font-normal text-text-muted ml-1">
+                    {tier.period}
+                  </span>
+                )}
+              </div>
+
+              <ul className="space-y-3 mb-8 flex-1">
+                {tier.features.map((feat) => (
+                  <li
+                    key={feat}
+                    className="flex items-center gap-2 text-sm text-text-secondary"
+                  >
+                    <Check
+                      size={16}
+                      className={`shrink-0 ${
+                        tier.highlight ? "text-golden-hour" : "text-teal"
+                      }`}
+                    />
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                className={`w-full py-3 rounded-lg font-heading font-semibold text-sm cursor-pointer transition-colors ${
+                  tier.highlight
+                    ? "bg-golden-hour text-surface-900 hover:bg-golden-hour-light"
+                    : "bg-surface-700 text-text-primary border border-surface-600 hover:bg-surface-600"
+                }`}
+              >
+                {tier.cta}
+              </button>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Section 7 · CTA ─── */
 
 function CTASection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -596,6 +744,7 @@ export default function MarketingVariantC() {
       <CameraSettingsSection />
       <MapPreviewSection />
       <FeatureListSection />
+      <PricingSection />
       <CTASection />
     </main>
   );

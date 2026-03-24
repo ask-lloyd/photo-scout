@@ -54,7 +54,7 @@ export function NavHeader({ locationName = "Georgetown, TX" }: { locationName?: 
                     ? {
                         color: "var(--golden-hour)",
                         background: "var(--golden-hour-subtle)",
-                        border: "1px solid rgba(232, 162, 37, 0.2)",
+                        border: "1px solid rgba(212, 135, 45, 0.2)",
                       }
                     : {
                         color: "var(--neutral-300)",
@@ -130,7 +130,7 @@ export function NavHeader({ locationName = "Georgetown, TX" }: { locationName?: 
                       ? {
                           color: "var(--golden-hour)",
                           background: "var(--golden-hour-subtle)",
-                          border: "1px solid rgba(232, 162, 37, 0.2)",
+                          border: "1px solid rgba(212, 135, 45, 0.2)",
                         }
                       : {
                           color: "var(--neutral-300)",

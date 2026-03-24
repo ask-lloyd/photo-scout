@@ -7,9 +7,9 @@
 /* ── Runtime CSS variables (change with theme) ── */
 :root, .dark {
   /* ── Brand Colors ── */
-  --golden-hour: #E8A225;
-  --golden-hour-light: #F2C05E;
-  --golden-hour-subtle: rgba(232, 162, 37, 0.12);
+  --golden-hour: #D4872D;
+  --golden-hour-light: #E4A55A;
+  --golden-hour-subtle: rgba(212, 135, 45, 0.12);
   --blue-hour: #3B6FD4;
   --blue-hour-light: #6B94E0;
   --blue-hour-subtle: rgba(59, 111, 212, 0.12);
@@ -42,7 +42,7 @@
   --card-foreground: #F0F2F8;
   --popover: #0F1219;
   --popover-foreground: #F0F2F8;
-  --primary: #B07A0A;
+  --primary: #A06B18;
   --primary-foreground: #080B12;
   --secondary: #1E2330;
   --secondary-foreground: #F0F2F8;
@@ -53,15 +53,15 @@
   --destructive: #E06848;
   --border: #353D50;
   --input: #1E2330;
-  --ring: #E8A225;
+  --ring: #D4872D;
   --sidebar: #0F1219;
   --sidebar-foreground: #BCC3D6;
-  --sidebar-primary: #E8A225;
+  --sidebar-primary: #D4872D;
   --sidebar-primary-foreground: #080B12;
   --sidebar-accent: #1E2330;
   --sidebar-accent-foreground: #F0F2F8;
   --sidebar-border: #1E2330;
-  --sidebar-ring: #E8A225;
+  --sidebar-ring: #D4872D;
 
   /* ── Type Scale ── */
   --text-xs: 10px;
@@ -107,7 +107,7 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-golden: 0 2px 16px rgba(232, 162, 37, 0.35);
+  --shadow-golden: 0 2px 16px rgba(212, 135, 45, 0.35);
   --shadow-glow: 0 0 8px;
 }
 
@@ -128,11 +128,11 @@ html:not(.dark) {
   --neutral-200: #525E72;    /* tertiary text — darkened from #697386 */
   --neutral-300: #7A8499;    /* muted/caption text — darkened from #A3ACB9 */
 
-  --golden-hour: #B07A0A;         /* darkened for WCAG AA on white */
-  --golden-hour-light: #C98A10;
+  --golden-hour: #9B6A1F;         /* warm dark amber for WCAG AA on white */
+  --golden-hour-light: #B07D28;
 
   /* Slightly more visible subtle backgrounds */
-  --golden-hour-subtle: rgba(176, 122, 10, 0.12);
+  --golden-hour-subtle: rgba(155, 106, 31, 0.12);
   --blue-hour-subtle: rgba(59, 111, 212, 0.08);
   --coral-subtle: rgba(224, 104, 72, 0.08);
   --teal-subtle: rgba(45, 184, 138, 0.08);
@@ -145,7 +145,7 @@ html:not(.dark) {
   --card-foreground: #1A1F36;
   --popover: #FFFFFF;
   --popover-foreground: #1A1F36;
-  --primary: #B07A0A;
+  --primary: #9B6A1F;
   --primary-foreground: #FFFFFF;
   --secondary: #E3E8EF;
   --secondary-foreground: #1A1F36;
@@ -156,21 +156,21 @@ html:not(.dark) {
   --destructive: #E06848;
   --border: #E3E8EF;
   --input: #E3E8EF;
-  --ring: #E8A225;
+  --ring: #D4872D;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #3C4257;
-  --sidebar-primary: #E8A225;
+  --sidebar-primary: #D4872D;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #E3E8EF;
   --sidebar-accent-foreground: #1A1F36;
   --sidebar-border: #E3E8EF;
-  --sidebar-ring: #E8A225;
+  --sidebar-ring: #D4872D;
 
   /* Refined shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.04);
-  --shadow-golden: 0 2px 8px rgba(232, 162, 37, 0.15);
+  --shadow-golden: 0 2px 8px rgba(212, 135, 45, 0.15);
 }
 
 /* ── Light Theme Component Overrides ── */
@@ -304,18 +304,18 @@ html:not(.dark) .glass .text-neutral-500 {
   background: conic-gradient(var(--golden-hour) 0% var(--pct), var(--dark-600) var(--pct) 100%);
 }
 .dark .score-ring {
-  box-shadow: 0 0 20px rgba(232, 162, 37, 0.15);
+  box-shadow: 0 0 20px rgba(212, 135, 45, 0.15);
 }
 
 /* Active navigation tab */
 .tab-active {
   color: var(--golden-hour);
   background: var(--golden-hour-subtle);
-  border-color: rgba(232, 162, 37, 0.2);
+  border-color: rgba(212, 135, 45, 0.2);
   font-weight: 600;
 }
 .dark .tab-active {
-  box-shadow: 0 0 8px rgba(232, 162, 37, 0.2);
+  box-shadow: 0 0 8px rgba(212, 135, 45, 0.2);
 }
 
 .tab-inactive {
@@ -335,16 +335,16 @@ html:not(.dark) .glass .text-neutral-500 {
     #1e3a5f 8%,
     #2d4a7a 8%,
     #2d4a7a 14%,
-    #c77d2e 14%,
-    #c77d2e 22%,
-    #e8a840 22%,
-    #e8a840 28%,
-    #f5f5dc 28%,
-    #f5f5dc 72%,
-    #e8a840 72%,
-    #e8a840 78%,
-    #c77d2e 78%,
-    #c77d2e 86%,
+    #B8712A 14%,
+    #B8712A 22%,
+    #D4942E 22%,
+    #D4942E 28%,
+    #f5f0e0 28%,
+    #f5f0e0 72%,
+    #D4942E 72%,
+    #D4942E 78%,
+    #B8712A 78%,
+    #B8712A 86%,
     #2d4a7a 86%,
     #2d4a7a 92%,
     #1e3a5f 92%,
@@ -475,7 +475,7 @@ html:not(.dark) .glass .text-neutral-500 {
   background: var(--golden-hour-subtle);
   padding: 2px 8px;
   border-radius: var(--radius-xs);
-  border: 1px solid rgba(232, 162, 37, 0.15);
+  border: 1px solid rgba(212, 135, 45, 0.15);
   display: inline-block;
 }
 
