@@ -75,16 +75,16 @@ export default function Dashboard() {
   const settings = useMemo(() => {
     if (!lightData) return null;
     const camera = gear.camera || {
-      id: "default", make: "Generic", model: "Camera",
-      sensor_size: "full_frame" as const, megapixels: 24, base_iso: 100,
-      max_usable_iso: 12800, dynamic_range_ev: 14, has_ibis: true,
-      ibis_stops: 5, burst_fps: 10, mount: "universal", tags: [],
+      id: "sony-a7rv", make: "Sony", model: "A7R V",
+      sensor_size: "full_frame" as const, megapixels: 61, base_iso: 100,
+      max_usable_iso: 12800, dynamic_range_ev: 14.7, has_ibis: true,
+      ibis_stops: 8, burst_fps: 10, mount: "sony_e", tags: ["landscape", "resolution"],
     };
     const lens = gear.lenses[0] || {
-      id: "default", make: "Generic", model: "24-70mm f/2.8",
-      mount: ["universal"], focal_length_min: 24, focal_length_max: 70,
+      id: "sony-fe-24-70-f28-gm-ii", make: "Sony", model: "FE 24-70mm f/2.8 GM II",
+      mount: ["sony_e"], focal_length_min: 24, focal_length_max: 70,
       max_aperture: 2.8, min_aperture: 22, has_is: false, is_stops: 0,
-      weight_g: 800, filter_size_mm: 82, tags: [],
+      weight_g: 695, filter_size_mm: 82, tags: ["standard-zoom", "professional"],
     };
     return recommendSettings(lightData.conditions, camera, lens, {
       hasTripod: gear.hasTripod,
@@ -354,8 +354,8 @@ export default function Dashboard() {
                   {settings && (
                     <>
                       <div className="text-xs mb-4" style={{ color: "var(--neutral-300)" }}>
-                        {gear.camera ? `${gear.camera.make} ${gear.camera.model}` : "Generic Camera"}{" "}
-                        &middot; {gear.lenses[0] ? gear.lenses[0].model : "24-70mm f/2.8"}
+                        {gear.camera ? `${gear.camera.make} ${gear.camera.model}` : "Sony A7R V"}{" "}
+                        &middot; {gear.lenses[0] ? gear.lenses[0].model : "FE 24-70mm f/2.8 GM II"}
                       </div>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">

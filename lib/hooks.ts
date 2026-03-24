@@ -70,12 +70,27 @@ export function useLightData(lat: number | undefined, lng: number | undefined) {
 // ─── Gear Profile (localStorage) ───
 const GEAR_KEY = "photoscout-gear";
 
+const DEFAULT_CAMERA: Camera = {
+  id: "sony-a7rv", make: "Sony", model: "A7R V",
+  sensor_size: "full_frame", megapixels: 61, base_iso: 100,
+  max_usable_iso: 12800, dynamic_range_ev: 14.7, has_ibis: true,
+  ibis_stops: 8, burst_fps: 10, mount: "sony_e",
+  tags: ["landscape", "resolution"],
+};
+
+const DEFAULT_LENS: Lens = {
+  id: "sony-fe-24-70-f28-gm-ii", make: "Sony", model: "FE 24-70mm f/2.8 GM II",
+  mount: ["sony_e"], focal_length_min: 24, focal_length_max: 70,
+  max_aperture: 2.8, min_aperture: 22, has_is: false, is_stops: 0,
+  weight_g: 695, filter_size_mm: 82, tags: ["standard-zoom", "professional"],
+};
+
 export function useGearProfile() {
   const [gear, setGear] = useState<GearProfile>({
-    camera: null,
-    lenses: [],
+    camera: DEFAULT_CAMERA,
+    lenses: [DEFAULT_LENS],
     hasTripod: false,
-    shootingStyles: [],
+    shootingStyles: ["landscape"],
   });
   const [loaded, setLoaded] = useState(false);
 
