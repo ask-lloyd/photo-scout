@@ -131,3 +131,78 @@ export interface GearProfile {
   scanRadius?: string;
   notificationPreference?: string;
 }
+
+// ─── User Profile (R2-backed markdown) ───
+
+export interface UserLocation {
+  name: string;
+  lat: number;
+  lng: number;
+  timezone: string;
+}
+
+export interface UserGearRef {
+  ref: string;       // links to content/cameras/{ref}.md or content/lenses/{ref}.md
+  primary?: boolean;
+}
+
+export interface UserAccessory {
+  type: string;
+  name: string;
+}
+
+export interface UserActivity {
+  tier: "hot" | "warm" | "cold";
+  last_active: string;          // ISO 8601
+  last_agent_update: string;    // ISO 8601
+  next_scheduled_update: string;// ISO 8601
+  total_sessions: number;
+}
+
+export interface UserSubscription {
+  plan: "free" | "pro";
+  since?: string;               // ISO 8601
+}
+
+export interface UserPreferences {
+  styles: string[];
+  preferred_times: string[];
+  experience: "beginner" | "intermediate" | "advanced" | "professional";
+}
+
+export interface UserProfileFrontmatter {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;               // avatar URL from OAuth
+  created: string;              // ISO 8601
+  updated: string;              // ISO 8601
+
+  location: {
+    primary: UserLocation;
+    saved: UserLocation[];
+  };
+
+  gear: {
+    cameras: UserGearRef[];
+    lenses: UserGearRef[];
+    accessories: UserAccessory[];
+  };
+
+  preferences: UserPreferences;
+  activity: UserActivity;
+  subscription: UserSubscription;
+}
+
+export interface SessionLogEntry {
+  date: string;
+  title: string;
+  body: string;
+}
+
+export interface UserProfile {
+  frontmatter: UserProfileFrontmatter;
+  aiContext: string;             // freeform markdown the agent reads/writes
+  sessionLog: SessionLogEntry[];// parsed from markdown session log section
+  raw: string;                  // full raw markdown for passthrough
+}
