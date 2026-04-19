@@ -79,6 +79,38 @@ async function processCategory(category: string): Promise<void> {
   console.log(`  ${category}: ${index.length} items processed`);
 }
 
+async function processOpportunityRules(): Promise<void> {
+  const rulesDir = path.join(CONTENT_DIR, "opportunity-rules");
+
+  if (!fs.existsSync(rulesDir)) {
+    console.log("  Skipping opportunity-rules (no directory)");
+    return;
+  }
+
+  const mdFiles = getAllMdFiles(rulesDir);
+  const rules: Record<string, unknown>[] = [];
+
+  for (const filePath of mdFiles) {
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const { data: frontmatter, content } = matter(raw);
+
+    if (!frontmatter.id) {
+      console.warn(`  Warning: ${filePath} has no id in frontmatter, skipping`);
+      continue;
+    }
+
+    const bodyHtml = await marked(content);
+    rules.push({ ...frontmatter, body_html: bodyHtml });
+  }
+
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, "opportunity-rules.json"),
+    JSON.stringify(rules, null, 2)
+  );
+
+  console.log(`  opportunity-rules: ${rules.length} rules processed`);
+}
+
 async function main() {
   console.log("Building content JSON...");
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -86,6 +118,8 @@ async function main() {
   for (const category of CATEGORIES) {
     await processCategory(category);
   }
+
+  await processOpportunityRules();
 
   console.log("Content build complete!");
 }
