@@ -206,3 +206,71 @@ export interface UserProfile {
   sessionLog: SessionLogEntry[];// parsed from markdown session log section
   raw: string;                  // full raw markdown for passthrough
 }
+
+// ─── Opportunity ───
+export interface Opportunity {
+  id: string;
+  ruleId: string;
+  type: string;
+  title: string;
+  description: string;
+  score: number;
+  confidence: "high" | "moderate" | "low";
+  timing: {
+    start: string;
+    end: string;
+    label: string;
+    daysOut: number;
+  };
+  location: {
+    name: string;
+    lat: number;
+    lng: number;
+  };
+  conditions: {
+    cloudCover: number;
+    windSpeed: number;
+    humidity: number;
+    visibility: number;
+    temperature: number;
+  };
+  settings?: {
+    faceDirection: string;
+    aperture: string;
+    shutterSpeed: string;
+    iso: string;
+  };
+}
+
+export interface OpportunityRule {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  conditions: OpportunityCondition[];
+  score_weight: number;
+  time_windows: string[];
+  min_score: number;
+  body_html?: string;
+}
+
+export interface OpportunityCondition {
+  field: string;
+  operator: "gt" | "lt" | "between" | "eq";
+  value: number | [number, number];
+  weight: number;
+}
+
+export interface HourlyForecast {
+  time: string[];             // ISO timestamps
+  cloudCover: number[];
+  cloudCoverHigh: number[];
+  cloudCoverMid: number[];
+  cloudCoverLow: number[];
+  humidity: number[];
+  visibility: number[];       // in km (converted from meters)
+  temperature: number[];      // °C
+  windSpeed: number[];        // km/h
+  precipitation: number[];    // mm
+  weatherCode: number[];
+}

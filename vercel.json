@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sweep-profiles",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/scan-opportunities",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
