@@ -100,7 +100,7 @@ export interface WeatherData {
   cloudCoverMid: number;
   cloudCoverHigh: number;
   humidity: number;
-  visibility: number;
+  visibility: number;           // km (both fetchWeather and fetchForecast normalize to km)
   temperature: number;
   windSpeed: number;
   precipitation: number;

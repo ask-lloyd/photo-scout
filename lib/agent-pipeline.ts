@@ -63,7 +63,7 @@ export function describeWeather(w: {
 
   // Temperature in Fahrenheit for US locale
   parts.push(`${Math.round((w.temperature * 9) / 5 + 32)}°F`);
-  parts.push(`wind ${Math.round(w.windSpeed)} km/h`);
+  parts.push(`wind ${Math.round(w.windSpeed * 0.621371)} mph`);
 
   return parts.join(", ");
 }
@@ -86,7 +86,8 @@ export async function runAgentUpdate(
   const now = new Date();
 
   // 1. Fetch weather (or use cache)
-  const cacheKey = `${lat},${lng}`;
+  // Cache key uses 2-decimal precision to match sweep-profiles pre-fetch
+  const cacheKey = `${lat.toFixed(2)},${lng.toFixed(2)}`;
   let weather: WeatherData;
   if (weatherCache?.has(cacheKey)) {
     weather = weatherCache.get(cacheKey)!;

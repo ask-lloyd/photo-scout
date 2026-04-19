@@ -112,8 +112,8 @@ function computeAtmosphericFactor(weather: WeatherData): number {
   }
   // else: extreme humidity, +0
 
-  // Visibility (km)
-  const visKm = weather.visibility / 1000; // API returns meters
+  // Visibility (km) — already normalized to km in WeatherData
+  const visKm = weather.visibility;
   if (visKm >= 10 && visKm <= 25) {
     score += 8;
   } else if (visKm > 25) {
@@ -143,7 +143,7 @@ function computeSpecialFactor(
 ): number {
   let score = 0;
 
-  const visKm = weather.visibility / 1000;
+  const visKm = weather.visibility;
 
   // Fog likely
   if (visKm < 2 && weather.humidity > 90) {
@@ -276,9 +276,9 @@ export function getLightCharacter(
   }
 
   // Atmospheric modifiers
-  if (weather.visibility / 1000 < 2 && weather.humidity > 90) {
+  if (weather.visibility < 2 && weather.humidity > 90) {
     tags.push("foggy");
-  } else if (weather.visibility / 1000 < 10) {
+  } else if (weather.visibility < 10) {
     tags.push("hazy");
   }
 
@@ -526,7 +526,7 @@ export function getLightWindows(
     cloudCoverMid: 10,
     cloudCoverHigh: 10,
     humidity: 50,
-    visibility: 15000,
+    visibility: 15,
     temperature: 18,
     windSpeed: 10,
     precipitation: 0,
@@ -590,7 +590,7 @@ export async function fetchWeather(
     cloudCoverMid: current.cloud_cover_mid ?? 0,
     cloudCoverHigh: current.cloud_cover_high ?? 0,
     humidity: current.relative_humidity_2m ?? 50,
-    visibility: current.visibility ?? 10000, // meters
+    visibility: (current.visibility ?? 10000) / 1000, // API returns meters → convert to km
     temperature: current.temperature_2m ?? 15,
     windSpeed: current.wind_speed_10m ?? 0,
     precipitation: current.precipitation ?? 0,

@@ -265,10 +265,6 @@ export async function scanOpportunities(
   }
 
   // 4. Evaluate each hour against each rule
-  interface CandidateKey {
-    ruleId: string;
-    dayKey: string;
-  }
   interface Candidate {
     rule: OpportunityRule;
     score: number;
