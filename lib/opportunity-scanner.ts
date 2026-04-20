@@ -393,7 +393,13 @@ export async function scanOpportunities(
     });
   }
 
-  // 6. Sort by score descending, return top 20
-  opportunities.sort((a, b) => b.score - a.score);
+  // 6. Sort by date/time (soonest first), return top 20
+  opportunities.sort((a, b) => {
+    const timeA = new Date(a.timing.start).getTime();
+    const timeB = new Date(b.timing.start).getTime();
+    if (timeA !== timeB) return timeA - timeB;
+    // Tie-break by score descending
+    return b.score - a.score;
+  });
   return opportunities.slice(0, 20);
 }
