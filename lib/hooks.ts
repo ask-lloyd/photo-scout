@@ -117,6 +117,38 @@ export function useGearProfile() {
   return { gear, updateGear, loaded };
 }
 
+// ─── Opportunities (live from scanner) ───
+import type { Opportunity } from "./types";
+
+export function useOpportunities(lat: number | undefined, lng: number | undefined, locationName?: string) {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOpps = useCallback(async () => {
+    if (lat === undefined || lng === undefined) return;
+    try {
+      const nameParam = locationName ? `&name=${encodeURIComponent(locationName)}` : "";
+      const res = await fetch(`/api/opportunities?lat=${lat}&lng=${lng}&days=7${nameParam}`);
+      if (!res.ok) throw new Error("Failed to fetch opportunities");
+      const json = await res.json();
+      setOpportunities(json.opportunities ?? []);
+    } catch (e) {
+      console.error("Opportunities fetch error:", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [lat, lng, locationName]);
+
+  useEffect(() => {
+    fetchOpps();
+    // Refresh every 15 min (opportunities don't change as fast as light)
+    const interval = setInterval(fetchOpps, 15 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchOpps]);
+
+  return { opportunities, loading, refetch: fetchOpps };
+}
+
 // ─── Camera/Lens Database ───
 export function useCameras() {
   const [cameras, setCameras] = useState<Camera[]>([]);

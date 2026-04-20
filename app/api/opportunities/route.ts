@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       );
     }
     location = {
-      name: "Custom Location",
+      name: params.get("name") ?? "Current Location",
       lat,
       lng,
       timezone: "UTC",

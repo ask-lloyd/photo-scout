@@ -1,6 +1,6 @@
 "use client";
 
-import { useGeolocation, useLightData, useGearProfile } from "@/lib/hooks";
+import { useGeolocation, useLightData, useGearProfile, useOpportunities } from "@/lib/hooks";
 import { recommendSettings } from "@/lib/settings-advisor";
 import { NavHeader } from "@/components/nav-header";
 import { Loader2, Sunset, Moon, Sunrise } from "lucide-react";
@@ -137,41 +137,35 @@ export default function Dashboard() {
     return Math.max(0, Math.min(100, pct));
   }, [sunTimes]);
 
-  // Mock opportunities
+  // Live opportunities from scanner API
+  const { opportunities: liveOpps, loading: oppsLoading } = useOpportunities(coords?.lat, coords?.lng, locationName);
+
+  // Map opportunity types to icons/colors
+  const opportunityIconMap: Record<string, { icon: React.ElementType; color: string }> = {
+    sunset: { icon: Sunset, color: "var(--golden-hour)" },
+    golden_hour: { icon: Sunset, color: "var(--golden-hour)" },
+    blue_hour: { icon: Moon, color: "var(--blue-hour)" },
+    fog: { icon: Sunrise, color: "var(--blue-hour)" },
+    storm: { icon: Sunrise, color: "var(--coral, #ef4444)" },
+    astro: { icon: Moon, color: "var(--violet, #8b5cf6)" },
+    clouds: { icon: Sunrise, color: "var(--neutral-200)" },
+  };
+
+  // Take top 3 opportunities for the dashboard widget
   const opportunities = useMemo(() => {
-    if (!lightData || !sunTimes) return [];
-    const goldenStart = sunTimes.goldenHour as Date;
-    const sunset = sunTimes.sunset as Date;
-    return [
-      {
-        icon: Sunset,
-        iconColor: "var(--golden-hour)",
-        name: "Golden Hour Sunset",
-        score: 85,
-        timing: `Today, ${formatTimeLocale(goldenStart, locale)} - ${formatTimeLocale(sunset, locale)}`,
-        location: locationName,
-        description: "Warm directional light ideal for landscapes and portraits with long shadows.",
-      },
-      {
-        icon: Moon,
-        iconColor: "var(--blue-hour)",
-        name: "Blue Hour Serenity",
-        score: 72,
-        timing: `Today, ${formatTimeLocale(sunset, locale)} - ${formatTimeLocale(sunTimes.dusk as Date, locale)}`,
-        location: locationName,
-        description: "Cool ambient tones perfect for cityscapes and moody water reflections.",
-      },
-      {
-        icon: Sunrise,
-        iconColor: "var(--golden-hour-light)",
-        name: "Morning Golden Light",
-        score: 78,
-        timing: `Tomorrow, ${formatTimeLocale(sunTimes.sunrise as Date, locale)} - ${formatTimeLocale(sunTimes.goldenHourEnd as Date, locale)}`,
-        location: locationName,
-        description: "Fresh golden warmth with dew and calm air. Great for nature and macro.",
-      },
-    ];
-  }, [lightData, sunTimes, locationName, locale]);
+    return liveOpps.slice(0, 3).map((opp) => {
+      const iconInfo = opportunityIconMap[opp.type] ?? { icon: Sunset, color: "var(--golden-hour)" };
+      return {
+        icon: iconInfo.icon,
+        iconColor: iconInfo.color,
+        name: opp.title,
+        score: opp.score,
+        timing: `${opp.timing.label} · ${new Date(opp.timing.start).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} - ${new Date(opp.timing.end).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`,
+        location: opp.location.name,
+        description: opp.description,
+      };
+    });
+  }, [liveOpps]);
 
   return (
     <>
@@ -642,11 +636,21 @@ export default function Dashboard() {
                       Upcoming Opportunities
                     </div>
                     <span className="text-xs cursor-pointer" role="button" style={{ color: "var(--golden-hour)" }}>
-                      View All →
+                      <a href="/opportunities">View All →</a>
                     </span>
                   </div>
                   <div className="space-y-3">
-                    {opportunities.map((opp, i) => (
+                    {oppsLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--golden-hour)" }} />
+                        <span className="ml-2 text-sm" style={{ color: "var(--neutral-300)" }}>Scanning opportunities...</span>
+                      </div>
+                    ) : opportunities.length === 0 ? (
+                      <div className="text-center py-6">
+                        <p className="text-sm" style={{ color: "var(--neutral-300)" }}>No opportunities found right now. Check back soon!</p>
+                      </div>
+                    ) : (
+                    opportunities.map((opp, i) => (
                       <div
                         key={i}
                         className="rounded-xl p-4 flex gap-4"
@@ -681,7 +685,8 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    ))
+                    )}
                   </div>
                 </div>
               </div>
