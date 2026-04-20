@@ -16,6 +16,7 @@ import {
   MapPin,
   Loader2,
   Sunrise,
+  Info,
 } from "lucide-react";
 import {
   Select,
@@ -24,7 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useGeolocation, useOpportunities } from "@/lib/hooks";
+import { useLocale } from "@/lib/locale-context";
 import type { Opportunity } from "@/lib/types";
 
 /* ------------------------------------------------------------------ */
@@ -40,6 +47,7 @@ interface ForecastDay {
   lightType: string;
   lightLabel: string;
   isToday: boolean;
+  highTempC: number;
 }
 
 /* ------------------------------------------------------------------ */
@@ -190,6 +198,7 @@ function suggestedSettings(opp: Opportunity): string {
 
 export default function OpportunitiesPage() {
   const { coords, locationName } = useGeolocation();
+  const { locale } = useLocale();
   const { opportunities: liveOpps, loading: oppsLoading } = useOpportunities(
     coords?.lat,
     coords?.lng,
@@ -286,9 +295,47 @@ export default function OpportunitiesPage() {
 
           {/* ---- 7-Day Light Forecast Strip ---- */}
           <div className="glass rounded-xl p-4 mb-6">
-            <p className="text-xs uppercase tracking-widest text-[var(--neutral-300)] mb-3">
-              7-Day Light Forecast
-            </p>
+            <div className="flex items-center gap-2 mb-3">
+              <p className="text-xs uppercase tracking-widest text-[var(--neutral-300)]">
+                7-Day Light Forecast
+              </p>
+              <Popover>
+                <PopoverTrigger
+                  className="text-[var(--neutral-300)] hover:text-[var(--neutral-200)] transition-colors cursor-pointer"
+                >
+                  <Info className="w-3.5 h-3.5" />
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-72 text-sm"
+                  style={{
+                    background: "var(--dark-700)",
+                    border: "1px solid var(--dark-600)",
+                    color: "var(--neutral-200)",
+                  }}
+                >
+                  <p className="font-semibold mb-2" style={{ color: "var(--white)" }}>
+                    Light Score
+                  </p>
+                  <p className="mb-2">
+                    The number on each card is the <strong style={{ color: "var(--golden-hour)" }}>Light Score</strong> (0–100) — a photography-specific rating based on cloud cover, golden hour clarity, sunset potential, and astro conditions.
+                  </p>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-orange-400 inline-block" />
+                      <span><strong>70+</strong> — Excellent shooting conditions</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />
+                      <span><strong>50–69</strong> — Decent, worth going out</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-neutral-400 inline-block" />
+                      <span><strong>&lt;50</strong> — Poor light for photography</span>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
             {forecastLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2
@@ -329,8 +376,16 @@ export default function OpportunitiesPage() {
                       <p className={`text-xl font-bold ${scoreColor(day.bestScore)}`}>
                         {day.bestScore}
                       </p>
-                      <p className="text-[10px] text-[var(--neutral-300)] mt-0.5">
+                      <p className="text-[8px] uppercase tracking-wider text-[var(--neutral-300)] -mt-0.5">
+                        Light Score
+                      </p>
+                      <p className="text-[10px] text-[var(--neutral-300)] mt-1">
                         {day.lightLabel}
+                      </p>
+                      <p className="text-[10px] text-[var(--neutral-200)] mt-0.5" style={{ fontFamily: "var(--font-mono)" }}>
+                        {locale === "US"
+                          ? `${Math.round(day.highTempC * 9 / 5 + 32)}°`
+                          : `${day.highTempC}°`}
                       </p>
                     </div>
                   );

@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
       lightType: string;
       lightLabel: string;
       isToday: boolean;
+      highTempC: number;
     }[] = [];
 
     for (let d = 0; d < 7; d++) {
@@ -93,12 +94,18 @@ export async function GET(request: NextRequest) {
       let bestWeatherCode = 0;
       let avgCloudCover = 0;
       let stormBreak = false;
+      let highTempC = -Infinity;
 
       for (const h of dayHours) {
         const i = h.idx;
         const hourTime = new Date(h.time);
         const cc = forecast.cloudCover[i];
         avgCloudCover += cc;
+
+        // Track daily high temperature
+        if (forecast.temperature[i] > highTempC) {
+          highTempC = forecast.temperature[i];
+        }
 
         // Check golden hour AM
         const gAM = windows["golden_hour_am"];
@@ -155,6 +162,7 @@ export async function GET(request: NextRequest) {
         lightType: lt.type,
         lightLabel: lt.label,
         isToday: d === 0,
+        highTempC: highTempC === -Infinity ? 0 : Math.round(highTempC),
       });
     }
 
