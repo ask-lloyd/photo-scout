@@ -132,7 +132,7 @@ export function DayTimeline({ windows }: { windows: TimelineWindow[] }) {
                     </span>
                     {isActive && (
                       <span
-                        className="text-[10px] px-1.5 py-0 rounded-full font-semibold"
+                        className="text-[13px] px-1.5 py-0 rounded-full font-semibold"
                         style={{
                           background: "var(--golden-hour)",
                           color: "var(--dark-900)",
@@ -143,7 +143,7 @@ export function DayTimeline({ windows }: { windows: TimelineWindow[] }) {
                     )}
                   </div>
                   <p
-                    className="text-xs"
+                    className="text-[13px]s"
                     style={{
                       fontFamily: "var(--font-mono)",
                       color: "var(--neutral-300)",

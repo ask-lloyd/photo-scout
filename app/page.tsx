@@ -50,7 +50,7 @@ export default function MarketingHub() {
           className="font-heading text-3xl font-bold"
           style={{ letterSpacing: "-0.02em" }}
         >
-          <span className="text-text-primary">Photo</span>
+          <span className="text-text-[13px]rimary">Photo</span>
           <span className="text-golden-hour">Scout</span>
         </h1>
         <p className="mt-2 text-text-tertiary text-sm font-sans">
@@ -77,12 +77,12 @@ export default function MarketingHub() {
                   className="mb-4"
                 />
                 <p
-                  className="font-mono text-[11px] uppercase tracking-wider mb-1"
+                  className="font-mono text-[13px] uppercase tracking-wider mb-1"
                   style={{ color: v.accent }}
                 >
                   {v.title}
                 </p>
-                <h2 className="font-heading text-lg font-semibold text-text-primary mb-2">
+                <h2 className="font-heading text-lg font-semibold text-text-[13px]rimary mb-2">
                   {v.subtitle}
                 </h2>
                 <p className="text-text-muted text-sm leading-relaxed font-sans">

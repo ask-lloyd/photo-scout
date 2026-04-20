@@ -26,8 +26,8 @@ const TAG_COLORS: Record<string, { bg: string; text: string }> = {
   nature: { bg: "bg-green-500/20", text: "text-green-400" },
   street: { bg: "bg-blue-500/20", text: "text-blue-400" },
   travel: { bg: "bg-blue-500/20", text: "text-blue-400" },
-  portrait: { bg: "bg-purple-500/20", text: "text-purple-400" },
-  studio: { bg: "bg-purple-500/20", text: "text-purple-400" },
+  portrait: { bg: "bg-purple-500/20", text: "text-[13px]urple-400" },
+  studio: { bg: "bg-purple-500/20", text: "text-[13px]urple-400" },
   action: { bg: "bg-orange-500/20", text: "text-orange-400" },
   sports: { bg: "bg-orange-500/20", text: "text-orange-400" },
   wildlife: { bg: "bg-orange-500/20", text: "text-orange-400" },
@@ -102,15 +102,15 @@ export default function GearPage() {
       <NavHeader />
       <main className="pt-14">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <h2 className="text-xl font-bold text-[var(--white)] mb-6">Your Gear</h2>
+          <h2 className="text-[13px]l font-bold text-[var(--white)] mb-6">Your Gear</h2>
 
           {/* Camera Body Card */}
           <div className="glass rounded-2xl p-6 mb-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs uppercase tracking-widest text-[var(--neutral-300)]">Camera Body</span>
+              <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">Camera Body</span>
               <button
                 onClick={() => setChangingCamera(!changingCamera)}
-                className="text-xs text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
+                className="text-[13px]s text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
               >
                 Change
               </button>
@@ -121,7 +121,7 @@ export default function GearPage() {
                 <p className="text-lg font-bold text-[var(--white)]">
                   {selectedCamera.make} {selectedCamera.model}
                 </p>
-                <p className="text-xs text-[var(--neutral-200)] mb-4">{cameraSubtitle}</p>
+                <p className="text-[13px]s text-[var(--neutral-200)] mb-4">{cameraSubtitle}</p>
               </>
             )}
 
@@ -145,7 +145,7 @@ export default function GearPage() {
                   <SelectContent>
                     {Object.entries(camerasByMake).map(([make, cams]) => (
                       <div key={make}>
-                        <div className="px-2 py-1.5 text-xs font-semibold text-[var(--neutral-300)]">
+                        <div className="px-2 py-1.5 text-[13px]s font-semibold text-[var(--neutral-300)]">
                           {make}
                         </div>
                         {cams.map((cam) => (
@@ -166,26 +166,26 @@ export default function GearPage() {
                 {/* Stat boxes */}
                 <div className="grid grid-cols-4 gap-4 mb-6">
                   <div className="rounded-lg bg-[#1c1c1c]/50 p-3 text-center">
-                    <p className="text-[10px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Base ISO</p>
+                    <p className="text-[13px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Base ISO</p>
                     <p className="text-lg font-bold text-[var(--white)]">{selectedCamera.base_iso}</p>
                   </div>
                   <div className="rounded-lg bg-[#1c1c1c]/50 p-3 text-center">
-                    <p className="text-[10px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Max Usable ISO</p>
+                    <p className="text-[13px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Max Usable ISO</p>
                     <p className="text-lg font-bold text-[var(--white)]">{selectedCamera.max_usable_iso.toLocaleString()}</p>
                   </div>
                   <div className="rounded-lg bg-[#1c1c1c]/50 p-3 text-center">
-                    <p className="text-[10px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Dynamic Range</p>
+                    <p className="text-[13px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Dynamic Range</p>
                     <p className="text-lg font-bold text-[var(--white)]">{selectedCamera.dynamic_range_ev} EV</p>
                   </div>
                   <div className="rounded-lg bg-[#1c1c1c]/50 p-3 text-center">
-                    <p className="text-[10px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Burst Rate</p>
+                    <p className="text-[13px] uppercase tracking-wider text-[var(--neutral-300)] mb-1">Burst Rate</p>
                     <p className="text-lg font-bold text-[var(--white)]">{selectedCamera.burst_fps} fps</p>
                   </div>
                 </div>
 
                 {/* ISO Quality Range bar */}
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-[var(--neutral-300)] mb-3">ISO Quality Range</p>
+                  <p className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)] mb-3">ISO Quality Range</p>
                   <div className="relative h-6 rounded-full bg-[#262626] overflow-hidden">
                     <div
                       className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-green-500 to-green-400"
@@ -204,7 +204,7 @@ export default function GearPage() {
                       style={{ left: `${acceptableEnd}%`, width: `${100 - acceptableEnd}%` }}
                     />
                   </div>
-                  <div className="flex justify-between mt-1.5 text-[10px] text-[var(--neutral-300)]">
+                  <div className="flex justify-between mt-1.5 text-[13px] text-[var(--neutral-300)]">
                     <span>{baseIso}</span>
                     <span>400</span>
                     <span>1600</span>
@@ -212,7 +212,7 @@ export default function GearPage() {
                     <span>12800</span>
                     <span>32000</span>
                   </div>
-                  <div className="flex gap-4 mt-2 text-[10px]">
+                  <div className="flex gap-4 mt-2 text-[13px]">
                     <span className="text-green-400">{"\u2605"} Excellent</span>
                     <span className="text-yellow-400">Good</span>
                     <span className="text-red-400">Acceptable</span>
@@ -226,10 +226,10 @@ export default function GearPage() {
           {/* Lenses Card */}
           <div className="glass rounded-2xl p-6 mb-4">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs uppercase tracking-widest text-[var(--neutral-300)]">Lenses</span>
+              <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">Lenses</span>
               <button
                 onClick={() => setAddingLens(!addingLens)}
-                className="text-xs text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
+                className="text-[13px]s text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
               >
                 + Add Lens
               </button>
@@ -258,7 +258,7 @@ export default function GearPage() {
                       <p className="text-sm font-semibold text-[var(--white)]">
                         {lens.make} {lens.model}
                       </p>
-                      <p className="text-xs text-[var(--neutral-200)]">
+                      <p className="text-[13px]s text-[var(--neutral-200)]">
                         {lensType} · {focalStr} f/{lens.max_aperture}
                         {lens.filter_size_mm ? ` · ${lens.filter_size_mm}mm filter` : ""}
                         {lens.has_is ? ` · IS ${lens.is_stops} stops` : ""}
@@ -271,7 +271,7 @@ export default function GearPage() {
                           return (
                             <span
                               key={tag}
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${color.bg} ${color.text}`}
+                              className={`px-2 py-0.5 rounded-full text-[13px] font-medium ${color.bg} ${color.text}`}
                             >
                               {tag.charAt(0).toUpperCase() + tag.slice(1)}
                             </span>
@@ -326,14 +326,14 @@ export default function GearPage() {
 
           {/* Shooting Preferences Card */}
           <div className="glass rounded-2xl p-6">
-            <span className="text-xs uppercase tracking-widest text-[var(--neutral-300)] block mb-4">
+            <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)] block mb-4">
               Shooting Preferences
             </span>
 
             <div className="grid grid-cols-2 gap-4">
               {/* Primary Style */}
               <div>
-                <label className="text-xs text-[var(--neutral-200)] block mb-1.5">Primary Style</label>
+                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">Primary Style</label>
                 <Select
                   value={gear.primaryStyle || gear.shootingStyles[0] || ""}
                   onValueChange={(val: string | null) => {
@@ -359,7 +359,7 @@ export default function GearPage() {
 
               {/* Tripod Available */}
               <div>
-                <label className="text-xs text-[var(--neutral-200)] block mb-1.5">Tripod Available</label>
+                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">Tripod Available</label>
                 <Select
                   value={gear.tripodAvailability || (gear.hasTripod ? "always" : "no")}
                   onValueChange={(val: string | null) => {
@@ -383,7 +383,7 @@ export default function GearPage() {
 
               {/* Scan Radius */}
               <div>
-                <label className="text-xs text-[var(--neutral-200)] block mb-1.5">Scan Radius</label>
+                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">Scan Radius</label>
                 <Select
                   value={gear.scanRadius || "25"}
                   onValueChange={(val: string | null) => { if (val) updateGear({ scanRadius: val }); }}
@@ -402,7 +402,7 @@ export default function GearPage() {
 
               {/* Notification Preference */}
               <div>
-                <label className="text-xs text-[var(--neutral-200)] block mb-1.5">Notification Preference</label>
+                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">Notification Preference</label>
                 <Select
                   value={gear.notificationPreference || "push_email"}
                   onValueChange={(val: string | null) => { if (val) updateGear({ notificationPreference: val }); }}

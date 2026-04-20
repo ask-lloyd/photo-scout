@@ -317,7 +317,7 @@ export default function Dashboard() {
                   </div>
                   {settings && (
                     <>
-                      <div className="text-xs mb-4" style={{ color: "var(--neutral-300)" }}>
+                      <div className="text-[13px]s mb-4" style={{ color: "var(--neutral-300)" }}>
                         {gear.camera ? `${gear.camera.make} ${gear.camera.model}` : "Sony A7R V"}{" "}
                         &middot; {gear.lenses[0] ? gear.lenses[0].model : "FE 24-70mm f/2.8 GM II"}
                       </div>
@@ -349,7 +349,7 @@ export default function Dashboard() {
                       </div>
                       {/* Direction tip */}
                       <div
-                        className="mt-4 px-3 py-2 rounded-lg text-xs"
+                        className="mt-4 px-3 py-2 rounded-lg text-[13px]s"
                         style={{
                           background: "var(--golden-hour-subtle)",
                           border: "1px solid rgba(212, 135, 45, 0.15)",
@@ -405,7 +405,7 @@ export default function Dashboard() {
                             className="absolute top-0 h-full flex flex-col items-center justify-end pb-1"
                             style={{ left: `${pct}%`, transform: "translateX(-50%)" }}
                           >
-                            <span className="text-[9px]" style={{ fontFamily: "var(--font-mono)", color: "var(--neutral-200)" }}>
+                            <span className="text-[12px]" style={{ fontFamily: "var(--font-mono)", color: "var(--neutral-200)" }}>
                               {m.label}
                             </span>
                           </div>
@@ -443,10 +443,10 @@ export default function Dashboard() {
                           boxShadow: isGoldenPM ? "0 0 20px rgba(212, 135, 45, 0.1)" : undefined,
                         }}
                       >
-                        <div className="text-xs font-semibold mb-1" style={{ color: phaseColor(p.phase) }}>
+                        <div className="text-[13px]s font-semibold mb-1" style={{ color: phaseColor(p.phase) }}>
                           {p.label}
                         </div>
-                        <div className="text-xs mb-2" style={{ fontFamily: "var(--font-mono)", color: "var(--neutral-300)" }}>
+                        <div className="text-[13px]s mb-2" style={{ fontFamily: "var(--font-mono)", color: "var(--neutral-300)" }}>
                           {!isNaN(p.start?.getTime()) && !isNaN(p.end?.getTime())
                             ? `${formatTimeLocale(p.start, locale)} - ${formatTimeLocale(p.end, locale)}`
                             : "—"}
@@ -454,7 +454,7 @@ export default function Dashboard() {
                         <div className="flex items-center justify-between">
                           <LightScore score={p.score} variant="inline" />
                           <span
-                            className="text-[10px]"
+                            className="text-[13px]"
                             style={{
                               color: p.isActive ? "var(--teal)" : p.isPast ? "var(--neutral-300)" : "var(--neutral-200)",
                             }}
@@ -485,7 +485,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 gap-x-6 gap-y-5">
                     {/* Left column */}
                     <div>
-                      <div className="text-xs mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Cloud Cover</div>
+                      <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Cloud Cover</div>
                       <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 700, color: "var(--white)" }}>
                         {lightData.weather.cloudCoverTotal}%
                       </div>
@@ -498,7 +498,7 @@ export default function Dashboard() {
                           }}
                         />
                       </div>
-                      <div className="text-xs mt-1" style={{ color: "var(--neutral-300)" }}>
+                      <div className="text-[13px]s mt-1" style={{ color: "var(--neutral-300)" }}>
                         {lightData.weather.cloudCoverTotal > 80
                           ? "Heavy overcast"
                           : lightData.weather.cloudCoverTotal > 50
@@ -509,31 +509,31 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Visibility</div>
+                      <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Visibility</div>
                       <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 700, color: "var(--white)" }}>
                         {formatDistance(lightData.weather.visibility / 1000, locale)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Humidity</div>
+                      <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Humidity</div>
                       <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 700, color: "var(--white)" }}>
                         {lightData.weather.humidity}%
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Temperature</div>
+                      <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Temperature</div>
                       <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 700, color: "var(--white)" }}>
                         {formatTemp(lightData.weather.temperature, locale)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Wind</div>
+                      <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Wind</div>
                       <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, fontWeight: 700, color: "var(--white)" }}>
                         {Math.round(locale === "US" ? lightData.weather.windSpeed * 0.621371 : lightData.weather.windSpeed)} {locale === "US" ? "mph" : "km/h"}
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs mb-2" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Cloud Layers</div>
+                      <div className="text-[13px]s mb-2" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>Cloud Layers</div>
                       <div className="space-y-1.5">
                         {[
                           { label: "High", value: lightData.weather.cloudCoverHigh },
@@ -541,7 +541,7 @@ export default function Dashboard() {
                           { label: "Low", value: lightData.weather.cloudCoverLow },
                         ].map((layer) => (
                           <div key={layer.label} className="flex items-center gap-2">
-                            <span className="text-[10px] w-6" style={{ color: "var(--neutral-300)" }}>{layer.label}</span>
+                            <span className="text-[13px] w-6" style={{ color: "var(--neutral-300)" }}>{layer.label}</span>
                             <div className="flex-1 h-1.5 rounded-full" style={{ background: "var(--dark-600)" }}>
                               <div
                                 className="h-full rounded-full"
@@ -551,7 +551,7 @@ export default function Dashboard() {
                                 }}
                               />
                             </div>
-                            <span className="text-[10px] w-7 text-right" style={{ color: "var(--neutral-300)" }}>
+                            <span className="text-[13px] w-7 text-right" style={{ color: "var(--neutral-300)" }}>
                               {layer.value}%
                             </span>
                           </div>
@@ -563,22 +563,22 @@ export default function Dashboard() {
                   <div className="mt-5 pt-4" style={{ borderTop: "1px solid var(--dark-600)" }}>
                     <div className="space-y-1.5">
                       {lightData.weather.cloudCoverHigh > 30 && lightData.weather.cloudCoverLow < 30 && (
-                        <div className="text-xs" style={{ color: "var(--neutral-200)" }}>
+                        <div className="text-[13px]s" style={{ color: "var(--neutral-200)" }}>
                           ✓ High clouds may enhance sunset colors
                         </div>
                       )}
                       {lightData.weather.humidity >= 40 && lightData.weather.humidity <= 65 && (
-                        <div className="text-xs" style={{ color: "var(--neutral-200)" }}>
+                        <div className="text-[13px]s" style={{ color: "var(--neutral-200)" }}>
                           ✓ Good humidity for warm tones
                         </div>
                       )}
                       {lightData.weather.windSpeed < 15 && (
-                        <div className="text-xs" style={{ color: "var(--neutral-200)" }}>
+                        <div className="text-[13px]s" style={{ color: "var(--neutral-200)" }}>
                           ✓ Low wind — stable for long exposures
                         </div>
                       )}
                       {lightData.weather.visibility / 1000 >= 10 && (
-                        <div className="text-xs" style={{ color: "var(--neutral-200)" }}>
+                        <div className="text-[13px]s" style={{ color: "var(--neutral-200)" }}>
                           ✓ Good visibility for distant subjects
                         </div>
                       )}
@@ -598,7 +598,7 @@ export default function Dashboard() {
                     <div className="section-label">
                       Upcoming Opportunities
                     </div>
-                    <span className="text-xs cursor-pointer" role="button" style={{ color: "var(--golden-hour)" }}>
+                    <span className="text-[13px]s cursor-pointer" role="button" style={{ color: "var(--golden-hour)" }}>
                       <a href="/opportunities">View All →</a>
                     </span>
                   </div>
@@ -630,10 +630,10 @@ export default function Dashboard() {
                             </span>
                             <LightScore score={opp.score} variant="badge" />
                           </div>
-                          <div className="text-xs mb-1" style={{ color: "var(--neutral-200)", fontFamily: "var(--font-mono)" }}>
+                          <div className="text-[13px]s mb-1" style={{ color: "var(--neutral-200)", fontFamily: "var(--font-mono)" }}>
                             {opp.timing} &middot; {opp.location}
                           </div>
-                          <div className="text-xs" style={{ color: "var(--neutral-300)" }}>
+                          <div className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>
                             {opp.description}
                           </div>
                         </div>

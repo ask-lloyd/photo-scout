@@ -62,7 +62,7 @@ export function LightScoreInfo() {
           is a photography-specific rating based on cloud cover, golden hour clarity,
           sunset potential, and astro conditions.
         </p>
-        <div className="space-y-1 text-xs">
+        <div className="space-y-1 text-[13px]s">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-orange-400 inline-block" />
             <span><strong>70+</strong> — Excellent shooting conditions</span>
@@ -151,7 +151,7 @@ export function LightScore({
   if (variant === "badge") {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold shrink-0 ${className ?? ""}`}
+        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[13px]s font-bold shrink-0 ${className ?? ""}`}
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: 700,
@@ -168,7 +168,7 @@ export function LightScore({
   if (variant === "compact") {
     return (
       <div className={`flex flex-col items-center ${className ?? ""}`}>
-        <span className={`text-xl font-bold ${colorClass}`}>{score}</span>
+        <span className={`text-[13px]l font-bold ${colorClass}`}>{score}</span>
         {label && <ScoreLabel className="-mt-0.5" />}
       </div>
     );

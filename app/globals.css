@@ -64,14 +64,14 @@
   --sidebar-ring: #D4872D;
 
   /* ── Type Scale ── */
-  --text-xs: 10px;
-  --text-sm: 12px;
-  --text-base: 14px;
-  --text-lg: 16px;
-  --text-xl: 20px;
-  --text-2xl: 28px;
-  --text-3xl: 36px;
-  --text-4xl: 48px;
+  --text-xs: 13px;
+  --text-sm: 15px;
+  --text-base: 17px;
+  --text-lg: 19px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 40px;
+  --text-4xl: 52px;
 
   /* ── Spacing ── */
   --space-xs: 4px;
@@ -406,7 +406,7 @@ html:not(.dark) .glass .text-neutral-500 {
 /* Section labels */
 .section-label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--golden-hour);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -418,7 +418,7 @@ html:not(.dark) .glass .text-neutral-500 {
 .btn-outline,
 .btn-ghost {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 14px;
   padding: 10px 20px;
   border-radius: var(--radius-md);
   transition: all var(--duration-fast) var(--ease-out);
@@ -469,7 +469,7 @@ html:not(.dark) .glass .text-neutral-500 {
 /* Tags / Chips */
 .tag {
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--golden-hour);
   background: var(--golden-hour-subtle);

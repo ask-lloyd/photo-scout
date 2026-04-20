@@ -561,7 +561,7 @@ export default function MapPage() {
 
         {/* ─── Top-left: Time Scrubber (desktop only) ─── */}
         <div className="hidden md:block absolute top-18 left-4 z-10 glass rounded-xl p-4 w-72">
-          <div className="text-[10px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
+          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
             TIME SCRUBBER
           </div>
           <input
@@ -572,7 +572,7 @@ export default function MapPage() {
             onChange={(e) => setTimeMinutes(Number(e.target.value))}
             className="w-full accent-[#f97316] h-1.5 bg-neutral-700 rounded-full appearance-none cursor-pointer"
           />
-          <div className="flex justify-between text-[10px] text-[var(--neutral-300)] mt-1">
+          <div className="flex justify-between text-[13px] text-[var(--neutral-300)] mt-1">
             <span>12 AM</span>
             <span className="text-[var(--neutral-200)] font-medium">
               {minutesToTimeStr(timeMinutes)}
@@ -583,7 +583,7 @@ export default function MapPage() {
 
         {/* ─── Left below scrubber: Layers Panel (desktop only) ─── */}
         <div className="hidden md:block absolute top-44 left-4 z-10 glass rounded-xl p-4 w-72">
-          <div className="text-[10px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
+          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
             LAYERS
           </div>
           <div className="space-y-2">
@@ -610,7 +610,7 @@ export default function MapPage() {
 
         {/* ─── Bottom-left: Legend (desktop only) ─── */}
         <div className="hidden md:block absolute bottom-6 left-4 z-10 glass rounded-xl px-4 py-3">
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-4 text-[13px]s">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />
               <span className="text-[var(--neutral-200)]">High Score (70+)</span>
@@ -664,7 +664,7 @@ export default function MapPage() {
 
               {/* Time Scrubber */}
               <div className="mb-5">
-                <div className="text-[10px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
+                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
                   TIME SCRUBBER
                 </div>
                 <input
@@ -675,7 +675,7 @@ export default function MapPage() {
                   onChange={(e) => setTimeMinutes(Number(e.target.value))}
                   className="w-full accent-[#f97316] h-1.5 bg-neutral-700 rounded-full appearance-none cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-[var(--neutral-300)] mt-1">
+                <div className="flex justify-between text-[13px] text-[var(--neutral-300)] mt-1">
                   <span>12 AM</span>
                   <span className="text-[var(--neutral-200)] font-medium">
                     {minutesToTimeStr(timeMinutes)}
@@ -686,7 +686,7 @@ export default function MapPage() {
 
               {/* Layers */}
               <div>
-                <div className="text-[10px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
+                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
                   LAYERS
                 </div>
                 <div className="space-y-2">
@@ -728,7 +728,7 @@ export default function MapPage() {
 
             {/* Name + location */}
             <h2 className="text-lg font-bold text-[var(--white)] pr-6">{selectedSpot.name}</h2>
-            <p className="text-xs text-[var(--neutral-300)] mt-0.5">
+            <p className="text-[13px]s text-[var(--neutral-300)] mt-0.5">
               {selectedSpot.latitude.toFixed(4)}, {selectedSpot.longitude.toFixed(4)}
               {" "}&middot;{" "}
               {Math.round(

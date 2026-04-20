@@ -115,7 +115,7 @@ function fmtDate(d: Date) {
 function SettingPill({ label, value }: { label: string; value: string }) {
   return (
     <div className="glass rounded-lg p-2 text-center">
-      <div className="text-[10px] uppercase tracking-wider text-[var(--neutral-300)] mb-0.5">
+      <div className="text-[13px] uppercase tracking-wider text-[var(--neutral-300)] mb-0.5">
         {label}
       </div>
       <div
@@ -337,7 +337,7 @@ export default function PlannerPage() {
             >
               &larr; Back
             </Link>
-            <h1 className="text-xl font-bold text-[var(--white)]">
+            <h1 className="text-[13px]l font-bold text-[var(--white)]">
               Shot Plan
             </h1>
           </div>
@@ -416,13 +416,13 @@ export default function PlannerPage() {
                     variant="badge"
                     showLabel
                   />
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
                     {Math.round(plannerData.weather.cloudCover)}% Cloud
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
                     {windDisplay}
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
                     {formatTemp(plannerData.weather.temperature, locale)}
                   </span>
                 </div>
@@ -443,28 +443,28 @@ export default function PlannerPage() {
 
               {/* Gear Bar */}
               <div className="glass rounded-xl p-4 mb-6 flex flex-wrap items-center gap-3">
-                <span className="text-xs uppercase tracking-wider text-[var(--neutral-300)] font-semibold">
+                <span className="text-[13px]s uppercase tracking-wider text-[var(--neutral-300)] font-semibold">
                   Your Gear
                 </span>
-                <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
+                <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
                   {cameraName}
                 </span>
                 {lensNames.length > 0 ? (
                   lensNames.map((name) => (
                     <span
                       key={name}
-                      className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs"
+                      className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s"
                     >
                       {name}
                     </span>
                   ))
                 ) : (
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
                     No lenses set
                   </span>
                 )}
                 <span
-                  className={`px-3 py-1 rounded-full text-xs ${
+                  className={`px-3 py-1 rounded-full text-[13px]s ${
                     gear.hasTripod
                       ? "bg-green-500/20 text-green-400"
                       : "bg-[#262626] text-[var(--neutral-300)]"
@@ -474,7 +474,7 @@ export default function PlannerPage() {
                 </span>
                 <Link
                   href="/gear"
-                  className="text-orange-500 text-xs hover:text-orange-400 transition-colors ml-auto cursor-pointer"
+                  className="text-orange-500 text-[13px]s hover:text-orange-400 transition-colors ml-auto cursor-pointer"
                 >
                   Change Gear
                 </Link>
@@ -505,14 +505,14 @@ export default function PlannerPage() {
                             {fmt(phase.startTime)} — Arrive &amp; Scout
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-300)] text-xs mb-3">
+                        <p className="text-[var(--neutral-300)] text-[13px]s mb-3">
                           30 min before golden hour
                         </p>
                         <p className="text-[var(--neutral-200)] text-sm mb-4">
                           {getArriveDescription(spot)}
                         </p>
                         <div className="glass rounded-lg p-3">
-                          <p className="text-xs text-[var(--neutral-300)] uppercase tracking-wider mb-2">
+                          <p className="text-[13px]s text-[var(--neutral-300)] uppercase tracking-wider mb-2">
                             Pre-shoot Settings
                           </p>
                           <div className="grid grid-cols-5 gap-2">
@@ -566,11 +566,11 @@ export default function PlannerPage() {
                             score={phase.lightScore}
                             variant="badge"
                           />
-                          <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] uppercase tracking-wider font-semibold">
+                          <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[13px] uppercase tracking-wider font-semibold">
                             Peak Light
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-200)] text-xs mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
                           Color temp {phase.colorTemp} &middot;{" "}
                           {phase.evRange} &middot;{" "}
                           {phase.lightPhase === "golden hour"
@@ -585,7 +585,7 @@ export default function PlannerPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                           {/* Landscape */}
                           <div className="glass rounded-lg p-4">
-                            <p className="text-orange-400 text-xs font-semibold uppercase tracking-wider mb-3">
+                            <p className="text-orange-400 text-[13px]s font-semibold uppercase tracking-wider mb-3">
                               Landscape ({ls.focalLengthSuggestion.split(" ")[0]})
                             </p>
                             <div className="grid grid-cols-2 gap-2">
@@ -619,7 +619,7 @@ export default function PlannerPage() {
                               />
                             </div>
                             {ls.tips.length > 0 && (
-                              <p className="text-[var(--neutral-300)] text-xs mt-2">
+                              <p className="text-[var(--neutral-300)] text-[13px]s mt-2">
                                 Tip: {ls.tips[0]}
                               </p>
                             )}
@@ -627,7 +627,7 @@ export default function PlannerPage() {
 
                           {/* Action */}
                           <div className="glass rounded-lg p-4">
-                            <p className="text-blue-400 text-xs font-semibold uppercase tracking-wider mb-3">
+                            <p className="text-blue-400 text-[13px]s font-semibold uppercase tracking-wider mb-3">
                               Action ({ac.focalLengthSuggestion.split(" ")[0]})
                             </p>
                             <div className="grid grid-cols-2 gap-2">
@@ -654,7 +654,7 @@ export default function PlannerPage() {
                               />
                             </div>
                             {ac.tips.length > 0 && (
-                              <p className="text-[var(--neutral-300)] text-xs mt-2">
+                              <p className="text-[var(--neutral-300)] text-[13px]s mt-2">
                                 Tip: {ac.tips[0]}
                               </p>
                             )}
@@ -663,10 +663,10 @@ export default function PlannerPage() {
 
                         {/* Pro tip */}
                         <div className="glass rounded-lg p-3 border border-orange-500/10">
-                          <p className="text-xs text-orange-400 font-semibold mb-1">
+                          <p className="text-[13px]s text-orange-400 font-semibold mb-1">
                             PRO TIP
                           </p>
-                          <p className="text-[var(--neutral-200)] text-xs">
+                          <p className="text-[var(--neutral-200)] text-[13px]s">
                             {getProTip(spot)}
                           </p>
                         </div>
@@ -701,7 +701,7 @@ export default function PlannerPage() {
                             variant="badge"
                           />
                         </div>
-                        <p className="text-[var(--neutral-200)] text-xs mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
                           Sun direction: {spot.facing_direction}&deg;{bearingToCardinal(spot.facing_direction)} &middot;{" "}
                           Color temp {phase.colorTemp}
                         </p>
@@ -755,11 +755,11 @@ export default function PlannerPage() {
                             score={phase.lightScore}
                             variant="badge"
                           />
-                          <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] uppercase tracking-wider font-semibold">
+                          <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[13px] uppercase tracking-wider font-semibold">
                             Tripod Required
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-200)] text-xs mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
                           {phase.lightPhase} &middot; Color temp{" "}
                           {phase.colorTemp} &middot; {phase.evRange}
                         </p>

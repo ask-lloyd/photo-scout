@@ -104,7 +104,7 @@ function FeatureCard({
       <div className="w-10 h-10 rounded-lg bg-golden-hour/10 flex items-center justify-center mb-4">
         <Icon size={20} className="text-golden-hour" animateOnView />
       </div>
-      <h3 className="font-heading text-lg font-semibold text-text-primary mb-2">
+      <h3 className="font-heading text-lg font-semibold text-text-[13px]rimary mb-2">
         {title}
       </h3>
       <p className="text-text-tertiary text-sm leading-relaxed font-sans">
@@ -158,7 +158,7 @@ function CameraSettingsDemo() {
           ] as const
         ).map(([label, value]) => (
           <div key={label} className="bg-surface-700 rounded-lg p-3">
-            <p className="text-text-muted text-[11px] font-mono uppercase tracking-wider mb-1">
+            <p className="text-text-muted text-[13px] font-mono uppercase tracking-wider mb-1">
               {label}
             </p>
             <motion.p
@@ -219,16 +219,16 @@ function PricingCard({
       }
     >
       {highlighted && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-golden-hour text-surface-900 text-xs font-semibold font-sans px-3 py-1 rounded-full">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-golden-hour text-surface-900 text-[13px]s font-semibold font-sans px-3 py-1 rounded-full">
           Recommended
         </span>
       )}
 
-      <h3 className="font-heading text-lg font-semibold text-text-primary mb-1">
+      <h3 className="font-heading text-lg font-semibold text-text-[13px]rimary mb-1">
         {name}
       </h3>
       <p className="mb-6">
-        <span className="font-heading text-3xl font-bold text-text-primary">
+        <span className="font-heading text-3xl font-bold text-text-[13px]rimary">
           {price}
         </span>
         {suffix && (
@@ -251,7 +251,7 @@ function PricingCard({
         className={`cursor-pointer w-full font-sans font-semibold text-sm px-5 py-3 rounded-lg transition-all duration-200 ${
           highlighted
             ? "bg-golden-hour text-surface-900 hover:bg-golden-hour-light hover:scale-105 shadow-[0_2px_12px_rgba(212,135,45,0.3)]"
-            : "bg-surface-700 text-text-primary border border-surface-600 hover:bg-surface-600 hover:scale-105"
+            : "bg-surface-700 text-text-[13px]rimary border border-surface-600 hover:bg-surface-600 hover:scale-105"
         }`}
       >
         Get Started
@@ -286,7 +286,7 @@ function SocialProof() {
         ].map((bg, i) => (
           <div
             key={i}
-            className={`w-9 h-9 rounded-full ${bg} border-2 border-surface-900 flex items-center justify-center text-[11px] font-semibold text-text-primary`}
+            className={`w-9 h-9 rounded-full ${bg} border-2 border-surface-900 flex items-center justify-center text-[13px] font-semibold text-text-[13px]rimary`}
           >
             {String.fromCharCode(65 + i)}
           </div>
@@ -306,7 +306,7 @@ function SocialProof() {
 
       <p className="text-text-secondary text-sm font-sans">
         Trusted by{" "}
-        <span className="text-text-primary font-semibold">2,400+</span>{" "}
+        <span className="text-text-[13px]rimary font-semibold">2,400+</span>{" "}
         photographers
       </p>
     </motion.div>
@@ -363,7 +363,7 @@ export default function MarketingVariationA() {
               className="font-heading text-base font-bold tracking-tight"
               style={{ letterSpacing: "-0.02em" }}
             >
-              <span className="text-text-primary">Photo</span>
+              <span className="text-text-[13px]rimary">Photo</span>
               <span className="text-golden-hour">Scout</span>
             </span>
           </motion.div>
@@ -373,7 +373,7 @@ export default function MarketingVariationA() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="font-heading font-extrabold text-text-primary leading-[1.05] mb-6"
+            className="font-heading font-extrabold text-text-[13px]rimary leading-[1.05] mb-6"
             style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)" }}
           >
             Know Your Light
@@ -398,7 +398,7 @@ export default function MarketingVariationA() {
             className="mb-10"
           >
             <ScoreRing score={87} size={128} />
-            <p className="mt-3 text-text-muted text-xs font-mono uppercase tracking-wider">
+            <p className="mt-3 text-text-muted text-[13px]s font-mono uppercase tracking-wider">
               Light Score
             </p>
           </motion.div>
@@ -440,7 +440,7 @@ export default function MarketingVariationA() {
         <div className="content-max">
           <div className="text-center mb-14">
             <p className="section-label mb-3">Features</p>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-primary">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-[13px]rimary">
               Everything you need to shoot with confidence
             </h2>
           </div>
@@ -473,7 +473,7 @@ export default function MarketingVariationA() {
         <div className="content-max">
           <div className="text-center mb-14">
             <p className="section-label mb-3">Smart Settings</p>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-primary">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-[13px]rimary">
               Camera settings that adapt to the moment
             </h2>
             <p className="mt-3 text-text-tertiary text-sm font-sans max-w-md mx-auto">
@@ -491,7 +491,7 @@ export default function MarketingVariationA() {
         <div className="content-max">
           <div className="text-center mb-14">
             <p className="section-label mb-3">Pricing</p>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-primary">
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-[13px]rimary">
               Simple, transparent pricing
             </h2>
           </div>
@@ -550,7 +550,7 @@ export default function MarketingVariationA() {
               className="font-heading text-sm font-bold"
               style={{ letterSpacing: "-0.02em" }}
             >
-              <span className="text-text-primary">Photo</span>
+              <span className="text-text-[13px]rimary">Photo</span>
               <span className="text-golden-hour">Scout</span>
             </span>
           </Link>
@@ -567,7 +567,7 @@ export default function MarketingVariationA() {
             ))}
           </nav>
 
-          <p className="text-text-muted text-xs font-sans">
+          <p className="text-text-muted text-[13px]s font-sans">
             &copy; 2026 PhotoScout
           </p>
         </div>

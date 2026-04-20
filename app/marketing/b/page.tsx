@@ -124,7 +124,7 @@ function MockDashboard() {
           style={{ background: "var(--teal)" }}
         />
         <span
-          className="text-xs font-mono"
+          className="text-[13px]s font-mono"
           style={{ color: "var(--neutral-200)" }}
         >
           Live Light Analysis
@@ -175,7 +175,7 @@ function MockDashboard() {
               style={{ color: card.color }}
             />
             <div
-              className="text-[10px] mb-0.5"
+              className="text-[13px] mb-0.5"
               style={{ color: "var(--neutral-300)" }}
             >
               {card.label}
@@ -197,7 +197,7 @@ function MockDashboard() {
         transition={{ delay: 1.1 }}
       >
         <div
-          className="text-[10px] font-mono mb-1.5 flex justify-between"
+          className="text-[13px] font-mono mb-1.5 flex justify-between"
           style={{ color: "var(--neutral-300)" }}
         >
           <span>5:40 AM</span>
@@ -613,7 +613,7 @@ export default function MarketingB() {
                       {t.name}
                     </div>
                     <div
-                      className="text-xs"
+                      className="text-[13px]s"
                       style={{ color: "var(--neutral-300)" }}
                     >
                       {t.role}
@@ -653,7 +653,7 @@ export default function MarketingB() {
               >
                 {/* Badge */}
                 <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold font-heading"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px]s font-bold font-heading"
                   style={{
                     background: "var(--golden-hour)",
                     color: "var(--dark-900)",
@@ -662,7 +662,7 @@ export default function MarketingB() {
                   Recommended
                 </div>
                 <h3
-                  className="font-heading font-bold text-xl mb-1"
+                  className="font-heading font-bold text-[13px]l mb-1"
                   style={{ color: "var(--golden-hour)" }}
                 >
                   Lifetime
@@ -724,7 +724,7 @@ export default function MarketingB() {
                 }}
               >
                 <h3
-                  className="font-heading font-bold text-xl mb-1"
+                  className="font-heading font-bold text-[13px]l mb-1"
                   style={{ color: "var(--white)" }}
                 >
                   Monthly
@@ -791,7 +791,7 @@ export default function MarketingB() {
                 }}
               >
                 <h3
-                  className="font-heading font-bold text-xl mb-1"
+                  className="font-heading font-bold text-[13px]l mb-1"
                   style={{ color: "var(--white)" }}
                 >
                   Per Trip
@@ -887,7 +887,7 @@ export default function MarketingB() {
             </a>
           </div>
           <div
-            className="text-xs"
+            className="text-[13px]s"
             style={{ color: "var(--neutral-300)" }}
           >
             &copy; 2026 PhotoScout

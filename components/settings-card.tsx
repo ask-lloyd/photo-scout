@@ -78,7 +78,7 @@ export function SettingsCard({ conditions, camera, lens, hasTripod, style }: Set
         <CameraIcon className="w-4 h-4" style={{ color: "var(--golden-hour)" }} />
         If You Shoot Right Now
       </div>
-      <p className="text-xs mb-4" style={{ color: "var(--neutral-300)" }}>
+      <p className="text-[13px]s mb-4" style={{ color: "var(--neutral-300)" }}>
         {camera.make} {camera.model} &middot; {lens.make} {lens.focal_length_min}-{lens.focal_length_max}mm
       </p>
 
@@ -248,7 +248,7 @@ export function SettingsCard({ conditions, camera, lens, hasTripod, style }: Set
             background: "var(--golden-hour-subtle)",
           }}
         >
-          <ul className="text-xs space-y-1" style={{ color: "var(--golden-hour-light)" }}>
+          <ul className="text-[13px]s space-y-1" style={{ color: "var(--golden-hour-light)" }}>
             {settings.tips.map((tip, i) => (
               <li key={i} className="flex gap-1">
                 <span style={{ color: "var(--golden-hour)" }}>&middot;</span> {tip}

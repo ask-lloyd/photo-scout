@@ -9,7 +9,7 @@ export function LocaleToggle() {
   return (
     <button
       onClick={toggleLocale}
-      className="flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors cursor-pointer"
+      className="flex items-center gap-1 px-2 py-1 rounded-md text-[13px]s transition-colors cursor-pointer"
       style={{
         background: "var(--dark-600)",
         border: "1px solid var(--dark-400)",

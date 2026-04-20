@@ -108,7 +108,7 @@ export function SunCompass({ azimuth, altitude, directionToFace }: SunCompassPro
         <div className="flex justify-between items-center">
           <span style={{ color: "var(--neutral-300)" }}>Face</span>
           <span
-            className="text-xs font-medium"
+            className="text-[13px]s font-medium"
             style={{ color: "var(--teal)" }}
           >
             {directionToFace.label} ({directionToFace.bearing.toFixed(0)}&deg;)

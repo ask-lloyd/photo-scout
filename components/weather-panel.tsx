@@ -56,7 +56,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
           Current Weather
         </span>
       </div>
-      <p className="text-xs mb-4" style={{ color: "var(--neutral-300)" }}>
+      <p className="text-[13px]s mb-4" style={{ color: "var(--neutral-300)" }}>
         {weatherCodeToDescription(weather.weatherCode)}
       </p>
 
@@ -68,7 +68,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
               <p className="text-sm font-medium" style={{ color: "var(--white)" }}>
                 {formatTemp(weather.temperature, locale)}
               </p>
-              <p className="text-xs" style={{ color: "var(--neutral-300)" }}>Temperature</p>
+              <p className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>Temperature</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
               <p className="text-sm font-medium" style={{ color: "var(--white)" }}>
                 {weather.humidity}%
               </p>
-              <p className="text-xs" style={{ color: "var(--neutral-300)" }}>Humidity</p>
+              <p className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>Humidity</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
               <p className="text-sm font-medium" style={{ color: "var(--white)" }}>
                 {locale === "US" ? (weather.windSpeed * 0.621371).toFixed(0) : weather.windSpeed.toFixed(0)} {locale === "US" ? "mph" : "km/h"}
               </p>
-              <p className="text-xs" style={{ color: "var(--neutral-300)" }}>Wind Speed</p>
+              <p className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>Wind Speed</p>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
               <p className="text-sm font-medium" style={{ color: "var(--white)" }}>
                 {formatDistance(weather.visibility / 1000, locale)}
               </p>
-              <p className="text-xs" style={{ color: "var(--neutral-300)" }}>Visibility</p>
+              <p className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>Visibility</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -107,11 +107,11 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
               <p className="text-sm font-medium" style={{ color: "var(--white)" }}>
                 {weather.cloudCoverTotal}%
               </p>
-              <p className="text-xs" style={{ color: "var(--neutral-300)" }}>Cloud Cover</p>
+              <p className="text-[13px]s" style={{ color: "var(--neutral-300)" }}>Cloud Cover</p>
             </div>
           </div>
           <div>
-            <p className="text-xs mb-1" style={{ color: "var(--neutral-300)" }}>Cloud Layers</p>
+            <p className="text-[13px]s mb-1" style={{ color: "var(--neutral-300)" }}>Cloud Layers</p>
             <div className="space-y-1">
               <CloudBar label="High" value={weather.cloudCoverHigh} color="var(--violet)" />
               <CloudBar label="Mid" value={weather.cloudCoverMid} color="var(--blue-hour)" />
@@ -138,7 +138,7 @@ export function WeatherPanel({ weather }: { weather: WeatherData }) {
 
 function CloudBar({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center gap-2 text-[13px]s">
       <span className="w-6" style={{ color: "var(--neutral-300)" }}>{label}</span>
       <div
         className="flex-1 h-1.5 rounded-full overflow-hidden"

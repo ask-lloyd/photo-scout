@@ -43,7 +43,7 @@ function ScoreRing({ score }: { score: number }) {
             {score}
           </span>
           <span
-            className="text-[10px]"
+            className="text-[13px]"
             style={{ color: "var(--neutral-200)" }}
           >
             {getLabel(score)}

@@ -70,7 +70,7 @@ function HeroSection() {
         style={{ opacity }}
       >
         <motion.h1
-          className="font-heading font-[800] text-[clamp(2.75rem,8vw,4.5rem)] leading-[1.05] tracking-tight text-text-primary"
+          className="font-heading font-[800] text-[clamp(2.75rem,8vw,4.5rem)] leading-[1.05] tracking-tight text-text-[13px]rimary"
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -80,7 +80,7 @@ function HeroSection() {
         </motion.h1>
 
         <motion.p
-          className="mt-5 text-lg md:text-xl text-text-secondary max-w-xl mx-auto"
+          className="mt-5 text-lg md:text-[13px]l text-text-secondary max-w-xl mx-auto"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -176,7 +176,7 @@ function ScoreRingSection() {
             />
           </svg>
 
-          <span className="font-heading font-[800] text-5xl text-text-primary">
+          <span className="font-heading font-[800] text-5xl text-text-[13px]rimary">
             {score}
           </span>
         </motion.div>
@@ -231,7 +231,7 @@ function CameraSettingsSection() {
         >
           <div className="flex items-center gap-2 mb-6">
             <Camera size={20} className="text-golden-hour" />
-            <span className="font-heading font-semibold text-text-primary text-lg">
+            <span className="font-heading font-semibold text-text-[13px]rimary text-lg">
               Recommended Settings
             </span>
           </div>
@@ -249,10 +249,10 @@ function CameraSettingsSection() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <span className="block text-xs text-text-muted uppercase tracking-wider mb-1 font-sans">
+                <span className="block text-[13px]s text-text-muted uppercase tracking-wider mb-1 font-sans">
                   {s.label}
                 </span>
-                <span className="block font-mono text-2xl font-semibold text-text-primary">
+                <span className="block font-mono text-2xl font-semibold text-text-[13px]rimary">
                   {s.value}
                 </span>
               </motion.div>
@@ -357,7 +357,7 @@ function MapPreviewSection() {
         </motion.div>
 
         <motion.p
-          className="mt-8 text-xl font-heading font-semibold text-text-primary"
+          className="mt-8 text-[13px]l font-heading font-semibold text-text-[13px]rimary"
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.7 }}
@@ -430,7 +430,7 @@ function FeatureListSection() {
     >
       <div className="max-w-[960px] mx-auto w-full space-y-16">
         <motion.h2
-          className="text-center font-heading font-bold text-3xl md:text-4xl text-text-primary"
+          className="text-center font-heading font-bold text-3xl md:text-4xl text-text-[13px]rimary"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -489,7 +489,7 @@ function FeatureRow({
 
       {/* Text */}
       <div className={`text-center md:text-left ${reverse ? "md:text-right" : ""}`}>
-        <h3 className="font-heading font-semibold text-lg text-text-primary">
+        <h3 className="font-heading font-semibold text-lg text-text-[13px]rimary">
           {feature.title}
         </h3>
         <p className="mt-1 text-text-secondary leading-relaxed max-w-sm">
@@ -562,7 +562,7 @@ function PricingSection() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-text-primary">
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-text-[13px]rimary">
             Simple,{" "}
             <span className="text-golden-hour">transparent</span>{" "}
             pricing
@@ -590,20 +590,20 @@ function PricingSection() {
               }}
             >
               {tier.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold font-heading bg-golden-hour text-surface-900">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px]s font-bold font-heading bg-golden-hour text-surface-900">
                   {tier.badge}
                 </div>
               )}
 
               <h3
-                className={`font-heading font-bold text-xl mb-1 ${
-                  tier.highlight ? "text-golden-hour" : "text-text-primary"
+                className={`font-heading font-bold text-[13px]l mb-1 ${
+                  tier.highlight ? "text-golden-hour" : "text-text-[13px]rimary"
                 }`}
               >
                 {tier.name}
               </h3>
 
-              <div className="font-heading font-bold text-4xl text-text-primary mt-2 mb-6">
+              <div className="font-heading font-bold text-4xl text-text-[13px]rimary mt-2 mb-6">
                 {tier.price}
                 <span className="text-lg">{tier.decimal}</span>
                 {tier.period && (
@@ -634,7 +634,7 @@ function PricingSection() {
                 className={`w-full py-3 rounded-lg font-heading font-semibold text-sm cursor-pointer transition-colors ${
                   tier.highlight
                     ? "bg-golden-hour text-surface-900 hover:bg-golden-hour-light"
-                    : "bg-surface-700 text-text-primary border border-surface-600 hover:bg-surface-600"
+                    : "bg-surface-700 text-text-[13px]rimary border border-surface-600 hover:bg-surface-600"
                 }`}
               >
                 {tier.cta}
@@ -661,7 +661,7 @@ function CTASection() {
     >
       <div className="max-w-[960px] mx-auto text-center">
         <motion.h2
-          className="font-heading font-bold text-3xl md:text-4xl text-text-primary"
+          className="font-heading font-bold text-3xl md:text-4xl text-text-[13px]rimary"
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -690,7 +690,7 @@ function CTASection() {
           <input
             type="email"
             placeholder="you@email.com"
-            className="w-full sm:flex-1 rounded-md bg-surface-600 border border-surface-400 px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-golden-hour/60 transition-shadow"
+            className="w-full sm:flex-1 rounded-md bg-surface-600 border border-surface-400 px-4 py-3 text-text-[13px]rimary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-golden-hour/60 transition-shadow"
           />
           <button
             type="submit"
@@ -722,7 +722,7 @@ function CTASection() {
 
         {/* Wordmark */}
         <div className="mt-8">
-          <span className="font-heading font-bold text-lg text-text-primary">
+          <span className="font-heading font-bold text-lg text-text-[13px]rimary">
             Photo
           </span>
           <span className="font-heading font-bold text-lg text-golden-hour">
@@ -738,7 +738,7 @@ function CTASection() {
 
 export default function MarketingVariantC() {
   return (
-    <main className="bg-surface-900 text-text-primary scroll-smooth">
+    <main className="bg-surface-900 text-text-[13px]rimary scroll-smooth">
       <HeroSection />
       <ScoreRingSection />
       <CameraSettingsSection />
