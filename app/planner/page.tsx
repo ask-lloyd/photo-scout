@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { NavHeader } from "@/components/nav-header";
+import { LightScore } from "@/components/light-score";
 import { MapPin, Star, Sunset, Waves, Moon } from "lucide-react";
 import { useGearProfile } from "@/lib/hooks";
 import type { Spot } from "@/lib/types";
@@ -141,9 +142,7 @@ export default function PlannerPage() {
 
                 {/* Condition badges */}
                 <div className="flex flex-wrap gap-2 mb-5">
-                  <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-semibold">
-                    Light Score 92
-                  </span>
+                  <LightScore score={92} variant="badge" showLabel />
                   <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-xs">
                     15% Cloud
                   </span>

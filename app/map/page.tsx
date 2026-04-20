@@ -30,6 +30,8 @@ function computeScore(spot: Spot): number {
   return Math.min(score, 95);
 }
 
+import { LightScore, lightScoreColor } from "@/components/light-score";
+
 function scoreColor(score: number): string {
   if (score >= 70) return "#f97316";
   if (score >= 50) return "#3b82f6";
@@ -740,12 +742,7 @@ export default function MapPage() {
 
             {/* Score badge */}
             <div className="mt-3">
-              <span
-                className="inline-block px-3 py-1 rounded-full text-sm font-bold text-[var(--pure-white)]"
-                style={{ backgroundColor: scoreColor(selectedSpot.score) }}
-              >
-                Score: {selectedSpot.score}
-              </span>
+              <LightScore score={selectedSpot.score} variant="badge" showLabel />
             </div>
 
             {/* Description */}

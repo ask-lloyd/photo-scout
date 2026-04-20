@@ -16,7 +16,6 @@ import {
   MapPin,
   Loader2,
   Sunrise,
-  Info,
 } from "lucide-react";
 import {
   Select,
@@ -25,13 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useGeolocation, useOpportunities } from "@/lib/hooks";
 import { useLocale } from "@/lib/locale-context";
+import { LightScore, LightScoreInfo, lightScoreColorClass } from "@/components/light-score";
 import type { Opportunity } from "@/lib/types";
 
 /* ------------------------------------------------------------------ */
@@ -129,12 +124,6 @@ function accentClasses(accent: string) {
     },
   };
   return map[accent] ?? map.gray;
-}
-
-function scoreColor(score: number) {
-  if (score >= 70) return "text-orange-400";
-  if (score >= 50) return "text-blue-400";
-  return "text-[var(--neutral-200)]";
 }
 
 function forecastBorder(score: number) {
@@ -299,42 +288,7 @@ export default function OpportunitiesPage() {
               <p className="text-xs uppercase tracking-widest text-[var(--neutral-300)]">
                 7-Day Light Forecast
               </p>
-              <Popover>
-                <PopoverTrigger
-                  className="text-[var(--neutral-300)] hover:text-[var(--neutral-200)] transition-colors cursor-pointer"
-                >
-                  <Info className="w-3.5 h-3.5" />
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-72 text-sm"
-                  style={{
-                    background: "var(--dark-700)",
-                    border: "1px solid var(--dark-600)",
-                    color: "var(--neutral-200)",
-                  }}
-                >
-                  <p className="font-semibold mb-2" style={{ color: "var(--white)" }}>
-                    Light Score
-                  </p>
-                  <p className="mb-2">
-                    The number on each card is the <strong style={{ color: "var(--golden-hour)" }}>Light Score</strong> (0–100) — a photography-specific rating based on cloud cover, golden hour clarity, sunset potential, and astro conditions.
-                  </p>
-                  <div className="space-y-1 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-orange-400 inline-block" />
-                      <span><strong>70+</strong> — Excellent shooting conditions</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />
-                      <span><strong>50–69</strong> — Decent, worth going out</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-neutral-400 inline-block" />
-                      <span><strong>&lt;50</strong> — Poor light for photography</span>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <LightScoreInfo />
             </div>
             {forecastLoading ? (
               <div className="flex items-center justify-center py-8">
@@ -373,12 +327,7 @@ export default function OpportunitiesPage() {
                           strokeWidth={1.5}
                         />
                       </div>
-                      <p className={`text-xl font-bold ${scoreColor(day.bestScore)}`}>
-                        {day.bestScore}
-                      </p>
-                      <p className="text-[8px] uppercase tracking-wider text-[var(--neutral-300)] -mt-0.5">
-                        Light Score
-                      </p>
+                      <LightScore score={day.bestScore} variant="compact" />
                       <p className="text-[10px] text-[var(--neutral-300)] mt-1">
                         {day.lightLabel}
                       </p>
@@ -441,11 +390,9 @@ export default function OpportunitiesPage() {
                           />
                         </div>
                         <div
-                          className={`w-14 h-14 rounded-xl ${ac.bg} flex items-center justify-center`}
+                          className={`w-14 h-14 rounded-xl ${ac.bg} flex flex-col items-center justify-center`}
                         >
-                          <span className={`text-2xl font-bold ${ac.text}`}>
-                            {opp.score}
-                          </span>
+                          <LightScore score={opp.score} variant="compact" />
                         </div>
                       </div>
 

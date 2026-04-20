@@ -3,6 +3,7 @@
 import { useGeolocation, useLightData, useGearProfile, useOpportunities } from "@/lib/hooks";
 import { recommendSettings } from "@/lib/settings-advisor";
 import { NavHeader } from "@/components/nav-header";
+import { LightScore, lightScoreColor } from "@/components/light-score";
 import { Loader2, Sunset, Moon, Sunrise } from "lucide-react";
 import { useMemo } from "react";
 import * as SunCalc from "suncalc";
@@ -19,12 +20,6 @@ function bearingToLabel(bearing: number): string {
   ];
   const index = Math.round(normalized / 22.5) % 16;
   return directions[index];
-}
-
-function scoreColor(score: number): string {
-  if (score >= 70) return "var(--golden-hour)";
-  if (score >= 50) return "var(--blue-hour)";
-  return "var(--neutral-300)";
 }
 
 function phaseColor(phase: string): string {
@@ -200,32 +195,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex gap-5 items-center">
                     {/* Score Ring */}
-                    <div
-                      className="score-ring rounded-full flex items-center justify-center shrink-0"
-                      style={{
-                        "--pct": `${lightData.conditions.score}%`,
-                        width: 96,
-                        height: 96,
-                      } as React.CSSProperties}
-                    >
-                      <div
-                        className="rounded-full flex items-center justify-center"
-                        style={{
-                          width: 76,
-                          height: 76,
-                          background: "var(--dark-700)",
-                        }}
-                      >
-                        <span style={{
-                          fontFamily: "var(--font-display)",
-                          fontWeight: 700,
-                          fontSize: 22,
-                          color: "var(--golden-hour)",
-                        }}>
-                          {lightData.conditions.score}
-                        </span>
-                      </div>
-                    </div>
+                    <LightScore score={lightData.conditions.score} variant="ring" size={96} showLabel />
                     {/* Text */}
                     <div className="min-w-0">
                       <div style={{
@@ -482,14 +452,7 @@ export default function Dashboard() {
                             : "—"}
                         </div>
                         <div className="flex items-center justify-between">
-                          <span style={{
-                            fontFamily: "var(--font-display)",
-                            fontWeight: 700,
-                            fontSize: 18,
-                            color: scoreColor(p.score),
-                          }}>
-                            {p.score}
-                          </span>
+                          <LightScore score={p.score} variant="inline" />
                           <span
                             className="text-[10px]"
                             style={{
@@ -665,17 +628,7 @@ export default function Dashboard() {
                             <span className="font-semibold text-sm" style={{ color: "var(--white)" }}>
                               {opp.name}
                             </span>
-                            <span
-                              className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0"
-                              style={{
-                                fontFamily: "var(--font-display)",
-                                fontWeight: 700,
-                                background: "var(--golden-hour-subtle)",
-                                color: scoreColor(opp.score),
-                              }}
-                            >
-                              {opp.score}
-                            </span>
+                            <LightScore score={opp.score} variant="badge" />
                           </div>
                           <div className="text-xs mb-1" style={{ color: "var(--neutral-200)", fontFamily: "var(--font-mono)" }}>
                             {opp.timing} &middot; {opp.location}
