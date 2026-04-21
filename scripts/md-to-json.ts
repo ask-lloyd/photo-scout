@@ -9,6 +9,7 @@ const OUTPUT_DIR = path.join(process.cwd(), "public", "data");
 const CATEGORIES = [
   "cameras",
   "lenses",
+  "filters",
   "spots",
   "shooting-guides",
   "settings-rules",

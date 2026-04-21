@@ -34,6 +34,20 @@ export interface Lens {
   body_html?: string;
 }
 
+// ─── Filter (CPL, ND, etc.) ───
+export interface Filter {
+  id: string;
+  make: string;
+  model: string;
+  type: "cpl" | "nd" | "variable_nd" | "gnd" | "uv" | "diffusion" | "mist";
+  filter_size_mm: number;
+  nd_stops?: number;
+  nd_stops_min?: number;
+  nd_stops_max?: number;
+  tags: string[];
+  body_html?: string;
+}
+
 // ─── Spot ───
 export interface Spot {
   id: string;
@@ -124,6 +138,7 @@ export interface SettingsRecommendation {
 export interface GearProfile {
   camera: Camera | null;
   lenses: Lens[];
+  filters: Filter[];
   hasTripod: boolean;
   shootingStyles: string[];
   primaryStyle?: string;

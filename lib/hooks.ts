@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Camera, Lens, GearProfile, LightConditions, WeatherData, LightWindow } from "./types";
+import type { Camera, Lens, Filter, GearProfile, LightConditions, WeatherData, LightWindow } from "./types";
 
 // ─── Geolocation ───
 export function useGeolocation() {
@@ -89,6 +89,7 @@ export function useGearProfile() {
   const [gear, setGear] = useState<GearProfile>({
     camera: DEFAULT_CAMERA,
     lenses: [DEFAULT_LENS],
+    filters: [],
     hasTripod: false,
     shootingStyles: ["landscape"],
   });
@@ -98,7 +99,10 @@ export function useGearProfile() {
     try {
       const stored = localStorage.getItem(GEAR_KEY);
       if (stored) {
-        setGear(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        // Backfill fields added after earlier saves
+        if (!parsed.filters) parsed.filters = [];
+        setGear(parsed);
       }
     } catch {
       // ignore
@@ -170,4 +174,15 @@ export function useLenses() {
       .catch(() => setLenses([]));
   }, []);
   return lenses;
+}
+
+export function useFilters() {
+  const [filters, setFilters] = useState<Filter[]>([]);
+  useEffect(() => {
+    fetch("/data/filters/index.json")
+      .then((r) => r.json())
+      .then(setFilters)
+      .catch(() => setFilters([]));
+  }, []);
+  return filters;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useGearProfile, useCameras, useLenses } from "@/lib/hooks";
+import { useGearProfile, useCameras, useLenses, useFilters } from "@/lib/hooks";
 import { NavHeader } from "@/components/nav-header";
 import {
   Select,
@@ -49,8 +49,10 @@ function formatSensorSize(s: string) {
 export default function GearPage() {
   const cameras = useCameras();
   const lensDb = useLenses();
+  const filterDb = useFilters();
   const { gear, updateGear, loaded } = useGearProfile();
   const [addingLens, setAddingLens] = useState(false);
+  const [addingFilter, setAddingFilter] = useState(false);
   const [changingCamera, setChangingCamera] = useState(false);
 
   if (!loaded) return null;
@@ -318,6 +320,105 @@ export default function GearPage() {
                         f/{lens.max_aperture}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {/* Filters Card (CPL / ND / etc.) */}
+          <div className="glass rounded-2xl p-6 mb-4">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">Filters</span>
+              <button
+                onClick={() => setAddingFilter(!addingFilter)}
+                className="text-[13px]s text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
+              >
+                + Add Filter
+              </button>
+            </div>
+
+            {(!gear.filters || gear.filters.length === 0) && !addingFilter && (
+              <p className="text-sm text-[var(--neutral-300)] py-4 text-center">
+                No filters added yet. Tap &quot;+ Add Filter&quot; to add a CPL, ND, or variable ND.
+              </p>
+            )}
+
+            <div className="space-y-2">
+              {(gear.filters ?? []).map((f) => {
+                const typeLabel =
+                  f.type === "cpl" ? "Polarizer (CPL)"
+                  : f.type === "variable_nd" ? `Variable ND${f.nd_stops_min && f.nd_stops_max ? ` · ${f.nd_stops_min}-${f.nd_stops_max} stops` : ""}`
+                  : f.type === "nd" ? `ND${f.nd_stops ? ` · ${f.nd_stops} stops` : ""}`
+                  : f.type.toUpperCase();
+                return (
+                  <div
+                    key={f.id}
+                    className="flex items-center justify-between p-3 rounded-lg bg-[#1c1c1c]/50 border border-white/5"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--white)]">
+                        {f.make} {f.model}
+                      </p>
+                      <p className="text-[13px]s text-[var(--neutral-200)]">
+                        {typeLabel} · {f.filter_size_mm}mm thread
+                      </p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        updateGear({
+                          filters: (gear.filters ?? []).filter((x) => x.id !== f.id),
+                        })
+                      }
+                      className="text-neutral-600 hover:text-red-400 transition-colors ml-2 cursor-pointer"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {addingFilter && (
+              <div className="mt-3">
+                <Select
+                  onValueChange={(id) => {
+                    const f = filterDb.find((x) => x.id === id);
+                    if (f && !(gear.filters ?? []).some((x) => x.id === f.id)) {
+                      updateGear({ filters: [...(gear.filters ?? []), f] });
+                    }
+                    setAddingFilter(false);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a filter..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(() => {
+                      const available = filterDb.filter(
+                        (f) => !(gear.filters ?? []).some((x) => x.id === f.id)
+                      );
+                      const byType = available.reduce<Record<string, typeof available>>((acc, f) => {
+                        const key = f.type === "cpl" ? "Polarizers (CPL)"
+                          : f.type === "variable_nd" ? "Variable ND"
+                          : f.type === "nd" ? "Fixed ND"
+                          : f.type.toUpperCase();
+                        (acc[key] = acc[key] || []).push(f);
+                        return acc;
+                      }, {});
+                      return Object.entries(byType).map(([group, items]) => (
+                        <div key={group}>
+                          <div className="px-2 py-1.5 text-[13px]s font-semibold text-[var(--neutral-300)]">
+                            {group}
+                          </div>
+                          {items.map((f) => (
+                            <SelectItem key={f.id} value={f.id}>
+                              {f.make} {f.model} — {f.filter_size_mm}mm
+                            </SelectItem>
+                          ))}
+                        </div>
+                      ));
+                    })()}
                   </SelectContent>
                 </Select>
               </div>
