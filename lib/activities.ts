@@ -38,6 +38,7 @@ export const ACTIVITIES: Record<ActivityId, ActivityMeta> = {
     homePath: "/kitesurf",
     nav: [
       { href: "/kitesurf", label: "Dashboard" },
+      { href: "/kitesurf/spots", label: "Spots" },
       { href: "/kitesurf/opportunities", label: "Sessions" },
       { href: "/kitesurf/gear", label: "Gear" },
     ],

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"tsx scripts/watch-content.ts\" \"next dev --turbopack\"",
-    "prebuild": "tsx scripts/md-to-json.ts",
+    "prebuild": "tsx scripts/md-to-json.ts && tsx scripts/build-kitesurf-gear.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

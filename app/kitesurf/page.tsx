@@ -208,6 +208,54 @@ export default function KitesurfDashboard() {
                     <div className="text-sm mt-1" style={{ color: "var(--neutral-200)", fontFamily: "var(--font-mono)" }}>
                       {wind!.direction_label} · {Math.round(wind!.direction_deg)}°
                     </div>
+                    {wind!.confidence && (
+                      <div className="mt-3 flex items-center gap-2 flex-wrap">
+                        <span
+                          className="px-2 py-0.5 rounded-full text-[11px] font-semibold"
+                          style={{
+                            background:
+                              wind!.confidence === "high"
+                                ? "rgba(34,197,94,0.15)"
+                                : wind!.confidence === "moderate"
+                                ? "rgba(234,179,8,0.15)"
+                                : "rgba(239,68,68,0.15)",
+                            color:
+                              wind!.confidence === "high"
+                                ? "#4ade80"
+                                : wind!.confidence === "moderate"
+                                ? "#facc15"
+                                : "#f87171",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                          }}
+                        >
+                          {wind!.confidence.toUpperCase()} CONFIDENCE
+                        </span>
+                        <span className="text-[11px]" style={{ color: "var(--neutral-300)", fontFamily: "var(--font-mono)" }}>
+                          ± {wind!.spread_knots} kt across {wind!.models?.length ?? 0} models
+                        </span>
+                      </div>
+                    )}
+                    {wind!.models && wind!.models.length > 0 && (
+                      <details className="mt-2">
+                        <summary className="text-[11px] cursor-pointer" style={{ color: "var(--neutral-300)" }}>
+                          View individual models
+                        </summary>
+                        <div className="mt-2 space-y-1">
+                          {wind!.models.map((m) => (
+                            <div
+                              key={m.id}
+                              className="flex justify-between text-[12px] font-mono"
+                              style={{ color: "var(--neutral-200)" }}
+                            >
+                              <span>{m.label}</span>
+                              <span>
+                                {m.speed_knots}kt / G{m.gust_knots}kt · {m.direction_label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+                    )}
                   </div>
                 </div>
               </div>

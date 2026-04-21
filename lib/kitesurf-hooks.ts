@@ -70,9 +70,24 @@ export function useKitesurfGearProfile() {
   return { gear, updateGear, loaded };
 }
 
-// ─── Wind data ───
+// ─── Wind data (multi-model consensus) ───
+export interface WindModelReading {
+  id: string;
+  label: string;
+  speed_knots: number;
+  gust_knots: number;
+  direction_deg: number;
+  direction_label: string;
+}
+
+export interface WindResponse extends WindConditions {
+  confidence: "high" | "moderate" | "low";
+  spread_knots: number;
+  models: WindModelReading[];
+}
+
 export function useWind(lat: number | undefined, lng: number | undefined) {
-  const [wind, setWind] = useState<WindConditions | null>(null);
+  const [wind, setWind] = useState<WindResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchWind = useCallback(async () => {
@@ -81,7 +96,18 @@ export function useWind(lat: number | undefined, lng: number | undefined) {
       const res = await fetch(`/api/wind?lat=${lat}&lng=${lng}`);
       if (!res.ok) throw new Error("Failed to fetch wind");
       const json = await res.json();
-      setWind(json);
+      // API returns { consensus, confidence, spread_knots, models }
+      if (json.consensus) {
+        setWind({
+          ...json.consensus,
+          confidence: json.confidence,
+          spread_knots: json.spread_knots,
+          models: json.models ?? [],
+        });
+      } else {
+        // Backward compat: old flat shape
+        setWind(json);
+      }
     } catch (e) {
       console.error("Wind fetch error:", e);
     } finally {
