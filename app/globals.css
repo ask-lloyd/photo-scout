@@ -199,6 +199,56 @@ html:not(.dark) .glass .text-neutral-500 {
   color: var(--neutral-200) !important;
 }
 
+/* ── Kitesurf / multi-activity surface helpers ──
+   These fix light-theme readability for inline `rgba(255,255,255,…)`
+   surfaces used on kitesurf pages. `.surface-subtle` is a tinted panel;
+   `.surface-subtle-stronger` is used for nested chips/inputs. */
+.surface-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.surface-subtle-stronger {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+html:not(.dark) .surface-subtle {
+  background: var(--dark-700) !important;
+  border: 1px solid var(--dark-600) !important;
+  color: var(--white);
+}
+html:not(.dark) .surface-subtle-stronger {
+  background: var(--dark-600) !important;
+  border: 1px solid var(--dark-500) !important;
+  color: var(--white);
+}
+/* Map / modal overlays need more contrast backdrop in light mode */
+html:not(.dark) .overlay-panel {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: var(--white) !important;
+  border: 1px solid var(--dark-600) !important;
+  backdrop-filter: blur(10px);
+}
+html:not(.dark) .overlay-panel-strong {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: var(--white) !important;
+  border: 1px solid var(--dark-500) !important;
+  backdrop-filter: blur(12px);
+}
+/* Dialog/modal dim backdrop — keep visible in both themes */
+html:not(.dark) .modal-backdrop {
+  background: rgba(15, 23, 42, 0.55) !important;
+}
+
+/* Score / verdict colors have poor contrast on white — bump for WCAG. */
+html:not(.dark) .verdict-epic,
+html:not(.dark) [data-verdict="epic"] { color: #15803d !important; }
+html:not(.dark) .verdict-good,
+html:not(.dark) [data-verdict="good"] { color: #0e7490 !important; }
+html:not(.dark) .verdict-marginal,
+html:not(.dark) [data-verdict="marginal"] { color: #a16207 !important; }
+html:not(.dark) .verdict-skip,
+html:not(.dark) [data-verdict="skip"] { color: #b91c1c !important; }
+
 /* ── Tailwind theme (references runtime vars) ── */
 @theme inline {
   --font-sans: var(--font-body);

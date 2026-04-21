@@ -21,11 +21,11 @@ export function ActivityPickerModal() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 modal-backdrop"
       style={{ background: "rgba(0,0,0,0.78)", backdropFilter: "blur(8px)" }}
     >
       <div
-        className="glass rounded-3xl p-8 max-w-xl w-full"
+        className="glass rounded-3xl p-8 max-w-xl w-full overlay-panel-strong"
         style={{ border: "1px solid rgba(255,255,255,0.08)" }}
       >
         <div className="text-center mb-6">
@@ -57,7 +57,7 @@ export function ActivityPickerModal() {
               onClick={() => choose(a.id)}
               onMouseEnter={() => setHovering(a.id)}
               onMouseLeave={() => setHovering(null)}
-              className="text-left rounded-2xl p-5 transition-all cursor-pointer"
+              className="text-left rounded-2xl p-5 transition-all cursor-pointer surface-subtle"
               style={{
                 background: hovering === a.id ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
                 border:

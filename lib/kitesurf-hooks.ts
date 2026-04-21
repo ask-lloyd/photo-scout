@@ -188,23 +188,71 @@ export function usePlanningLocation() {
   return { location: loc, setLocation, loaded };
 }
 
-// ─── Geocoding via Open-Meteo (free, no key) ───
+// ─── Geocoding (Open-Meteo primary, OSM Nominatim fallback for lakes/regions/comma queries) ───
 export async function geocodeSearch(q: string): Promise<PlanningLocation[]> {
-  if (!q.trim()) return [];
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-    q
-  )}&count=5&language=en&format=json`;
+  const query = q.trim();
+  if (!query) return [];
+
+  const byKey = new Map<string, PlanningLocation>();
+  const add = (loc: PlanningLocation) => {
+    const key = `${loc.lat.toFixed(3)},${loc.lng.toFixed(3)}`;
+    if (!byKey.has(key)) byKey.set(key, loc);
+  };
+
+  // 1. Try Open-Meteo with the raw query and (if it has a comma) the part before the comma.
+  const omQueries = [query];
+  if (query.includes(",")) omQueries.push(query.split(",")[0].trim());
+
+  await Promise.all(
+    omQueries.map(async (term) => {
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+          term
+        )}&count=5&language=en&format=json`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const json = await res.json();
+        for (const r of json.results ?? []) {
+          add({
+            name: [r.name, r.admin1, r.country].filter(Boolean).join(", "),
+            lat: r.latitude,
+            lng: r.longitude,
+          });
+        }
+      } catch {
+        // ignore
+      }
+    })
+  );
+
+  // 2. Always hit Nominatim too — it handles lakes, regions, landmarks, comma queries.
+  //    Free, no API key, but requires a User-Agent (browsers add one automatically).
   try {
-    const res = await fetch(url);
-    if (!res.ok) return [];
-    const json = await res.json();
-    if (!json.results) return [];
-    return json.results.map((r: { name: string; admin1?: string; country?: string; latitude: number; longitude: number }) => ({
-      name: [r.name, r.admin1, r.country].filter(Boolean).join(", "),
-      lat: r.latitude,
-      lng: r.longitude,
-    }));
+    const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      query
+    )}&format=json&limit=8&accept-language=en`;
+    const res = await fetch(nominatimUrl);
+    if (res.ok) {
+      const rows: Array<{
+        display_name: string;
+        lat: string;
+        lon: string;
+        type?: string;
+        class?: string;
+      }> = await res.json();
+      for (const r of rows) {
+        const lat = parseFloat(r.lat);
+        const lng = parseFloat(r.lon);
+        if (!isFinite(lat) || !isFinite(lng)) continue;
+        // Shorten display name: take first 3 comma-parts
+        const short = r.display_name.split(",").slice(0, 3).join(", ").trim();
+        add({ name: short || r.display_name, lat, lng });
+      }
+    }
   } catch {
-    return [];
+    // ignore
   }
+
+  // Sort so Open-Meteo hits (admin areas) stay first; Nominatim fills the rest
+  return Array.from(byKey.values()).slice(0, 8);
 }

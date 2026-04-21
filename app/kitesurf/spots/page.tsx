@@ -194,7 +194,7 @@ export default function KitesurfSpotsPage() {
           {/* Top overlay: header + radius */}
           <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3 pointer-events-none">
             <div
-              className="rounded-2xl px-4 py-3 pointer-events-auto"
+              className="rounded-2xl px-4 py-3 pointer-events-auto overlay-panel"
               style={{
                 background: "rgba(0,0,0,0.55)",
                 backdropFilter: "blur(10px)",
@@ -232,7 +232,7 @@ export default function KitesurfSpotsPage() {
 
             {/* Legend */}
             <div
-              className="rounded-2xl px-3 py-2 pointer-events-auto hidden sm:block"
+              className="rounded-2xl px-3 py-2 pointer-events-auto hidden sm:block overlay-panel"
               style={{
                 background: "rgba(0,0,0,0.55)",
                 backdropFilter: "blur(10px)",
@@ -254,7 +254,7 @@ export default function KitesurfSpotsPage() {
           {/* Bottom flyout: selected spot details */}
           {selected && (
             <div
-              className="absolute left-4 right-4 rounded-2xl p-5 pointer-events-auto"
+              className="absolute left-4 right-4 rounded-2xl p-5 pointer-events-auto overlay-panel-strong"
               style={{
                 bottom: 16,
                 maxWidth: 480,
@@ -291,7 +291,7 @@ export default function KitesurfSpotsPage() {
 
               {spotConditions[selected.id] ? (
                 <div className="grid grid-cols-2 gap-3 mt-3">
-                  <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="rounded-lg p-3 surface-subtle">
                     <div className="text-[10px] uppercase tracking-wider" style={{ color: "var(--neutral-300)" }}>
                       Wind Now
                     </div>
@@ -302,7 +302,7 @@ export default function KitesurfSpotsPage() {
                       Gust {Math.round(spotConditions[selected.id].wind.gust_knots)} · {spotConditions[selected.id].wind.direction_label}
                     </div>
                   </div>
-                  <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="rounded-lg p-3 surface-subtle">
                     <div className="text-[10px] uppercase tracking-wider" style={{ color: "var(--neutral-300)" }}>
                       Session Score
                     </div>
