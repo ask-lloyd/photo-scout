@@ -135,10 +135,14 @@ export interface SettingsRecommendation {
   tips: string[];
 }
 
+export interface UserFilter extends Filter {
+  attachedLensId?: string | null; // which lens this filter is mounted on
+}
+
 export interface GearProfile {
   camera: Camera | null;
   lenses: Lens[];
-  filters: Filter[];
+  filters: UserFilter[];
   hasTripod: boolean;
   shootingStyles: string[];
   primaryStyle?: string;

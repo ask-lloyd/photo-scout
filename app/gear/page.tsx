@@ -351,29 +351,87 @@ export default function GearPage() {
                   : f.type === "variable_nd" ? `Variable ND${f.nd_stops_min && f.nd_stops_max ? ` · ${f.nd_stops_min}-${f.nd_stops_max} stops` : ""}`
                   : f.type === "nd" ? `ND${f.nd_stops ? ` · ${f.nd_stops} stops` : ""}`
                   : f.type.toUpperCase();
+                // Compatible lenses = same filter thread size as this filter
+                const compatibleForThisFilter = gear.lenses.filter(
+                  (l) => l.filter_size_mm === f.filter_size_mm
+                );
+                const attachedLens = gear.lenses.find((l) => l.id === f.attachedLensId);
                 return (
                   <div
                     key={f.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-[#1c1c1c]/50 border border-white/5"
+                    className="p-3 rounded-lg bg-[#1c1c1c]/50 border border-white/5"
                   >
-                    <div>
-                      <p className="text-sm font-semibold text-[var(--white)]">
-                        {f.make} {f.model}
-                      </p>
-                      <p className="text-[13px]s text-[var(--neutral-200)]">
-                        {typeLabel} · {f.filter_size_mm}mm thread
-                      </p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-[var(--white)]">
+                          {f.make} {f.model}
+                        </p>
+                        <p className="text-[13px]s text-[var(--neutral-200)]">
+                          {typeLabel} · {f.filter_size_mm}mm thread
+                        </p>
+                      </div>
+                      <button
+                        onClick={() =>
+                          updateGear({
+                            filters: (gear.filters ?? []).filter((x) => x.id !== f.id),
+                          })
+                        }
+                        className="text-neutral-600 hover:text-red-400 transition-colors ml-2 cursor-pointer"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </button>
                     </div>
-                    <button
-                      onClick={() =>
-                        updateGear({
-                          filters: (gear.filters ?? []).filter((x) => x.id !== f.id),
-                        })
-                      }
-                      className="text-neutral-600 hover:text-red-400 transition-colors ml-2 cursor-pointer"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                    </button>
+
+                    {/* Attached-to-lens selector */}
+                    <div className="mt-2 flex items-center gap-2">
+                      <label className="text-[13px]s text-[var(--neutral-300)] whitespace-nowrap">
+                        Attached to:
+                      </label>
+                      <Select
+                        value={f.attachedLensId || "none"}
+                        onValueChange={(val: string | null) => {
+                          if (!val) return;
+                          const newAttached = val === "none" ? null : val;
+                          updateGear({
+                            filters: (gear.filters ?? []).map((x) =>
+                              x.id === f.id ? { ...x, attachedLensId: newAttached } : x
+                            ),
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-full h-8 text-[13px]">
+                          <SelectValue placeholder="Not attached" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">Not attached / in bag</SelectItem>
+                          {gear.lenses.map((l) => {
+                            const focalStr =
+                              l.focal_length_min === l.focal_length_max
+                                ? `${l.focal_length_min}mm`
+                                : `${l.focal_length_min}-${l.focal_length_max}mm`;
+                            const fits = l.filter_size_mm === f.filter_size_mm;
+                            return (
+                              <SelectItem key={l.id} value={l.id}>
+                                {l.make} {focalStr} f/{l.max_aperture}
+                                {l.filter_size_mm
+                                  ? ` (${l.filter_size_mm}mm${fits ? "" : " — step-up needed"})`
+                                  : ""}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {attachedLens && attachedLens.filter_size_mm !== f.filter_size_mm && (
+                      <p className="mt-1 text-[13px] text-yellow-400">
+                        ⚠ Thread mismatch: lens is {attachedLens.filter_size_mm}mm, filter is {f.filter_size_mm}mm. You&apos;ll need a step-up ring.
+                      </p>
+                    )}
+                    {gear.lenses.length > 0 && compatibleForThisFilter.length === 0 && !attachedLens && (
+                      <p className="mt-1 text-[13px] text-[var(--neutral-300)]">
+                        No lenses with a matching {f.filter_size_mm}mm thread — you&apos;ll need a step-up ring.
+                      </p>
+                    )}
                   </div>
                 );
               })}
