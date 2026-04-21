@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Syne, Figtree, IBM_Plex_Mono } from "next/font/google";
 import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { ActivityProvider } from "@/lib/activity-context";
+import { ActivityPickerModal } from "@/components/activity-picker-modal";
 import "./globals.css";
 
 const syne = Syne({
@@ -23,8 +25,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PhotoScout — Photography Conditions Intelligence",
-  description: "Know exactly when and how to shoot. Real-time light quality scoring, camera settings recommendations, and opportunity alerts.",
+  title: "ConditionsScout — Know when the conditions are right",
+  description: "Real-time intelligence for photographers, kitesurfers, and more. Weather, wind, light, tides, and gear advice tailored to your activity.",
   icons: {
     icon: [
       { url: "/icons/favicon-32.svg", sizes: "32x32", type: "image/svg+xml" },
@@ -58,7 +60,12 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
-          <LocaleProvider>{children}</LocaleProvider>
+          <LocaleProvider>
+            <ActivityProvider>
+              {children}
+              <ActivityPickerModal />
+            </ActivityProvider>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>
