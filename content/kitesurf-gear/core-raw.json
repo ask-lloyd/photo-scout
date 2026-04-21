@@ -1,0 +1,170 @@
+[
+  {
+    "id": "core-xr-pro-2",
+    "brand": "Core",
+    "model": "XR Pro 2",
+    "type": "kite",
+    "sizes_m2": [7, 9, 11, 13, 15],
+    "discipline": ["big-air", "freeride"],
+    "wind_range_knots": null,
+    "year": 2025,
+    "url": "https://ridecore.com/us/kite/kites/xr-pro-2",
+    "summary": "The ultimate Big Air weapon with Aluula Airframe & CoreTex 2. Brutal lift, endless hangtime, increased agility and the XR's unique riding comfort."
+  },
+  {
+    "id": "core-xr8",
+    "brand": "Core",
+    "model": "XR8",
+    "type": "kite",
+    "sizes_m2": [5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19],
+    "discipline": ["big-air", "freeride", "freestyle", "wave"],
+    "wind_range_knots": null,
+    "year": 2024,
+    "url": "https://ridecore.com/us/kite/kites/xr8",
+    "summary": "The XR8 is the pinnacle when it comes to big air and unlocks unparalleled performance paired with high ride comfort."
+  },
+  {
+    "id": "core-nexus-4",
+    "brand": "Core",
+    "model": "Nexus 4",
+    "type": "kite",
+    "sizes_m2": [6, 7, 8, 9, 10, 11, 12, 13, 14],
+    "discipline": ["freeride", "wave", "freestyle", "foil"],
+    "wind_range_knots": null,
+    "year": 2025,
+    "url": "https://ridecore.com/us/kite/kites/nexus-4",
+    "summary": "The Nexus 4 is designed to meet all kitesurfing needs - whether on a twintip, foil or surfboard. An all-round performer."
+  },
+  {
+    "id": "core-section-5",
+    "brand": "Core",
+    "model": "Section 5",
+    "type": "kite",
+    "sizes_m2": [5, 6, 7, 8, 9, 10, 11, 12],
+    "discipline": ["wave"],
+    "wind_range_knots": null,
+    "year": 2024,
+    "url": "https://ridecore.com/us/kite/kites/section-5",
+    "summary": "Benefit from the most direct steering and full control and own every wave with the Section 5 – now with a world-class certificate."
+  },
+  {
+    "id": "core-gts6",
+    "brand": "Core",
+    "model": "GTS6",
+    "type": "kite",
+    "sizes_m2": [6, 7, 8, 9, 10, 11, 12, 13, 15, 17],
+    "discipline": ["freestyle", "wave", "freeride"],
+    "wind_range_knots": null,
+    "year": 2024,
+    "url": "https://ridecore.com/us/kite/kites/gts6",
+    "summary": "Reward yourself with mind-blowing megaloop power and deutscher precision. The 6th Gen Freestyle Icon is here."
+  },
+  {
+    "id": "core-pace",
+    "brand": "Core",
+    "model": "Pace",
+    "type": "kite",
+    "sizes_m2": [6, 7, 8, 9, 10, 11, 12, 13, 14],
+    "discipline": ["freeride", "big-air"],
+    "wind_range_knots": null,
+    "year": 2025,
+    "url": "https://ridecore.com/us/kite/kites/pace",
+    "summary": "The All-rounder with big air attitude. Engineered for the full range of kiteboarding, designed for riders of all levels, and built for unstoppable progression."
+  },
+  {
+    "id": "core-pace-pro",
+    "brand": "Core",
+    "model": "Pace Pro",
+    "type": "kite",
+    "sizes_m2": [7, 9, 11, 13],
+    "discipline": ["big-air", "freestyle"],
+    "wind_range_knots": null,
+    "year": 2025,
+    "url": "https://ridecore.com/us/kite/kites/pace-pro",
+    "summary": "CORE's first fixed-bridle kite opens up completely new possibilities with uniquely sporty riding characteristics at Big Air and beyond."
+  },
+  {
+    "id": "core-xlite-2",
+    "brand": "Core",
+    "model": "XLITE 2",
+    "type": "kite",
+    "sizes_m2": [7, 9, 11, 13, 15, 17, 19],
+    "discipline": ["foil", "freeride"],
+    "wind_range_knots": null,
+    "year": 2024,
+    "url": "https://ridecore.com/us/kite/kites/xlite-2",
+    "summary": "Imagine effortless and precise riding in even the lightest of winds with our fully optimized foiling kite."
+  },
+  {
+    "id": "core-impact-2",
+    "brand": "Core",
+    "model": "Impact 2",
+    "type": "kite",
+    "sizes_m2": [7, 9, 11, 13],
+    "discipline": ["freestyle"],
+    "wind_range_knots": null,
+    "year": 2024,
+    "url": "https://ridecore.com/us/kite/kites/impact-2",
+    "summary": "A Modern Original. Proven. Powerful. And 100% C. Experience the ultimate unhooked machine. A legit wakestyle beast. A pure C with five lines."
+  },
+  {
+    "id": "core-era",
+    "brand": "Core",
+    "model": "Era",
+    "type": "twintip",
+    "sizes_cm": ["138x41", "141x42", "144x43"],
+    "discipline": ["big-air", "freeride"],
+    "url": "https://ridecore.com/us/kite/boards/twintips/era",
+    "summary": "CORE's lightweight big-air twintip built for maximum pop, hangtime and comfort on landings."
+  },
+  {
+    "id": "core-fusion-7",
+    "brand": "Core",
+    "model": "Fusion 7",
+    "type": "twintip",
+    "sizes_cm": ["136x41.5", "139x42.5", "142x43.5", "145x44"],
+    "discipline": ["freestyle", "big-air"],
+    "url": "https://ridecore.com/us/kite/boards/twintips/fusion-7",
+    "summary": "CORE's legendary high-performance freestyle and big-air twintip, now in its 7th generation with refined flex and Cartan Carbon construction."
+  },
+  {
+    "id": "core-choice-6",
+    "brand": "Core",
+    "model": "Choice 6",
+    "type": "twintip",
+    "sizes_cm": ["138x41", "141x42", "144x43"],
+    "discipline": ["freeride", "freestyle"],
+    "url": "https://ridecore.com/us/kite/boards/twintips/choice-6",
+    "summary": "The Choice 6 delivers upwind performance, comfort and pop for riders progressing from freeride into freestyle."
+  },
+  {
+    "id": "core-bolt-4",
+    "brand": "Core",
+    "model": "Bolt 4",
+    "type": "twintip",
+    "sizes_cm": ["139x42", "143x43"],
+    "discipline": ["freeride"],
+    "url": "https://ridecore.com/us/kite/boards/twintips/bolt-4",
+    "summary": "A comfortable, easy-to-ride freeride twintip with smooth flex and forgiving edges for all-conditions fun."
+  },
+  {
+    "id": "core-ripper-5",
+    "brand": "Core",
+    "model": "Ripper 5",
+    "type": "directional",
+    "sizes_cm": ["5'2\"", "5'6\"", "5'10\""],
+    "discipline": ["wave"],
+    "url": "https://ridecore.com/us/kite/boards/surfboards/ripper-5",
+    "summary": "High-performance kite surfboard built for strapless freestyle and wave riding with a responsive shape and durable construction."
+  },
+  {
+    "id": "core-green-room-3",
+    "brand": "Core",
+    "model": "Green Room 3",
+    "type": "directional",
+    "sizes_cm": ["5'8\"", "5'10\"", "6'0\"", "6'2\""],
+    "discipline": ["wave"],
+    "url": "https://ridecore.com/us/kite/boards/surfboards/green-room-3",
+    "summary": "A dedicated wave kiteboard designed for pure surf performance, drawn-out carves and down-the-line riding."
+  }
+]

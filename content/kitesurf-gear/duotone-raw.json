@@ -1,0 +1,166 @@
+[
+  {
+    "id": "duotone-evo",
+    "brand": "Duotone",
+    "model": "Evo",
+    "type": "kite",
+    "sizes_m2": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    "discipline": ["freeride", "allround", "big air", "foil"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "All-round 3-strut Delta-Bow kite that is the best-selling Duotone kite. Balanced freeride performance with good hangtime, easy relaunch and wide range of use across disciplines. Also available in Evo SLS and Evo D/LAB constructions."
+  },
+  {
+    "id": "duotone-neo",
+    "brand": "Duotone",
+    "model": "Neo",
+    "type": "kite",
+    "sizes_m2": [5, 6, 7, 8, 9, 10, 11, 12],
+    "discipline": ["wave", "strapless freestyle"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "Dedicated wave/surf kite with instant drift, quick turning and reliable depower. Available in Neo, Neo SLS and flagship Neo D/LAB (Aluula) editions used by the Duotone wave team."
+  },
+  {
+    "id": "duotone-rebel",
+    "brand": "Duotone",
+    "model": "Rebel",
+    "type": "kite",
+    "sizes_m2": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17],
+    "discipline": ["big air", "freeride", "hangtime"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "Five-strut big-air/hangtime machine. Massive lift and long floaty boosts, predictable bar feel. Available in Rebel, Rebel SLS and Rebel D/LAB (the ultimate big-air kite built with Aluula D/TX and Trinity TX materials)."
+  },
+  {
+    "id": "duotone-dice",
+    "brand": "Duotone",
+    "model": "Dice",
+    "type": "kite",
+    "sizes_m2": [6, 7, 8, 9, 10, 11, 12, 13, 14],
+    "discipline": ["freestyle", "big air", "kiteloop"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "Crossover freestyle/big-air kite favored for powered kiteloops and all-round progression riding. Available in Dice and Dice SLS; loved for its direct bar feel and aggressive turning."
+  },
+  {
+    "id": "duotone-vegas",
+    "brand": "Duotone",
+    "model": "Vegas",
+    "type": "kite",
+    "sizes_m2": [7, 8, 9, 10, 11, 12],
+    "discipline": ["freestyle", "unhooked", "wakestyle"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "C-shape freestyle/wakestyle kite built for unhooked handle-passes and powered pop. The choice of Duotone's freestyle athletes; currently offered as Vegas Concept Blue."
+  },
+  {
+    "id": "duotone-juice",
+    "brand": "Duotone",
+    "model": "Juice",
+    "type": "kite",
+    "sizes_m2": [13, 15, 17, 19],
+    "discipline": ["light wind", "freeride", "foil"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "Dedicated light-wind kite with huge range and effortless low-end power. Great for foiling and big-size twintip riding in marginal wind. Also offered as the Aluula-built Juice D/LAB."
+  },
+  {
+    "id": "duotone-mono",
+    "brand": "Duotone",
+    "model": "Mono",
+    "type": "kite",
+    "sizes_m2": [6, 8, 10, 12],
+    "discipline": ["beginner", "school"],
+    "wind_range_knots": null,
+    "year": 2026,
+    "url": "https://www.duotonesports.com/en/kiteboarding/kites",
+    "summary": "Single-strut beginner and school kite. Easy water relaunch, forgiving power delivery and stable drift for learning the basics safely."
+  },
+  {
+    "id": "duotone-select",
+    "brand": "Duotone",
+    "model": "Select",
+    "type": "twintip",
+    "sizes_cm": ["138", "140", "142", "144", "146"],
+    "discipline": ["freeride", "big air", "allround"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/twintips",
+    "summary": "High-performance freeride/big-air twintip with comfortable flex, early planing and confident edge hold. Available in Select, Select SLS and Select Concept Blue constructions."
+  },
+  {
+    "id": "duotone-jaime",
+    "brand": "Duotone",
+    "model": "Jaime",
+    "type": "twintip",
+    "sizes_cm": ["134", "136", "138", "140", "142"],
+    "discipline": ["freeride", "freestyle"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/twintips",
+    "summary": "The iconic Duotone freeride twintip offering a smooth, forgiving ride and all-round freestyle capability. Offered as Jaime SLS and Jaime Concept Blue."
+  },
+  {
+    "id": "duotone-soleil",
+    "brand": "Duotone",
+    "model": "Soleil",
+    "type": "twintip",
+    "sizes_cm": ["130", "134", "138", "140"],
+    "discipline": ["freeride", "womens"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/twintips",
+    "summary": "Women's-specific freeride twintip with softer flex and lower stance width for a smoother, easier ride. Available as Soleil SLS and Soleil Concept Blue."
+  },
+  {
+    "id": "duotone-gambler",
+    "brand": "Duotone",
+    "model": "Gambler",
+    "type": "twintip",
+    "sizes_cm": ["135", "138", "141", "143"],
+    "discipline": ["freestyle", "wakestyle", "park"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/twintips",
+    "summary": "Freestyle/wakestyle twintip with stiff flex and punchy pop for boots and handle-pass riding."
+  },
+  {
+    "id": "duotone-team-series",
+    "brand": "Duotone",
+    "model": "Team Series",
+    "type": "twintip",
+    "sizes_cm": ["136", "138", "140", "142"],
+    "discipline": ["freestyle", "big air", "competition"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/twintips",
+    "summary": "Pro-level competition twintip developed with the Duotone team riders for maximum pop, grip and high-end freestyle/big-air performance."
+  },
+  {
+    "id": "duotone-whip",
+    "brand": "Duotone",
+    "model": "Whip",
+    "type": "directional",
+    "sizes_cm": ["5'2\"", "5'6\"", "5'10\"", "6'0\"", "6'2\""],
+    "discipline": ["wave", "strapless freestyle"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/surfboards",
+    "summary": "All-round kite surfboard for waves and strapless freestyle. Available in the lightweight Whip SLS and top-tier Whip D/LAB constructions."
+  },
+  {
+    "id": "duotone-pro-wam",
+    "brand": "Duotone",
+    "model": "Pro Wam",
+    "type": "directional",
+    "sizes_cm": ["5'6\"", "5'8\"", "5'10\"", "6'0\""],
+    "discipline": ["wave"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards/surfboards",
+    "summary": "Team-rider wave-focused directional with a performance shortboard shape for turns and vertical wave riding."
+  },
+  {
+    "id": "duotone-pace",
+    "brand": "Duotone",
+    "model": "Pace",
+    "type": "foilboard",
+    "sizes_cm": null,
+    "discipline": ["foil", "freeride"],
+    "url": "https://www.duotonesports.com/en/kiteboarding/boards",
+    "summary": "Compact freeride kite-foilboard designed to pair with Duotone's Spirit/Soar foils. Stable take-off platform for progressing foilers."
+  }
+]
