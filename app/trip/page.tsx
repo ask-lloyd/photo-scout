@@ -282,11 +282,18 @@ function TripPageInner() {
     [trip, coords, spotById]
   );
 
-  // Available spots to add (not already in trip)
+  // Available spots to add (not already in trip), sorted by proximity to user
   const inTripIds = new Set(trip.stops.map((s) => s.spotId));
-  const availableSpots = spots
-    .filter((s) => !inTripIds.has(s.id))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const availableSpots = useMemo(() => {
+    const list = spots.filter((s) => !inTripIds.has(s.id));
+    if (!coords) return list.sort((a, b) => a.name.localeCompare(b.name));
+    // Sort by squared euclidean distance from current coords (good enough for ranking)
+    return list.sort((a, b) => {
+      const da = (a.latitude - coords.lat) ** 2 + (a.longitude - coords.lng) ** 2;
+      const db = (b.latitude - coords.lat) ** 2 + (b.longitude - coords.lng) ** 2;
+      return da - db;
+    });
+  }, [spots, inTripIds, coords]);
 
   return (
     <>
@@ -409,7 +416,7 @@ function TripPageInner() {
 
           {/* Add spot picker */}
           {availableSpots.length > 0 && (
-            <AddStopPicker spots={availableSpots} onPick={addStop} />
+            <AddStopPicker spots={availableSpots} coords={coords} onPick={addStop} />
           )}
 
           {/* Summary */}
@@ -629,19 +636,19 @@ function StopCard({
               href={googleMapsDirectionsUrl(legOrigin, { lat: spot.latitude, lng: spot.longitude, name: spot.name })}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 active:bg-orange-500/30 cursor-pointer text-[11px] min-h-[32px]"
               title="Open driving directions in Google Maps"
             >
-              <Navigation size={11} /> Directions
+              <Navigation size={11} /> Google
             </a>
             <a
               href={appleMapsDirectionsUrl(legOrigin, { lat: spot.latitude, lng: spot.longitude })}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 text-[var(--neutral-200)] hover:bg-white/10 cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-white/5 text-[var(--neutral-200)] hover:bg-white/10 active:bg-white/15 cursor-pointer text-[11px] min-h-[32px]"
               title="Open in Apple Maps"
             >
-               Apple
+              <Navigation size={11} /> Apple
             </a>
           </div>
         </div>
@@ -706,25 +713,28 @@ function StopCard({
               <button
                 onClick={onMoveUp}
                 disabled={isFirst}
-                className="w-7 h-7 rounded-lg bg-[#262626] hover:bg-[#333] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 rounded-lg bg-[#262626] hover:bg-[#333] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
                 title="Move up"
+                aria-label="Move stop up"
               >
-                <ArrowUp size={12} />
+                <ArrowUp size={14} />
               </button>
               <button
                 onClick={onMoveDown}
                 disabled={isLast}
-                className="w-7 h-7 rounded-lg bg-[#262626] hover:bg-[#333] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 rounded-lg bg-[#262626] hover:bg-[#333] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
                 title="Move down"
+                aria-label="Move stop down"
               >
-                <ArrowDown size={12} />
+                <ArrowDown size={14} />
               </button>
               <button
                 onClick={onRemove}
-                className="w-7 h-7 rounded-lg bg-[#262626] hover:bg-red-500/20 hover:text-red-400 flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 rounded-lg bg-[#262626] hover:bg-red-500/20 hover:text-red-400 flex items-center justify-center cursor-pointer"
                 title="Remove"
+                aria-label="Remove stop"
               >
-                <X size={12} />
+                <X size={14} />
               </button>
             </div>
           </div>
@@ -902,22 +912,87 @@ function PresetPicker({
 
 // ─── Add stop picker ──────────────────────────────────────────────────────
 
-function AddStopPicker({ spots, onPick }: { spots: Spot[]; onPick: (id: string) => void }) {
+// Roughly classify by country/region using lat/lng so the picker can group
+// "near you" vs "far". Cheap rectangular bounding boxes are fine here.
+function regionFor(s: Spot): { code: string; label: string } {
+  if (s.latitude >= 36 && s.latitude <= 47.5 && s.longitude >= 6 && s.longitude <= 19) {
+    return { code: "it", label: "Italy" };
+  }
+  if (s.latitude >= 24 && s.latitude <= 50 && s.longitude >= -125 && s.longitude <= -66) {
+    return { code: "us", label: "United States" };
+  }
+  return { code: "other", label: "Other" };
+}
+
+function haversineKmRough(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const R = 6371;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+  const lat1 = (a.lat * Math.PI) / 180;
+  const lat2 = (b.lat * Math.PI) / 180;
+  const x =
+    Math.sin(dLat / 2) ** 2 +
+    Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+
+const NEAR_KM = 500; // anything within 500 km is "nearby" for a day-trip context
+
+function AddStopPicker({
+  spots,
+  coords,
+  onPick,
+}: {
+  spots: Spot[];
+  coords: { lat: number; lng: number } | null;
+  onPick: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [showFar, setShowFar] = useState(false);
+
+  // Annotate spots with distance + region
+  const annotated = useMemo(() => {
+    return spots.map((s) => {
+      const distanceKm = coords
+        ? haversineKmRough(coords, { lat: s.latitude, lng: s.longitude })
+        : null;
+      return { spot: s, distanceKm, region: regionFor(s) };
+    });
+  }, [spots, coords]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return spots;
-    return spots.filter((s) => s.name.toLowerCase().includes(q));
-  }, [query, spots]);
+    if (!q) return annotated;
+    return annotated.filter(
+      (a) =>
+        a.spot.name.toLowerCase().includes(q) ||
+        a.region.label.toLowerCase().includes(q) ||
+        a.spot.tags?.some((t) => t.toLowerCase().includes(q))
+    );
+  }, [query, annotated]);
+
+  // Split into nearby vs far when we have coords and no active query
+  const { nearby, far } = useMemo(() => {
+    if (!coords || query.trim()) {
+      return { nearby: filtered, far: [] };
+    }
+    const n: typeof filtered = [];
+    const f: typeof filtered = [];
+    filtered.forEach((a) => {
+      if (a.distanceKm != null && a.distanceKm <= NEAR_KM) n.push(a);
+      else f.push(a);
+    });
+    return { nearby: n, far: f };
+  }, [filtered, coords, query]);
 
   if (!open) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="glass rounded-xl px-4 py-3 w-full text-sm text-[var(--neutral-200)] hover:text-[var(--white)] border border-dashed border-neutral-600 transition-colors cursor-pointer flex items-center justify-center gap-2"
+        className="glass rounded-xl px-4 py-3 w-full text-sm text-[var(--neutral-200)] hover:text-[var(--white)] border border-dashed border-neutral-600 transition-colors cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
       >
-        <Plus size={14} /> Add a spot
+        <Plus size={16} /> Add a spot
       </button>
     );
   }
@@ -928,35 +1003,110 @@ function AddStopPicker({ spots, onPick }: { spots: Spot[]; onPick: (id: string) 
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search spots…"
-          className="flex-1 glass rounded-lg px-3 py-2 text-sm bg-transparent border border-neutral-700 focus:border-orange-500/50 outline-none"
+          placeholder="Search spots, regions, tags…"
+          className="flex-1 glass rounded-lg px-3 py-2.5 text-base bg-transparent border border-neutral-700 focus:border-orange-500/50 outline-none"
+          inputMode="search"
         />
         <button
           onClick={() => setOpen(false)}
-          className="px-3 py-2 rounded-lg text-xs text-[var(--neutral-300)] hover:text-[var(--neutral-200)] cursor-pointer"
+          className="px-3 py-2.5 rounded-lg text-sm text-[var(--neutral-300)] hover:text-[var(--neutral-200)] cursor-pointer"
         >
           Cancel
         </button>
       </div>
-      <div className="max-h-64 overflow-y-auto space-y-1">
+      <div className="max-h-[60vh] sm:max-h-72 overflow-y-auto space-y-1">
         {filtered.length === 0 && (
           <p className="text-xs text-[var(--neutral-300)] p-2">No matches.</p>
         )}
-        {filtered.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => {
-              onPick(s.id);
-              setQuery("");
-              setOpen(false);
-            }}
-            className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 dark:hover:bg-white/5 text-xs sm:text-sm text-[var(--neutral-200)] cursor-pointer"
-          >
-            {s.name}
-          </button>
-        ))}
+
+        {/* Nearby section */}
+        {nearby.length > 0 && (
+          <>
+            {coords && !query.trim() && (
+              <div className="px-2 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-orange-400/80 font-semibold">
+                Near you
+              </div>
+            )}
+            {nearby.map(({ spot: s, distanceKm, region }) => (
+              <SpotRow
+                key={s.id}
+                spot={s}
+                distanceKm={distanceKm}
+                regionLabel={region.label}
+                onPick={() => {
+                  onPick(s.id);
+                  setQuery("");
+                  setOpen(false);
+                }}
+              />
+            ))}
+          </>
+        )}
+
+        {/* Far section (collapsed by default) */}
+        {far.length > 0 && (
+          <>
+            <button
+              onClick={() => setShowFar((v) => !v)}
+              className="w-full text-left px-2 pt-2 pb-0.5 text-[10px] uppercase tracking-wider text-[var(--neutral-400)] font-semibold flex items-center gap-1 hover:text-[var(--neutral-200)] cursor-pointer"
+            >
+              {showFar ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              Other regions ({far.length})
+            </button>
+            {showFar &&
+              far.map(({ spot: s, distanceKm, region }) => (
+                <SpotRow
+                  key={s.id}
+                  spot={s}
+                  distanceKm={distanceKm}
+                  regionLabel={region.label}
+                  onPick={() => {
+                    onPick(s.id);
+                    setQuery("");
+                    setOpen(false);
+                  }}
+                />
+              ))}
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+function SpotRow({
+  spot,
+  distanceKm,
+  regionLabel,
+  onPick,
+}: {
+  spot: Spot;
+  distanceKm: number | null;
+  regionLabel: string;
+  onPick: () => void;
+}) {
+  return (
+    <button
+      onClick={onPick}
+      className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 dark:hover:bg-white/5 cursor-pointer min-h-[48px] flex items-center justify-between gap-2"
+    >
+      <span className="flex-1 min-w-0">
+        <span className="block text-sm text-[var(--white)] truncate">{spot.name}</span>
+        <span className="block text-[11px] text-[var(--neutral-400)] truncate">
+          {regionLabel}
+          {spot.tags?.[0] ? ` · ${spot.tags[0]}` : ""}
+        </span>
+      </span>
+      {distanceKm != null && (
+        <span className="text-[10px] text-[var(--neutral-300)] font-mono whitespace-nowrap flex-shrink-0">
+          {distanceKm < 10
+            ? `${distanceKm.toFixed(1)} km`
+            : distanceKm < 1000
+            ? `${Math.round(distanceKm)} km`
+            : `${Math.round(distanceKm / 100) / 10}k km`}
+        </span>
+      )}
+    </button>
   );
 }
 

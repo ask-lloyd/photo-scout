@@ -461,11 +461,16 @@ function PlannerPageInner() {
                 <SelectValue placeholder="Select a spot..." />
               </SelectTrigger>
               <SelectContent>
-                {sortedSpots.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name}
-                  </SelectItem>
-                ))}
+                {sortedSpots.map((s) => {
+                  const inItaly = s.latitude >= 36 && s.latitude <= 47.5 && s.longitude >= 6 && s.longitude <= 19;
+                  const inUS = s.latitude >= 24 && s.latitude <= 50 && s.longitude >= -125 && s.longitude <= -66;
+                  const flag = inItaly ? "🇮🇹" : inUS ? "🇺🇸" : "🌍";
+                  return (
+                    <SelectItem key={s.id} value={s.id}>
+                      {flag} {s.name}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
             <input
