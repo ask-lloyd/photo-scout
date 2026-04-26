@@ -239,6 +239,29 @@ html:not(.dark) .modal-backdrop {
   background: rgba(15, 23, 42, 0.55) !important;
 }
 
+/* ── Light Theme: rescue hardcoded dark pill/chip backgrounds ──
+   Many pills in the app use bg-[#262626] (a dark hex) inline.
+   In light mode those become unreadable dark blobs. Remap them. */
+html:not(.dark) .bg-\[\#262626\] {
+  background-color: #E3E8EF !important;
+  color: var(--white) !important;
+}
+html:not(.dark) .bg-\[\#1a1a1a\],
+html:not(.dark) .bg-\[\#171717\] {
+  background-color: #FFFFFF !important;
+  color: var(--white) !important;
+  border-color: #E3E8EF !important;
+}
+html:not(.dark) .bg-\[\#333\]:hover,
+html:not(.dark) .hover\:bg-\[\#333\]:hover {
+  background-color: #D4DAE3 !important;
+}
+/* Border helpers used by chips/buttons — soften for light theme */
+html:not(.dark) .border-neutral-600,
+html:not(.dark) .border-neutral-700 {
+  border-color: #D4DAE3 !important;
+}
+
 /* Score / verdict colors have poor contrast on white — bump for WCAG. */
 html:not(.dark) .verdict-epic,
 html:not(.dark) [data-verdict="epic"] { color: #15803d !important; }

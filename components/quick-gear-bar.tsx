@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Plus, X, Check } from "lucide-react";
 import { useGearProfile, useLenses } from "@/lib/hooks";
@@ -19,14 +20,45 @@ export function QuickGearBar() {
   const allLenses = useLenses();
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [pickerPos, setPickerPos] = useState<{ top: number; left: number } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Position the popover anchored to the trigger button (portaled to body)
+  useEffect(() => {
+    if (!pickerOpen || !triggerRef.current) return;
+    const update = () => {
+      const r = triggerRef.current!.getBoundingClientRect();
+      const width = 288; // w-72
+      const margin = 8;
+      let left = r.left;
+      // Keep within viewport horizontally
+      if (left + width > window.innerWidth - margin) {
+        left = Math.max(margin, window.innerWidth - width - margin);
+      }
+      setPickerPos({ top: r.bottom + 4, left });
+    };
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
+  }, [pickerOpen]);
 
   // Close picker on outside click
   useEffect(() => {
     if (!pickerOpen) return;
     const onDocClick = (e: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
-        setPickerOpen(false);
-      }
+      const target = e.target as Node;
+      if (pickerRef.current && pickerRef.current.contains(target)) return;
+      if (triggerRef.current && triggerRef.current.contains(target)) return;
+      setPickerOpen(false);
     };
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
@@ -92,43 +124,51 @@ export function QuickGearBar() {
         ))}
 
         {/* + Add lens */}
-        <div className="relative" ref={pickerRef}>
+        <div className="relative">
           <button
+            ref={triggerRef}
             onClick={() => setPickerOpen((v) => !v)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#262626] hover:bg-[#333] text-[var(--neutral-200)] text-xs sm:text-sm whitespace-nowrap transition-colors cursor-pointer border border-dashed border-neutral-600"
           >
             <Plus size={14} /> Add lens
           </button>
-          {pickerOpen && (
-            <div
-              className="absolute left-0 top-full mt-1 z-50 w-72 max-h-64 overflow-y-auto rounded-xl p-1"
-              style={{
-                background: "var(--dark-800, #1a1a1a)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-              }}
-            >
-              {availableLenses.length === 0 ? (
-                <div className="p-3 text-xs text-[var(--neutral-300)]">
-                  No more lenses available. Add lenses on the{" "}
-                  <Link href="/gear" className="text-orange-500 underline">
-                    Gear page
-                  </Link>
-                  .
-                </div>
-              ) : (
-                availableLenses.map((l) => (
-                  <button
-                    key={l.id}
-                    onClick={() => addLens(l)}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 text-xs sm:text-sm text-[var(--neutral-200)] transition-colors cursor-pointer"
-                  >
-                    {l.make} {l.model}
-                  </button>
-                ))
-              )}
-            </div>
-          )}
+          {mounted && pickerOpen && pickerPos &&
+            createPortal(
+              <div
+                ref={pickerRef}
+                className="fixed w-72 max-h-64 overflow-y-auto rounded-xl p-1"
+                style={{
+                  top: pickerPos.top,
+                  left: pickerPos.left,
+                  zIndex: 9999,
+                  background: "var(--popover, #1a1a1a)",
+                  color: "var(--popover-foreground, #fff)",
+                  border: "1px solid var(--border, rgba(255,255,255,0.08))",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                }}
+              >
+                {availableLenses.length === 0 ? (
+                  <div className="p-3 text-xs">
+                    No more lenses available. Add lenses on the{" "}
+                    <Link href="/gear" className="text-orange-500 underline">
+                      Gear page
+                    </Link>
+                    .
+                  </div>
+                ) : (
+                  availableLenses.map((l) => (
+                    <button
+                      key={l.id}
+                      onClick={() => addLens(l)}
+                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-xs sm:text-sm transition-colors cursor-pointer"
+                    >
+                      {l.make} {l.model}
+                    </button>
+                  ))
+                )}
+              </div>,
+              document.body
+            )}
         </div>
 
         {/* Tripod toggle */}
