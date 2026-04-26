@@ -4,8 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { LocaleToggle } from "@/components/locale-toggle";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SettingsPanel } from "@/components/settings-panel";
 import { useActivity } from "@/lib/activity-context";
 import { ACTIVITIES, ACTIVITY_LIST } from "@/lib/activities";
 
@@ -137,8 +136,7 @@ export function NavHeader({ locationName = "Locating…" }: { locationName?: str
           >
             {locationName}
           </div>
-          <ThemeToggle />
-          <LocaleToggle />
+          <SettingsPanel />
           <div className="w-8 h-8 rounded-full bg-[#262626] flex items-center justify-center text-sm text-[var(--neutral-200)]">
             RB
           </div>
