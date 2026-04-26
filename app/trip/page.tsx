@@ -19,10 +19,25 @@ import {
   AlertTriangle,
   Copy,
   Trash2,
+  Navigation,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Info,
 } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
 import { useGeolocation, useSpots } from "@/lib/hooks";
 import type { Spot } from "@/lib/types";
+import {
+  googleMapsPlaceUrl,
+  googleMapsDirectionsUrl,
+  appleMapsDirectionsUrl,
+  fetchStopWeather,
+  type StopWeather,
+  DOLOMITES_PRESETS,
+  type PresetItinerary,
+} from "@/lib/trip-helpers";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -245,6 +260,22 @@ function TripPageInner() {
       stops: prev.stops.map((s) => (s.id === id ? { ...s, ...patch } : s)),
     }));
 
+  const applyPreset = (preset: PresetItinerary) => {
+    const replace = trip.stops.length === 0
+      ? true
+      : confirm(`Replace your current ${trip.stops.length} stop(s) with the "${preset.name}" itinerary?`);
+    if (!replace) return;
+    setTrip((prev) => ({
+      ...prev,
+      stops: preset.stops.map((s) => ({
+        id: uuid(),
+        spotId: s.spotId,
+        window: s.window as LightWindow,
+        shootMinutes: s.shootMinutes,
+      })),
+    }));
+  };
+
   // Compute schedule
   const schedule = useMemo(
     () => computeSchedule(trip, coords, spotById),
@@ -336,16 +367,26 @@ function TripPageInner() {
             </p>
           </div>
 
+          {/* Preset itineraries */}
+          {trip.stops.length === 0 && (
+            <PresetPicker presets={DOLOMITES_PRESETS} onApply={applyPreset} />
+          )}
+
           {/* Stops list */}
           <div className="space-y-3 mb-4">
             {trip.stops.length === 0 && (
               <div className="glass rounded-xl p-6 text-center text-sm text-[var(--neutral-300)]">
-                No stops yet. Add a spot below to start planning your day.
+                No stops yet. Pick a preset above or add a spot below to start planning your day.
               </div>
             )}
             {trip.stops.map((stop, i) => {
               const spot = spotById.get(stop.spotId);
               const sched = schedule.stops[i];
+              const prevStop = i > 0 ? trip.stops[i - 1] : null;
+              const prevSpot = prevStop ? spotById.get(prevStop.spotId) : null;
+              const legOrigin = prevSpot
+                ? { lat: prevSpot.latitude, lng: prevSpot.longitude }
+                : coords;
               return (
                 <StopCard
                   key={stop.id}
@@ -355,6 +396,8 @@ function TripPageInner() {
                   scheduled={sched}
                   isFirst={i === 0}
                   isLast={i === trip.stops.length - 1}
+                  legOrigin={legOrigin}
+                  tripDate={trip.date}
                   onChange={(patch) => updateStop(stop.id, patch)}
                   onRemove={() => removeStop(stop.id)}
                   onMoveUp={() => moveStop(stop.id, -1)}
@@ -524,6 +567,8 @@ function StopCard({
   scheduled,
   isFirst,
   isLast,
+  legOrigin,
+  tripDate,
   onChange,
   onRemove,
   onMoveUp,
@@ -535,11 +580,28 @@ function StopCard({
   scheduled: ScheduledStop | undefined;
   isFirst: boolean;
   isLast: boolean;
+  legOrigin: { lat: number; lng: number } | null;
+  tripDate: string;
   onChange: (patch: Partial<TripStop>) => void;
   onRemove: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const [weather, setWeather] = useState<StopWeather | null>(null);
+  const [wxLoading, setWxLoading] = useState(false);
+
+  // Fetch weather for the shoot start time
+  useEffect(() => {
+    if (!spot || !scheduled?.shootStart) return;
+    const d = scheduled.shootStart;
+    const iso = `${tripDate}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    setWxLoading(true);
+    fetchStopWeather(spot.latitude, spot.longitude, iso)
+      .then((w) => setWeather(w))
+      .finally(() => setWxLoading(false));
+  }, [spot, scheduled?.shootStart, tripDate]);
+
   if (!spot) {
     return (
       <div className="glass rounded-xl p-4 text-sm text-red-400">
@@ -554,12 +616,34 @@ function StopCard({
     <div className="glass rounded-xl overflow-hidden">
       {/* Drive leg leading in */}
       {scheduled && scheduled.driveMinutes !== null && (
-        <div className="px-4 py-2 bg-[#262626] flex items-center gap-2 text-xs text-[var(--neutral-300)] border-b border-neutral-700">
-          <Car size={12} />
-          <span>
-            Drive ~{Math.round(scheduled.driveMinutes)} min &middot; Leave by{" "}
-            <span className="text-orange-400 font-semibold">{fmt(scheduled.leaveAt)}</span>
-          </span>
+        <div className="px-4 py-2 bg-[#262626] flex items-center justify-between gap-2 text-xs text-[var(--neutral-300)] border-b border-neutral-700 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Car size={12} />
+            <span>
+              Drive ~{Math.round(scheduled.driveMinutes)} min &middot; Leave by{" "}
+              <span className="text-orange-400 font-semibold">{fmt(scheduled.leaveAt)}</span>
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href={googleMapsDirectionsUrl(legOrigin, { lat: spot.latitude, lng: spot.longitude, name: spot.name })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 cursor-pointer"
+              title="Open driving directions in Google Maps"
+            >
+              <Navigation size={11} /> Directions
+            </a>
+            <a
+              href={appleMapsDirectionsUrl(legOrigin, { lat: spot.latitude, lng: spot.longitude })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 text-[var(--neutral-200)] hover:bg-white/10 cursor-pointer"
+              title="Open in Apple Maps"
+            >
+               Apple
+            </a>
+          </div>
         </div>
       )}
 
@@ -575,6 +659,15 @@ function StopCard({
               <h3 className="text-sm font-semibold text-[var(--white)] break-words">
                 {spot.name}
               </h3>
+              <a
+                href={googleMapsPlaceUrl(spot)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--neutral-300)] hover:text-orange-400 cursor-pointer"
+                title="Open spot in Google Maps"
+              >
+                <ExternalLink size={11} />
+              </a>
             </div>
             {scheduled && scheduled.shootStart && (
               <p className="text-xs text-[var(--neutral-300)] mt-0.5">
@@ -582,6 +675,31 @@ function StopCard({
                 {fmt(scheduled.shootEnd)}
               </p>
             )}
+            {/* Weather row */}
+            <div className="mt-1.5 text-xs text-[var(--neutral-200)]">
+              {wxLoading && <span className="text-[var(--neutral-400)]">Checking weather…</span>}
+              {!wxLoading && weather && (
+                <span className="flex items-center gap-2 flex-wrap">
+                  <span>{weather.icon}</span>
+                  <span>{weather.summary}</span>
+                  <span className="text-[var(--neutral-400)]">·</span>
+                  <span>{Math.round(weather.tempC)}°C</span>
+                  <span className="text-[var(--neutral-400)]">·</span>
+                  <span>{Math.round(weather.cloudCover)}% cloud</span>
+                  {weather.precipMm > 0.2 && (
+                    <>
+                      <span className="text-[var(--neutral-400)]">·</span>
+                      <span className="text-blue-400">{weather.precipMm.toFixed(1)}mm rain</span>
+                    </>
+                  )}
+                  <span className="text-[var(--neutral-400)]">·</span>
+                  <span>{Math.round(weather.windKmh)} km/h wind</span>
+                </span>
+              )}
+              {!wxLoading && !weather && scheduled?.shootStart && (
+                <span className="text-[var(--neutral-400)]">Weather not available (date may be too far out)</span>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-1 flex-shrink-0">
             <div className="flex gap-1">
@@ -663,13 +781,120 @@ function StopCard({
           </label>
         </div>
 
-        {/* Quick link to shot planner for this spot */}
-        <Link
-          href={`/planner?spot=${encodeURIComponent(spot.id)}`}
-          className="inline-block mt-3 text-xs text-orange-500 hover:text-orange-400 cursor-pointer"
-        >
-          Open shot planner for this spot →
-        </Link>
+        {/* Quick info chips */}
+        <div className="flex flex-wrap gap-2 mt-3 text-[11px] text-[var(--neutral-300)]">
+          {spot.parking && (
+            <span className="px-2 py-0.5 rounded-full bg-[#262626]">
+              🅿️ {spot.parking}
+            </span>
+          )}
+          {spot.elevation_ft && (
+            <span className="px-2 py-0.5 rounded-full bg-[#262626]">
+              ⛰ {spot.elevation_ft.toLocaleString()} ft
+            </span>
+          )}
+          {spot.tags?.slice(0, 3).map((t) => (
+            <span key={t} className="px-2 py-0.5 rounded-full bg-[#262626]">
+              {t}
+            </span>
+          ))}
+        </div>
+
+        {/* Expandable spot intel */}
+        <div className="mt-3 flex flex-wrap gap-3 text-xs">
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="flex items-center gap-1 text-[var(--neutral-300)] hover:text-[var(--white)] cursor-pointer"
+          >
+            <Info size={12} />
+            {expanded ? "Hide spot details" : "Show spot details"}
+            {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+          </button>
+          <Link
+            href={`/planner?spot=${encodeURIComponent(spot.id)}&date=${encodeURIComponent(tripDate)}`}
+            className="flex items-center gap-1 text-orange-500 hover:text-orange-400 cursor-pointer"
+          >
+            Shot planner →
+          </Link>
+        </div>
+        {expanded && <SpotDetails spot={spot} />}
+      </div>
+    </div>
+  );
+}
+
+// ─── Spot details (lazy-loaded body_html from /data/spots/<id>.json) ──────
+
+function SpotDetails({ spot }: { spot: Spot }) {
+  const [html, setHtml] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    fetch(`/data/spots/${spot.id}.json`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (alive) {
+          setHtml(d.body_html ?? null);
+          setLoaded(true);
+        }
+      })
+      .catch(() => {
+        if (alive) setLoaded(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [spot.id]);
+
+  return (
+    <div className="mt-3 pt-3 border-t border-neutral-700">
+      {!loaded && <p className="text-xs text-[var(--neutral-400)]">Loading details…</p>}
+      {loaded && !html && <p className="text-xs text-[var(--neutral-400)]">No detailed notes for this spot yet.</p>}
+      {html && (
+        <div
+          className="prose prose-invert prose-sm max-w-none text-xs spot-details"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── Preset Picker ────────────────────────────────────────────────────────
+
+function PresetPicker({
+  presets,
+  onApply,
+}: {
+  presets: PresetItinerary[];
+  onApply: (p: PresetItinerary) => void;
+}) {
+  return (
+    <div className="glass rounded-xl p-3 sm:p-4 mb-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Sparkles size={14} className="text-orange-400" />
+        <h3 className="text-sm font-semibold text-[var(--white)]">Quick-start: Dolomites itineraries</h3>
+      </div>
+      <p className="text-xs text-[var(--neutral-300)] mb-3">
+        Start from a curated day, then tweak. Each preset uses spots already in your library.
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {presets.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => onApply(p)}
+            className="text-left rounded-lg border border-neutral-700 hover:border-orange-500/50 hover:bg-white/5 p-3 cursor-pointer transition-colors"
+          >
+            <div className="text-xs font-semibold text-[var(--white)] mb-1">{p.name}</div>
+            <div className="text-[11px] text-[var(--neutral-300)] leading-relaxed mb-1.5">
+              {p.description}
+            </div>
+            <div className="text-[10px] text-[var(--neutral-400)]">
+              📍 {p.basecamp} · {p.stops.length} stops
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );
