@@ -444,7 +444,7 @@ export default function OpportunitiesPage() {
                           {opp.timing.label}
                         </div>
                         <Link
-                          href="/planner"
+                          href={`/planner?date=${(opp.timing.start ?? "").slice(0, 10)}`}
                           className={`px-3 py-1.5 rounded-lg text-[13px]s font-semibold transition-colors cursor-pointer ${
                             isTop
                               ? "bg-orange-500 text-white hover:bg-orange-600"

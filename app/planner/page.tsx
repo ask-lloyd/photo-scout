@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { NavHeader } from "@/components/nav-header";
 import { LightScore } from "@/components/light-score";
 import { MapPin, Star, Sunset, Waves, Moon, Loader2 } from "lucide-react";
@@ -271,15 +272,53 @@ function fmtHyperfocal(h: number | null): string {
 // ─── Main Component ───
 
 export default function PlannerPage() {
+  return (
+    <Suspense fallback={null}>
+      <PlannerPageInner />
+    </Suspense>
+  );
+}
+
+function PlannerPageInner() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const urlSpot = searchParams.get("spot");
+  const urlDate = searchParams.get("date");
+
   const [spots, setSpots] = useState<Spot[]>([]);
-  const [selectedSpotId, setSelectedSpotId] = useState("bob-wentz-park");
+  const [selectedSpotId, setSelectedSpotId] = useState(urlSpot ?? "bob-wentz-park");
   const [selectedDate, setSelectedDate] = useState(() => {
+    if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)) return urlDate;
     const d = new Date();
     return d.toISOString().split("T")[0];
   });
   const { gear, loaded: gearLoaded } = useGearProfile();
   const { locationName } = useGeolocation();
   const { locale } = useLocale();
+
+  // Sync state ← URL (so back/forward buttons + shared links work)
+  useEffect(() => {
+    if (urlSpot && urlSpot !== selectedSpotId) setSelectedSpotId(urlSpot);
+    if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) && urlDate !== selectedDate) {
+      setSelectedDate(urlDate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlSpot, urlDate]);
+
+  // Sync URL ← state (push spot+date so the URL is shareable)
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedSpotId) params.set("spot", selectedSpotId);
+    if (selectedDate) params.set("date", selectedDate);
+    const next = `${pathname}?${params.toString()}`;
+    const current = `${pathname}?${searchParams.toString()}`;
+    if (next !== current) {
+      router.replace(next, { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSpotId, selectedDate]);
 
   // Fetch spots
   useEffect(() => {

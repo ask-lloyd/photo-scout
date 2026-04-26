@@ -782,7 +782,7 @@ export default function MapPage() {
             {/* Buttons */}
             <div className="mt-5 flex gap-2">
               <a
-                href="/planner"
+                href={`/planner?spot=${encodeURIComponent(selectedSpot.id)}`}
                 className="flex-1 text-center px-4 py-2 rounded-lg bg-[#f97316] text-[#fff] text-sm font-semibold hover:bg-[#ea580c] transition-colors cursor-pointer"
               >
                 Plan Shot &rarr;
