@@ -80,7 +80,7 @@ function HeroSection() {
         </motion.h1>
 
         <motion.p
-          className="mt-5 text-lg md:text-[13px]l text-text-secondary max-w-xl mx-auto"
+          className="mt-5 text-lg md:text-lg text-text-secondary max-w-xl mx-auto"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -249,7 +249,7 @@ function CameraSettingsSection() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <span className="block text-[13px]s text-text-muted uppercase tracking-wider mb-1 font-sans">
+                <span className="block text-[13px] text-text-muted uppercase tracking-wider mb-1 font-sans">
                   {s.label}
                 </span>
                 <span className="block font-mono text-2xl font-semibold text-text-[13px]rimary">
@@ -357,7 +357,7 @@ function MapPreviewSection() {
         </motion.div>
 
         <motion.p
-          className="mt-8 text-[13px]l font-heading font-semibold text-text-[13px]rimary"
+          className="mt-8 text-lg font-heading font-semibold text-text-[13px]rimary"
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.7 }}
@@ -590,13 +590,13 @@ function PricingSection() {
               }}
             >
               {tier.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px]s font-bold font-heading bg-golden-hour text-surface-900">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px] font-bold font-heading bg-golden-hour text-surface-900">
                   {tier.badge}
                 </div>
               )}
 
               <h3
-                className={`font-heading font-bold text-[13px]l mb-1 ${
+                className={`font-heading font-bold text-lg mb-1 ${
                   tier.highlight ? "text-golden-hour" : "text-text-[13px]rimary"
                 }`}
               >

@@ -7,6 +7,7 @@ import { NavHeader } from "@/components/nav-header";
 import { LightScore } from "@/components/light-score";
 import { MapPin, Star, Sunset, Waves, Moon, Loader2 } from "lucide-react";
 import { useGearProfile, useGeolocation } from "@/lib/hooks";
+import { QuickGearBar } from "@/components/quick-gear-bar";
 import { useLocale } from "@/lib/locale-context";
 import { formatTemp } from "@/lib/format";
 import type { Spot, SettingsRecommendation } from "@/lib/types";
@@ -353,11 +354,6 @@ function PlannerPageInner() {
     [plannerData]
   );
 
-  const cameraName = gear.camera
-    ? `${gear.camera.make} ${gear.camera.model}`
-    : "No camera set";
-  const lensNames = gear.lenses.map((l) => `${l.make} ${l.model}`);
-
   const windDisplay = plannerData
     ? locale === "US"
       ? `Wind ${Math.round(plannerData.weather.windSpeed * 0.621371)} mph`
@@ -377,7 +373,7 @@ function PlannerPageInner() {
             >
               &larr; Back
             </Link>
-            <h1 className="text-[13px]l font-bold text-[var(--white)]">
+            <h1 className="text-lg font-bold text-[var(--white)]">
               Shot Plan
             </h1>
           </div>
@@ -390,7 +386,7 @@ function PlannerPageInner() {
                 if (val) setSelectedSpotId(val);
               }}
             >
-              <SelectTrigger className="w-[220px]">
+              <SelectTrigger className="w-full sm:w-[220px]">
                 <SelectValue placeholder="Select a spot..." />
               </SelectTrigger>
               <SelectContent>
@@ -405,7 +401,7 @@ function PlannerPageInner() {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="glass rounded-lg px-3 py-2 text-sm text-[var(--white)] bg-transparent border border-neutral-700 focus:border-orange-500/50 outline-none cursor-pointer"
+              className="glass rounded-lg px-3 py-2 text-sm text-[var(--white)] bg-transparent border border-neutral-700 focus:border-orange-500/50 outline-none cursor-pointer flex-1 sm:flex-none min-w-0"
             />
           </div>
 
@@ -438,13 +434,13 @@ function PlannerPageInner() {
           {spot && plannerData && timeline && !loading && (
             <>
               {/* Plan Header Card */}
-              <div className="glass rounded-2xl p-6 border border-orange-500/20 glow mb-6">
-                <h2 className="text-2xl font-bold text-[var(--white)] mb-1">
+              <div className="glass rounded-2xl p-4 sm:p-6 border border-orange-500/20 glow mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-[var(--white)] mb-1 break-words">
                   {spot.name}
                 </h2>
                 <p className="text-[var(--neutral-200)] text-sm mb-4">
-                  {spot.latitude.toFixed(4)}&deg;N,{" "}
-                  {Math.abs(spot.longitude).toFixed(4)}&deg;W &middot;{" "}
+                  {Math.abs(spot.latitude).toFixed(4)}&deg;{spot.latitude >= 0 ? "N" : "S"},{" "}
+                  {Math.abs(spot.longitude).toFixed(4)}&deg;{spot.longitude >= 0 ? "E" : "W"} &middot;{" "}
                   {spot.elevation_ft} ft &middot;{" "}
                   {fmtDate(new Date(selectedDate + "T12:00:00"))}
                 </p>
@@ -456,13 +452,13 @@ function PlannerPageInner() {
                     variant="badge"
                     showLabel
                   />
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]">
                     {Math.round(plannerData.weather.cloudCover)}% Cloud
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]">
                     {windDisplay}
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
+                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]">
                     {formatTemp(plannerData.weather.temperature, locale)}
                   </span>
                 </div>
@@ -482,43 +478,7 @@ function PlannerPageInner() {
               </div>
 
               {/* Gear Bar */}
-              <div className="glass rounded-xl p-4 mb-6 flex flex-wrap items-center gap-3">
-                <span className="text-[13px]s uppercase tracking-wider text-[var(--neutral-300)] font-semibold">
-                  Your Gear
-                </span>
-                <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
-                  {cameraName}
-                </span>
-                {lensNames.length > 0 ? (
-                  lensNames.map((name) => (
-                    <span
-                      key={name}
-                      className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s"
-                    >
-                      {name}
-                    </span>
-                  ))
-                ) : (
-                  <span className="px-3 py-1 rounded-full bg-[#262626] text-[var(--neutral-200)] text-[13px]s">
-                    No lenses set
-                  </span>
-                )}
-                <span
-                  className={`px-3 py-1 rounded-full text-[13px]s ${
-                    gear.hasTripod
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-[#262626] text-[var(--neutral-300)]"
-                  }`}
-                >
-                  Tripod {gear.hasTripod ? "Ready" : "N/A"}
-                </span>
-                <Link
-                  href="/gear"
-                  className="text-orange-500 text-[13px]s hover:text-orange-400 transition-colors ml-auto cursor-pointer"
-                >
-                  Change Gear
-                </Link>
-              </div>
+              <QuickGearBar />
 
               {/* Vertical Timeline */}
               <div className="space-y-0">
@@ -545,14 +505,14 @@ function PlannerPageInner() {
                             {fmt(phase.startTime)} — Arrive &amp; Scout
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-300)] text-[13px]s mb-3">
+                        <p className="text-[var(--neutral-300)] text-[13px] mb-3">
                           30 min before golden hour
                         </p>
                         <p className="text-[var(--neutral-200)] text-sm mb-4">
                           {getArriveDescription(spot)}
                         </p>
                         <div className="glass rounded-lg p-3">
-                          <p className="text-[13px]s text-[var(--neutral-300)] uppercase tracking-wider mb-2">
+                          <p className="text-[13px] text-[var(--neutral-300)] uppercase tracking-wider mb-2">
                             Pre-shoot Settings
                           </p>
                           <div className="grid grid-cols-5 gap-2">
@@ -610,7 +570,7 @@ function PlannerPageInner() {
                             Peak Light
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px] mb-3">
                           Color temp {phase.colorTemp} &middot;{" "}
                           {phase.evRange} &middot;{" "}
                           {phase.lightPhase === "golden hour"
@@ -625,7 +585,7 @@ function PlannerPageInner() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                           {/* Landscape */}
                           <div className="glass rounded-lg p-4">
-                            <p className="text-orange-400 text-[13px]s font-semibold uppercase tracking-wider mb-3">
+                            <p className="text-orange-400 text-[13px] font-semibold uppercase tracking-wider mb-3">
                               Landscape ({ls.focalLengthSuggestion.split(" ")[0]})
                             </p>
                             <div className="grid grid-cols-2 gap-2">
@@ -659,7 +619,7 @@ function PlannerPageInner() {
                               />
                             </div>
                             {ls.tips.length > 0 && (
-                              <p className="text-[var(--neutral-300)] text-[13px]s mt-2">
+                              <p className="text-[var(--neutral-300)] text-[13px] mt-2">
                                 Tip: {ls.tips[0]}
                               </p>
                             )}
@@ -667,7 +627,7 @@ function PlannerPageInner() {
 
                           {/* Action */}
                           <div className="glass rounded-lg p-4">
-                            <p className="text-blue-400 text-[13px]s font-semibold uppercase tracking-wider mb-3">
+                            <p className="text-blue-400 text-[13px] font-semibold uppercase tracking-wider mb-3">
                               Action ({ac.focalLengthSuggestion.split(" ")[0]})
                             </p>
                             <div className="grid grid-cols-2 gap-2">
@@ -694,7 +654,7 @@ function PlannerPageInner() {
                               />
                             </div>
                             {ac.tips.length > 0 && (
-                              <p className="text-[var(--neutral-300)] text-[13px]s mt-2">
+                              <p className="text-[var(--neutral-300)] text-[13px] mt-2">
                                 Tip: {ac.tips[0]}
                               </p>
                             )}
@@ -703,10 +663,10 @@ function PlannerPageInner() {
 
                         {/* Pro tip */}
                         <div className="glass rounded-lg p-3 border border-orange-500/10">
-                          <p className="text-[13px]s text-orange-400 font-semibold mb-1">
+                          <p className="text-[13px] text-orange-400 font-semibold mb-1">
                             PRO TIP
                           </p>
-                          <p className="text-[var(--neutral-200)] text-[13px]s">
+                          <p className="text-[var(--neutral-200)] text-[13px]">
                             {getProTip(spot)}
                           </p>
                         </div>
@@ -741,7 +701,7 @@ function PlannerPageInner() {
                             variant="badge"
                           />
                         </div>
-                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px] mb-3">
                           Sun direction: {spot.facing_direction}&deg;{bearingToCardinal(spot.facing_direction)} &middot;{" "}
                           Color temp {phase.colorTemp}
                         </p>
@@ -799,7 +759,7 @@ function PlannerPageInner() {
                             Tripod Required
                           </span>
                         </div>
-                        <p className="text-[var(--neutral-200)] text-[13px]s mb-3">
+                        <p className="text-[var(--neutral-200)] text-[13px] mb-3">
                           {phase.lightPhase} &middot; Color temp{" "}
                           {phase.colorTemp} &middot; {phase.evRange}
                         </p>

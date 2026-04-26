@@ -237,7 +237,7 @@ export default function OpportunitiesPage() {
           {/* ---- Header + Filters ---- */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-[13px]l font-bold text-[var(--white)]">
+              <h1 className="text-lg font-bold text-[var(--white)]">
                 Opportunities
               </h1>
               <p className="text-sm text-[var(--neutral-300)]">
@@ -285,7 +285,7 @@ export default function OpportunitiesPage() {
           {/* ---- 7-Day Light Forecast Strip ---- */}
           <div className="glass rounded-xl p-4 mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <p className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">
+              <p className="text-[13px] uppercase tracking-widest text-[var(--neutral-300)]">
                 7-Day Light Forecast
               </p>
               <LightScoreInfo />
@@ -416,7 +416,7 @@ export default function OpportunitiesPage() {
                         <p className="text-sm text-[var(--neutral-200)] mb-3">
                           {opp.description}
                         </p>
-                        <div className="flex items-center gap-4 text-[13px]s text-[var(--neutral-300)] flex-wrap">
+                        <div className="flex items-center gap-4 text-[13px] text-[var(--neutral-300)] flex-wrap">
                           <span>
                             <Compass className="w-4 h-4 inline mr-1" />
                             {faceDirectionFromConditions(opp)}
@@ -445,7 +445,7 @@ export default function OpportunitiesPage() {
                         </div>
                         <Link
                           href={`/planner?date=${(opp.timing.start ?? "").slice(0, 10)}`}
-                          className={`px-3 py-1.5 rounded-lg text-[13px]s font-semibold transition-colors cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-colors cursor-pointer ${
                             isTop
                               ? "bg-orange-500 text-white hover:bg-orange-600"
                               : "bg-white/10 text-[var(--neutral-200)] hover:bg-white/20"

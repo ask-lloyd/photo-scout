@@ -615,7 +615,7 @@ export default function MapPage() {
 
         {/* ─── Bottom-left: Legend (desktop only) ─── */}
         <div className="hidden md:block absolute bottom-6 left-4 z-10 glass rounded-xl px-4 py-3">
-          <div className="flex items-center gap-4 text-[13px]s">
+          <div className="flex items-center gap-4 text-[13px]">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />
               <span className="text-[var(--neutral-200)]">High Score (70+)</span>
@@ -733,7 +733,7 @@ export default function MapPage() {
 
             {/* Name + location */}
             <h2 className="text-lg font-bold text-[var(--white)] pr-6">{selectedSpot.name}</h2>
-            <p className="text-[13px]s text-[var(--neutral-300)] mt-0.5">
+            <p className="text-[13px] text-[var(--neutral-300)] mt-0.5">
               {selectedSpot.latitude.toFixed(4)}, {selectedSpot.longitude.toFixed(4)}
               {" "}&middot;{" "}
               {Math.round(

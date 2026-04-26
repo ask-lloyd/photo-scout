@@ -219,7 +219,7 @@ function PricingCard({
       }
     >
       {highlighted && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-golden-hour text-surface-900 text-[13px]s font-semibold font-sans px-3 py-1 rounded-full">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-golden-hour text-surface-900 text-[13px] font-semibold font-sans px-3 py-1 rounded-full">
           Recommended
         </span>
       )}
@@ -398,7 +398,7 @@ export default function MarketingVariationA() {
             className="mb-10"
           >
             <ScoreRing score={87} size={128} />
-            <p className="mt-3 text-text-muted text-[13px]s font-mono uppercase tracking-wider">
+            <p className="mt-3 text-text-muted text-[13px] font-mono uppercase tracking-wider">
               Light Score
             </p>
           </motion.div>
@@ -567,7 +567,7 @@ export default function MarketingVariationA() {
             ))}
           </nav>
 
-          <p className="text-text-muted text-[13px]s font-sans">
+          <p className="text-text-muted text-[13px] font-sans">
             &copy; 2026 PhotoScout
           </p>
         </div>

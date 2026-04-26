@@ -178,17 +178,17 @@ export default function KitesurfGearPage() {
       <NavHeader />
       <main className="pt-14">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <h2 className="text-[13px]l font-bold text-[var(--white)] mb-6">Your Kitesurf Gear</h2>
+          <h2 className="text-lg font-bold text-[var(--white)] mb-6">Your Kitesurf Gear</h2>
 
           {/* Kites Card */}
           <div className="glass rounded-2xl p-6 mb-4">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">
+              <span className="text-[13px] uppercase tracking-widest text-[var(--neutral-300)]">
                 Kites
               </span>
               <button
                 onClick={() => (pickingKiteModel ? cancelAddKite() : startAddKite())}
-                className="text-[13px]s text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
+                className="text-[13px] text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
               >
                 {pickingKiteModel ? "Cancel" : "+ Add Kite"}
               </button>
@@ -217,7 +217,7 @@ export default function KitesurfGearPage() {
                         </p>
                         <button
                           onClick={() => setEditingKiteId(isEditing ? null : kite.id)}
-                          className="text-[13px]s text-[var(--neutral-200)] hover:text-orange-300 transition-colors cursor-pointer text-left"
+                          className="text-[13px] text-[var(--neutral-200)] hover:text-orange-300 transition-colors cursor-pointer text-left"
                         >
                           {kite.sizes_m2.length > 0
                             ? kite.sizes_m2
@@ -238,7 +238,7 @@ export default function KitesurfGearPage() {
 
                     {isEditing && (
                       <div className="mt-3 pt-3 border-t border-white/5">
-                        <p className="text-[13px]s text-[var(--neutral-300)] mb-2">
+                        <p className="text-[13px] text-[var(--neutral-300)] mb-2">
                           Sizes you own (m²)
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -288,7 +288,7 @@ export default function KitesurfGearPage() {
                   <SelectContent>
                     {Object.entries(kitesByBrand).map(([brand, kites]) => (
                       <div key={brand}>
-                        <div className="px-2 py-1.5 text-[13px]s font-semibold text-[var(--neutral-300)]">
+                        <div className="px-2 py-1.5 text-[13px] font-semibold text-[var(--neutral-300)]">
                           {brand}
                         </div>
                         {kites.map((k) => (
@@ -309,7 +309,7 @@ export default function KitesurfGearPage() {
                 <p className="text-sm font-semibold text-[var(--white)] mb-1">
                   {pendingKite.brand} {pendingKite.model}
                 </p>
-                <p className="text-[13px]s text-[var(--neutral-300)] mb-3">
+                <p className="text-[13px] text-[var(--neutral-300)] mb-3">
                   Select the sizes you own (m²)
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -357,12 +357,12 @@ export default function KitesurfGearPage() {
           {/* Boards Card */}
           <div className="glass rounded-2xl p-6 mb-4">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)]">
+              <span className="text-[13px] uppercase tracking-widest text-[var(--neutral-300)]">
                 Boards
               </span>
               <button
                 onClick={() => (pickingBoardModel ? cancelAddBoard() : startAddBoard())}
-                className="text-[13px]s text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
+                className="text-[13px] text-orange-400 hover:text-orange-300 transition-colors cursor-pointer"
               >
                 {pickingBoardModel ? "Cancel" : "+ Add Board"}
               </button>
@@ -384,7 +384,7 @@ export default function KitesurfGearPage() {
                     <p className="text-sm font-semibold text-[var(--white)]">
                       {board.brand} {board.model}
                     </p>
-                    <p className="text-[13px]s text-[var(--neutral-200)]">
+                    <p className="text-[13px] text-[var(--neutral-200)]">
                       {BOARD_TYPE_LABELS[board.type]}
                       {board.size_cm ? ` · ${board.size_cm}cm` : ""}
                     </p>
@@ -418,7 +418,7 @@ export default function KitesurfGearPage() {
                   <SelectContent>
                     {Object.entries(boardsByType).map(([type, boards]) => (
                       <div key={type}>
-                        <div className="px-2 py-1.5 text-[13px]s font-semibold text-[var(--neutral-300)]">
+                        <div className="px-2 py-1.5 text-[13px] font-semibold text-[var(--neutral-300)]">
                           {type}
                         </div>
                         {boards.map((b) => (
@@ -439,7 +439,7 @@ export default function KitesurfGearPage() {
                 <p className="text-sm font-semibold text-[var(--white)] mb-1">
                   {pendingBoard.brand} {pendingBoard.model}
                 </p>
-                <p className="text-[13px]s text-[var(--neutral-300)] mb-3">
+                <p className="text-[13px] text-[var(--neutral-300)] mb-3">
                   Select the size you own (cm)
                 </p>
                 <Select
@@ -465,14 +465,14 @@ export default function KitesurfGearPage() {
 
           {/* Rider Profile Card */}
           <div className="glass rounded-2xl p-6">
-            <span className="text-[13px]s uppercase tracking-widest text-[var(--neutral-300)] block mb-4">
+            <span className="text-[13px] uppercase tracking-widest text-[var(--neutral-300)] block mb-4">
               Rider Profile
             </span>
 
             <div className="grid grid-cols-2 gap-4">
               {/* Weight */}
               <div>
-                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">
+                <label className="text-[13px] text-[var(--neutral-200)] block mb-1.5">
                   Weight (kg)
                 </label>
                 <input
@@ -493,7 +493,7 @@ export default function KitesurfGearPage() {
 
               {/* Skill Level */}
               <div>
-                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">
+                <label className="text-[13px] text-[var(--neutral-200)] block mb-1.5">
                   Skill Level
                 </label>
                 <Select
@@ -518,7 +518,7 @@ export default function KitesurfGearPage() {
 
               {/* Primary Discipline */}
               <div>
-                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">
+                <label className="text-[13px] text-[var(--neutral-200)] block mb-1.5">
                   Primary Discipline
                 </label>
                 <Select
@@ -543,7 +543,7 @@ export default function KitesurfGearPage() {
 
               {/* Harness */}
               <div>
-                <label className="text-[13px]s text-[var(--neutral-200)] block mb-1.5">
+                <label className="text-[13px] text-[var(--neutral-200)] block mb-1.5">
                   Harness
                 </label>
                 <input

@@ -143,7 +143,7 @@ export function DayTimeline({ windows }: { windows: TimelineWindow[] }) {
                     )}
                   </div>
                   <p
-                    className="text-[13px]s"
+                    className="text-[13px]"
                     style={{
                       fontFamily: "var(--font-mono)",
                       color: "var(--neutral-300)",

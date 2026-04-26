@@ -124,7 +124,7 @@ function MockDashboard() {
           style={{ background: "var(--teal)" }}
         />
         <span
-          className="text-[13px]s font-mono"
+          className="text-[13px] font-mono"
           style={{ color: "var(--neutral-200)" }}
         >
           Live Light Analysis
@@ -613,7 +613,7 @@ export default function MarketingB() {
                       {t.name}
                     </div>
                     <div
-                      className="text-[13px]s"
+                      className="text-[13px]"
                       style={{ color: "var(--neutral-300)" }}
                     >
                       {t.role}
@@ -653,7 +653,7 @@ export default function MarketingB() {
               >
                 {/* Badge */}
                 <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px]s font-bold font-heading"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[13px] font-bold font-heading"
                   style={{
                     background: "var(--golden-hour)",
                     color: "var(--dark-900)",
@@ -662,7 +662,7 @@ export default function MarketingB() {
                   Recommended
                 </div>
                 <h3
-                  className="font-heading font-bold text-[13px]l mb-1"
+                  className="font-heading font-bold text-lg mb-1"
                   style={{ color: "var(--golden-hour)" }}
                 >
                   Lifetime
@@ -724,7 +724,7 @@ export default function MarketingB() {
                 }}
               >
                 <h3
-                  className="font-heading font-bold text-[13px]l mb-1"
+                  className="font-heading font-bold text-lg mb-1"
                   style={{ color: "var(--white)" }}
                 >
                   Monthly
@@ -791,7 +791,7 @@ export default function MarketingB() {
                 }}
               >
                 <h3
-                  className="font-heading font-bold text-[13px]l mb-1"
+                  className="font-heading font-bold text-lg mb-1"
                   style={{ color: "var(--white)" }}
                 >
                   Per Trip
@@ -887,7 +887,7 @@ export default function MarketingB() {
             </a>
           </div>
           <div
-            className="text-[13px]s"
+            className="text-[13px]"
             style={{ color: "var(--neutral-300)" }}
           >
             &copy; 2026 PhotoScout
