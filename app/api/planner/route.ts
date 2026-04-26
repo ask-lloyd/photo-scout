@@ -151,6 +151,10 @@ function buildPhase(
     lightPhase: conditions.lightPhase,
     colorTemp: `${colorTemp.min}-${colorTemp.max}K`,
     evRange: `EV ${landscapeSettings.exposureValue}`,
+    // Expose raw conditions + weather so the client can recompute
+    // settings against the user's actual gear (camera/lens/tripod).
+    lightConditions: conditions,
+    weather,
     settings: {
       landscape: landscapeSettings,
       action: actionSettings,

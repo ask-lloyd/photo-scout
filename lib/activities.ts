@@ -26,6 +26,7 @@ export const ACTIVITIES: Record<ActivityId, ActivityMeta> = {
       { href: "/map", label: "Map" },
       { href: "/opportunities", label: "Opportunities" },
       { href: "/planner", label: "Shot Planner" },
+      { href: "/trip", label: "Day Trip" },
       { href: "/gear", label: "Gear" },
     ],
   },

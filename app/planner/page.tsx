@@ -11,7 +11,8 @@ import { QuickGearBar } from "@/components/quick-gear-bar";
 import { SpotTips } from "@/components/spot-tips";
 import { useLocale } from "@/lib/locale-context";
 import { formatTemp } from "@/lib/format";
-import type { Spot, SettingsRecommendation } from "@/lib/types";
+import { recommendSettings } from "@/lib/settings-advisor";
+import type { Spot, SettingsRecommendation, Lens } from "@/lib/types";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,8 @@ interface PlannerPhase {
   lightPhase: string;
   colorTemp: string;
   evRange: string;
+  lightConditions?: import("@/lib/types").LightConditions;
+  weather?: import("@/lib/types").WeatherData;
   settings: {
     landscape: SettingsRecommendation;
     action: SettingsRecommendation;
@@ -297,7 +300,7 @@ function PlannerPageInner() {
     return d.toISOString().split("T")[0];
   });
   const { gear, loaded: gearLoaded } = useGearProfile();
-  const { locationName } = useGeolocation();
+  const { locationName, coords } = useGeolocation();
   const { locale } = useLocale();
 
   // Sync state ← URL (so back/forward buttons + shared links work)
@@ -331,6 +334,17 @@ function PlannerPageInner() {
   }, []);
 
   const spot = spots.find((s) => s.id === selectedSpotId) ?? null;
+
+  // Sort spots by proximity to current location (Italy users see Dolomites first)
+  const sortedSpots = useMemo(() => {
+    if (!coords) return spots;
+    const dist = (s: Spot) => {
+      const dLat = s.latitude - coords.lat;
+      const dLng = s.longitude - coords.lng;
+      return dLat * dLat + dLng * dLng; // squared euclidean — fine for sorting
+    };
+    return [...spots].sort((a, b) => dist(a) - dist(b));
+  }, [spots, coords]);
   const { data: plannerData, loading, error } = usePlannerData(spot, selectedDate);
 
   // Derive timeline from API data
@@ -346,13 +360,69 @@ function PlannerPageInner() {
     };
   }, [plannerData]);
 
+  // Track which owned lenses are currently "active" in this session
+  // (toggled via QuickGearBar). When this changes, we recompute settings live.
+  const [activeLensIds, setActiveLensIds] = useState<string[] | null>(null);
+  useEffect(() => {
+    const read = () => {
+      try {
+        const raw = localStorage.getItem("ps_active_lens_ids");
+        if (raw) {
+          setActiveLensIds(JSON.parse(raw) as string[]);
+        } else {
+          setActiveLensIds(null);
+        }
+      } catch {
+        setActiveLensIds(null);
+      }
+    };
+    read();
+    const handler = () => read();
+    window.addEventListener("ps:active-lenses-changed", handler);
+    return () => window.removeEventListener("ps:active-lenses-changed", handler);
+  }, []);
+
+  // Pick the "primary" lens for settings calculation: prefer an active
+  // lens (most versatile zoom range), fall back to the first owned lens.
+  const primaryLens = useMemo<Lens | null>(() => {
+    if (!gear.lenses.length) return null;
+    const owned = gear.lenses;
+    const active = activeLensIds
+      ? owned.filter((l) => activeLensIds.includes(l.id))
+      : owned;
+    const pool = active.length ? active : owned;
+    // Choose the lens with the widest focal range (most "default")
+    return pool.reduce((best, l) =>
+      l.focal_length_max - l.focal_length_min >
+      best.focal_length_max - best.focal_length_min
+        ? l
+        : best
+    , pool[0]);
+  }, [gear.lenses, activeLensIds]);
+
   // Get phase by index
   const getPhase = useCallback(
     (idx: number): PlannerPhase | null => {
       if (!plannerData) return null;
-      return plannerData.phases[idx] ?? null;
+      const raw = plannerData.phases[idx];
+      if (!raw) return null;
+      // If the API exposed raw light + weather, recompute settings against
+      // the user's actual gear so shutter/ISO/aperture update live with
+      // tripod toggle, lens changes, and camera selection.
+      if (raw.lightConditions && gear.camera && primaryLens) {
+        const landscape = recommendSettings(raw.lightConditions, gear.camera, primaryLens, {
+          hasTripod: gear.hasTripod,
+          style: "landscape",
+        });
+        const action = recommendSettings(raw.lightConditions, gear.camera, primaryLens, {
+          hasTripod: gear.hasTripod,
+          style: "action",
+        });
+        return { ...raw, settings: { landscape, action } };
+      }
+      return raw;
     },
-    [plannerData]
+    [plannerData, gear.camera, gear.hasTripod, primaryLens]
   );
 
   const windDisplay = plannerData
@@ -391,7 +461,7 @@ function PlannerPageInner() {
                 <SelectValue placeholder="Select a spot..." />
               </SelectTrigger>
               <SelectContent>
-                {spots.map((s) => (
+                {sortedSpots.map((s) => (
                   <SelectItem key={s.id} value={s.id}>
                     {s.name}
                   </SelectItem>

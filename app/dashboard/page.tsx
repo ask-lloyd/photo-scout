@@ -3,6 +3,7 @@
 import { useGeolocation, useLightData, useGearProfile, useOpportunities } from "@/lib/hooks";
 import { recommendSettings } from "@/lib/settings-advisor";
 import { NavHeader } from "@/components/nav-header";
+import { LocationIndicator } from "@/components/location-indicator";
 import { LightScore, lightScoreColor } from "@/components/light-score";
 import { Loader2, Sunset, Moon, Sunrise } from "lucide-react";
 import { useMemo } from "react";
@@ -167,6 +168,7 @@ export default function Dashboard() {
       <NavHeader locationName={locationName} />
       <main className="pt-14" style={{ background: "var(--dark-900)", minHeight: "100vh" }}>
         <div className="max-w-[960px] mx-auto px-4 py-6">
+          <LocationIndicator />
           {isLoading ? (
             <div className="flex items-center justify-center py-32">
               <div className="text-center space-y-4">

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Camera, Lens, Filter, GearProfile, LightConditions, WeatherData, LightWindow } from "./types";
+import type { Camera, Lens, Filter, GearProfile, LightConditions, WeatherData, LightWindow, Spot } from "./types";
 
 // ─── Geolocation ───
 // Reverse geocode coords → "City, Region/CC" using BigDataCloud's free,
@@ -36,30 +36,99 @@ export function useGeolocation() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [locationName, setLocationName] = useState("Locating…");
+  const [usingFallback, setUsingFallback] = useState(false);
+  const [manualOverride, setManualOverride] = useState<{ lat: number; lng: number; name: string } | null>(null);
+
+  // Allow manual override (persisted)
+  const setManualLocation = useCallback((lat: number, lng: number, name: string) => {
+    const next = { lat, lng, name };
+    setManualOverride(next);
+    setCoords({ lat, lng });
+    setLocationName(name);
+    setUsingFallback(false);
+    setError(null);
+    setLoading(false);
+    try {
+      localStorage.setItem("ps_manual_location", JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const clearManualLocation = useCallback(() => {
+    setManualOverride(null);
+    try {
+      localStorage.removeItem("ps_manual_location");
+    } catch {
+      // ignore
+    }
+    // Re-trigger geolocation
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          setUsingFallback(false);
+          setLoading(false);
+          reverseGeocode(pos.coords.latitude, pos.coords.longitude).then((name) => {
+            setLocationName(name);
+          });
+        },
+        () => {
+          setCoords({ lat: 30.628, lng: -97.6781 });
+          setLocationName("Georgetown, TX (fallback — location denied)");
+          setUsingFallback(true);
+          setError("Geolocation denied");
+          setLoading(false);
+        },
+        { timeout: 8000, enableHighAccuracy: false, maximumAge: 5 * 60 * 1000 }
+      );
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-    const apply = (lat: number, lng: number, fallbackName: string) => {
+
+    // Check for manual override first
+    try {
+      const stored = localStorage.getItem("ps_manual_location");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (typeof parsed.lat === "number" && typeof parsed.lng === "number") {
+          setManualOverride(parsed);
+          setCoords({ lat: parsed.lat, lng: parsed.lng });
+          setLocationName(parsed.name || "Manual location");
+          setLoading(false);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    const apply = (lat: number, lng: number, fallbackName: string, isFallback: boolean) => {
       if (cancelled) return;
       setCoords({ lat, lng });
       setLocationName(fallbackName);
+      setUsingFallback(isFallback);
       setLoading(false);
       reverseGeocode(lat, lng).then((name) => {
-        if (!cancelled) setLocationName(name);
+        if (!cancelled) {
+          setLocationName(isFallback ? `${name} (fallback — location denied)` : name);
+        }
       });
     };
 
     if (!navigator.geolocation) {
-      // Hard fallback: Georgetown, TX
-      apply(30.628, -97.6781, "Georgetown, TX");
+      apply(30.628, -97.6781, "Georgetown, TX", true);
       setError("Geolocation unsupported");
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => apply(pos.coords.latitude, pos.coords.longitude, "Current Location"),
+      (pos) => apply(pos.coords.latitude, pos.coords.longitude, "Current Location", false),
       () => {
-        apply(30.628, -97.6781, "Georgetown, TX");
+        apply(30.628, -97.6781, "Georgetown, TX", true);
         setError("Geolocation denied");
       },
       { timeout: 8000, enableHighAccuracy: false, maximumAge: 5 * 60 * 1000 }
@@ -69,7 +138,7 @@ export function useGeolocation() {
     };
   }, []);
 
-  return { coords, error, loading, locationName };
+  return { coords, error, loading, locationName, usingFallback, manualOverride, setManualLocation, clearManualLocation };
 }
 
 // ─── Light Data ───
@@ -212,6 +281,17 @@ export function useLenses() {
       .catch(() => setLenses([]));
   }, []);
   return lenses;
+}
+
+export function useSpots() {
+  const [spots, setSpots] = useState<Spot[]>([]);
+  useEffect(() => {
+    fetch("/data/spots/index.json")
+      .then((r) => r.json())
+      .then(setSpots)
+      .catch(() => setSpots([]));
+  }, []);
+  return spots;
 }
 
 export function useFilters() {

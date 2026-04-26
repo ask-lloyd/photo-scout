@@ -26,18 +26,47 @@ export function QuickGearBar() {
   const [mounted, setMounted] = useState(false);
 
   // Session-only active set. Default = all owned lenses.
+  // Persisted to localStorage so the planner page can read which lenses
+  // are active and recompute settings live when toggled.
   // Stored as Set<string>; null sentinel means "not yet initialized".
   const [activeIds, setActiveIds] = useState<Set<string> | null>(null);
+
+  const ACTIVE_KEY = "ps_active_lens_ids";
+  const broadcastActive = (ids: Set<string>) => {
+    try {
+      localStorage.setItem(ACTIVE_KEY, JSON.stringify(Array.from(ids)));
+      window.dispatchEvent(new CustomEvent("ps:active-lenses-changed"));
+    } catch {
+      // ignore
+    }
+  };
 
   // Initialize / sync active set when profile finishes loading or owned lenses change.
   useEffect(() => {
     if (!loaded) return;
     setActiveIds((prev) => {
       const ownedIds = gear.lenses.map((l) => l.id);
-      if (prev === null) return new Set(ownedIds);
-      // Drop any active ids that are no longer owned
-      const next = new Set<string>();
-      for (const id of prev) if (ownedIds.includes(id)) next.add(id);
+      let next: Set<string>;
+      if (prev === null) {
+        // Try restoring from storage; otherwise default to all owned
+        try {
+          const raw = localStorage.getItem(ACTIVE_KEY);
+          if (raw) {
+            const arr = JSON.parse(raw) as string[];
+            next = new Set(arr.filter((id) => ownedIds.includes(id)));
+            if (next.size === 0) next = new Set(ownedIds);
+          } else {
+            next = new Set(ownedIds);
+          }
+        } catch {
+          next = new Set(ownedIds);
+        }
+      } else {
+        // Drop any active ids that are no longer owned
+        next = new Set<string>();
+        for (const id of prev) if (ownedIds.includes(id)) next.add(id);
+      }
+      broadcastActive(next);
       return next;
     });
   }, [loaded, gear.lenses]);
@@ -98,6 +127,7 @@ export function QuickGearBar() {
     setActiveIds((prev) => {
       const next = new Set(prev);
       next.delete(id);
+      broadcastActive(next);
       return next;
     });
   };
@@ -105,6 +135,7 @@ export function QuickGearBar() {
     setActiveIds((prev) => {
       const next = new Set(prev);
       next.add(id);
+      broadcastActive(next);
       return next;
     });
     setPickerOpen(false);
