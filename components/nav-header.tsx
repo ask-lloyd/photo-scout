@@ -9,7 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useActivity } from "@/lib/activity-context";
 import { ACTIVITIES, ACTIVITY_LIST } from "@/lib/activities";
 
-export function NavHeader({ locationName = "Georgetown, TX" }: { locationName?: string }) {
+export function NavHeader({ locationName = "Locating…" }: { locationName?: string }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activityMenuOpen, setActivityMenuOpen] = useState(false);

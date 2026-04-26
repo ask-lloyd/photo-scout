@@ -2,33 +2,71 @@ import { useState, useEffect, useCallback } from "react";
 import type { Camera, Lens, Filter, GearProfile, LightConditions, WeatherData, LightWindow } from "./types";
 
 // ─── Geolocation ───
+// Reverse geocode coords → "City, Region/CC" using BigDataCloud's free,
+// no-key client endpoint. Falls back to a coords string on failure.
+async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+    );
+    if (!res.ok) throw new Error("reverse geocode failed");
+    const j = await res.json();
+    const city =
+      j.city ||
+      j.locality ||
+      j.localityInfo?.administrative?.[3]?.name ||
+      j.localityInfo?.administrative?.[2]?.name ||
+      "";
+    const region =
+      j.principalSubdivisionCode?.split("-")[1] ||
+      j.principalSubdivision ||
+      j.countryCode ||
+      "";
+    if (city && region) return `${city}, ${region}`;
+    if (city) return city;
+    if (region) return region;
+  } catch {
+    // fall through
+  }
+  return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+}
+
 export function useGeolocation() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [locationName, setLocationName] = useState("Georgetown, TX");
+  const [locationName, setLocationName] = useState("Locating…");
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      // Default to Georgetown, TX
-      setCoords({ lat: 30.6280, lng: -97.6781 });
+    let cancelled = false;
+    const apply = (lat: number, lng: number, fallbackName: string) => {
+      if (cancelled) return;
+      setCoords({ lat, lng });
+      setLocationName(fallbackName);
       setLoading(false);
+      reverseGeocode(lat, lng).then((name) => {
+        if (!cancelled) setLocationName(name);
+      });
+    };
+
+    if (!navigator.geolocation) {
+      // Hard fallback: Georgetown, TX
+      apply(30.628, -97.6781, "Georgetown, TX");
+      setError("Geolocation unsupported");
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setLocationName("Current Location");
-        setLoading(false);
-      },
+      (pos) => apply(pos.coords.latitude, pos.coords.longitude, "Current Location"),
       () => {
-        // Default to Georgetown, TX — seamless fallback
-        setCoords({ lat: 30.6280, lng: -97.6781 });
-        setLoading(false);
+        apply(30.628, -97.6781, "Georgetown, TX");
+        setError("Geolocation denied");
       },
-      { timeout: 5000 }
+      { timeout: 8000, enableHighAccuracy: false, maximumAge: 5 * 60 * 1000 }
     );
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { coords, error, loading, locationName };

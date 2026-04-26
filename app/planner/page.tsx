@@ -5,7 +5,7 @@ import Link from "next/link";
 import { NavHeader } from "@/components/nav-header";
 import { LightScore } from "@/components/light-score";
 import { MapPin, Star, Sunset, Waves, Moon, Loader2 } from "lucide-react";
-import { useGearProfile } from "@/lib/hooks";
+import { useGearProfile, useGeolocation } from "@/lib/hooks";
 import { useLocale } from "@/lib/locale-context";
 import { formatTemp } from "@/lib/format";
 import type { Spot, SettingsRecommendation } from "@/lib/types";
@@ -278,6 +278,7 @@ export default function PlannerPage() {
     return d.toISOString().split("T")[0];
   });
   const { gear, loaded: gearLoaded } = useGearProfile();
+  const { locationName } = useGeolocation();
   const { locale } = useLocale();
 
   // Fetch spots
@@ -326,7 +327,7 @@ export default function PlannerPage() {
 
   return (
     <>
-      <NavHeader />
+      <NavHeader locationName={locationName} />
       <main className="pt-14">
         <div className="max-w-5xl mx-auto px-4 py-6">
           {/* Back + Title */}

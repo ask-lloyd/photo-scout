@@ -6,11 +6,12 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import SunCalc from "suncalc";
 import { Layers, X } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
+import { useGeolocation } from "@/lib/hooks";
 import type { Spot } from "@/lib/types";
 
-// Georgetown, TX
-const CENTER_LNG = -97.6781;
-const CENTER_LAT = 30.6280;
+// Hard-coded fallback (Georgetown, TX) if geolocation fails.
+const FALLBACK_LNG = -97.6781;
+const FALLBACK_LAT = 30.6280;
 
 interface SpotWithScore extends Spot {
   score: number;
@@ -51,11 +52,15 @@ function minutesToTimeStr(mins: number): string {
   return `${hr}:${m.toString().padStart(2, "0")} ${ampm}`;
 }
 
-function buildShadowGeoJSON(timeMinutes: number): GeoJSON.FeatureCollection {
+function buildShadowGeoJSON(
+  timeMinutes: number,
+  lat: number,
+  lng: number
+): GeoJSON.FeatureCollection {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   d.setMinutes(timeMinutes);
-  const pos = SunCalc.getPosition(d, CENTER_LAT, CENTER_LNG);
+  const pos = SunCalc.getPosition(d, lat, lng);
 
   if (pos.altitude <= 0) {
     // Sun below horizon — no shadow to show
@@ -66,8 +71,8 @@ function buildShadowGeoJSON(timeMinutes: number): GeoJSON.FeatureCollection {
   const shadowAz = pos.azimuth + Math.PI;
   // Shadow length inversely proportional to sun altitude
   const shadowLen = 0.04 * (1 - pos.altitude / (Math.PI / 2)) + 0.005;
-  const endLng = CENTER_LNG + shadowLen * Math.sin(shadowAz);
-  const endLat = CENTER_LAT + shadowLen * Math.cos(shadowAz);
+  const endLng = lng + shadowLen * Math.sin(shadowAz);
+  const endLat = lat + shadowLen * Math.cos(shadowAz);
 
   // Build a narrow triangle for the shadow area
   const perpAz = shadowAz + Math.PI / 2;
@@ -86,7 +91,7 @@ function buildShadowGeoJSON(timeMinutes: number): GeoJSON.FeatureCollection {
         geometry: {
           type: "LineString",
           coordinates: [
-            [CENTER_LNG, CENTER_LAT],
+            [lng, lat],
             [endLng, endLat],
           ],
         },
@@ -98,10 +103,10 @@ function buildShadowGeoJSON(timeMinutes: number): GeoJSON.FeatureCollection {
           type: "Polygon",
           coordinates: [
             [
-              [CENTER_LNG, CENTER_LAT],
+              [lng, lat],
               [leftLng, leftLat],
               [rightLng, rightLat],
-              [CENTER_LNG, CENTER_LAT],
+              [lng, lat],
             ],
           ],
         },
@@ -110,19 +115,23 @@ function buildShadowGeoJSON(timeMinutes: number): GeoJSON.FeatureCollection {
   };
 }
 
-function buildSunPathGeoJSON(date: Date): GeoJSON.FeatureCollection {
+function buildSunPathGeoJSON(
+  date: Date,
+  lat: number,
+  lng: number
+): GeoJSON.FeatureCollection {
   const coords: [number, number][] = [];
   for (let h = 5; h <= 20; h += 0.25) {
     const t = new Date(date);
     t.setHours(Math.floor(h), (h % 1) * 60, 0, 0);
-    const pos = SunCalc.getPosition(t, CENTER_LAT, CENTER_LNG);
+    const pos = SunCalc.getPosition(t, lat, lng);
     if (pos.altitude < 0) continue;
     // Project sun position as offset from center for visualization
     const dist = 0.15 * (1 - pos.altitude / (Math.PI / 2));
     const az = pos.azimuth; // radians from south, clockwise
-    const lng = CENTER_LNG + dist * Math.sin(az);
-    const lat = CENTER_LAT + dist * Math.cos(az);
-    coords.push([lng, lat]);
+    const sLng = lng + dist * Math.sin(az);
+    const sLat = lat + dist * Math.cos(az);
+    coords.push([sLng, sLat]);
   }
   return {
     type: "FeatureCollection",
@@ -142,6 +151,10 @@ export default function MapPage() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
+
+  const { coords: geoCoords, locationName } = useGeolocation();
+  const centerLat = geoCoords?.lat ?? FALLBACK_LAT;
+  const centerLng = geoCoords?.lng ?? FALLBACK_LNG;
 
   const [spots, setSpots] = useState<SpotWithScore[]>([]);
   const [selectedSpot, setSelectedSpot] = useState<SpotWithScore | null>(null);
@@ -187,7 +200,7 @@ export default function MapPage() {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-      center: [CENTER_LNG, CENTER_LAT],
+      center: [centerLng, centerLat],
       zoom: 10,
     });
 
@@ -217,7 +230,7 @@ export default function MapPage() {
       // Sun path source and layer
       map.addSource("sun-path", {
         type: "geojson",
-        data: buildSunPathGeoJSON(new Date()),
+        data: buildSunPathGeoJSON(new Date(), centerLat, centerLng),
       });
       map.addLayer({
         id: "sun-path-line",
@@ -240,7 +253,7 @@ export default function MapPage() {
             {
               type: "Feature",
               properties: {},
-              geometry: { type: "Point", coordinates: [CENTER_LNG, CENTER_LAT] },
+              geometry: { type: "Point", coordinates: [centerLng, centerLat] },
             },
           ],
         },
@@ -273,52 +286,24 @@ export default function MapPage() {
       });
 
       // ── Light Pollution (Bortle) source + layers ──
+      // Synthetic illustrative zones around the user — real Bortle data
+      // requires an external dataset (e.g. NOAA VIIRS) and is TODO.
+      const ring = (offsets: [number, number][], bortle: number, color: string) =>
+        offsets.map(([dLng, dLat]) => ({
+          type: "Feature" as const,
+          properties: { bortle, color },
+          geometry: {
+            type: "Point" as const,
+            coordinates: [centerLng + dLng, centerLat + dLat],
+          },
+        }));
       const bortleZones = {
         type: "FeatureCollection" as const,
         features: [
-          // Bortle 7-9: urban core (Georgetown, Round Rock, Austin)
-          ...[
-            [CENTER_LNG, CENTER_LAT],
-            [-97.6789, 30.5083], // Round Rock
-            [-97.7431, 30.2672], // Austin
-          ].map((c) => ({
-            type: "Feature" as const,
-            properties: { bortle: 8, color: "#ef4444" },
-            geometry: { type: "Point" as const, coordinates: c },
-          })),
-          // Bortle 5-6: suburban
-          ...[
-            [-97.82, 30.65],
-            [-97.55, 30.60],
-            [-97.60, 30.72],
-            [-97.75, 30.50],
-          ].map((c) => ({
-            type: "Feature" as const,
-            properties: { bortle: 5, color: "#f97316" },
-            geometry: { type: "Point" as const, coordinates: c },
-          })),
-          // Bortle 3-4: rural
-          ...[
-            [-97.90, 30.75],
-            [-97.40, 30.70],
-            [-97.85, 30.45],
-            [-97.45, 30.50],
-          ].map((c) => ({
-            type: "Feature" as const,
-            properties: { bortle: 3, color: "#eab308" },
-            geometry: { type: "Point" as const, coordinates: c },
-          })),
-          // Bortle 1-2: dark sky
-          ...[
-            [-98.05, 30.80],
-            [-97.30, 30.75],
-            [-98.00, 30.35],
-            [-97.30, 30.45],
-          ].map((c) => ({
-            type: "Feature" as const,
-            properties: { bortle: 1, color: "#22c55e" },
-            geometry: { type: "Point" as const, coordinates: c },
-          })),
+          ...ring([[0, 0], [0.001, -0.12], [-0.066, -0.36]], 8, "#ef4444"),
+          ...ring([[-0.14, 0.02], [0.13, -0.03], [0.07, 0.09], [-0.07, -0.13]], 5, "#f97316"),
+          ...ring([[-0.22, 0.12], [0.28, 0.07], [-0.17, -0.18], [0.23, -0.13]], 3, "#eab308"),
+          ...ring([[-0.37, 0.17], [0.38, 0.12], [-0.32, -0.28], [0.37, -0.18]], 1, "#22c55e"),
         ],
       };
       map.addSource("bortle-zones", { type: "geojson", data: bortleZones });
@@ -345,7 +330,7 @@ export default function MapPage() {
       // ── Shadow Overlay source + layer ──
       map.addSource("shadow-overlay", {
         type: "geojson",
-        data: buildShadowGeoJSON(timeMinutes),
+        data: buildShadowGeoJSON(timeMinutes, centerLat, centerLng),
       });
       map.addLayer({
         id: "shadow-direction",
@@ -376,8 +361,8 @@ export default function MapPage() {
         geometry: {
           type: "Point" as const,
           coordinates: [
-            CENTER_LNG + (Math.random() - 0.5) * 0.5,
-            CENTER_LAT + (Math.random() - 0.5) * 0.4,
+            centerLng + (Math.random() - 0.5) * 0.5,
+            centerLat + (Math.random() - 0.5) * 0.4,
           ],
         },
       }));
@@ -464,7 +449,7 @@ export default function MapPage() {
     }
   }, [layers.sunMoonPath]);
 
-  // Update sun path + shadow when time scrubber changes
+  // Update sun path + shadow when time scrubber or center changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map?.loaded()) return;
@@ -473,16 +458,36 @@ export default function MapPage() {
       if (sunSrc) {
         const d = new Date();
         d.setHours(0, 0, 0, 0);
-        sunSrc.setData(buildSunPathGeoJSON(d));
+        sunSrc.setData(buildSunPathGeoJSON(d, centerLat, centerLng));
       }
       const shadowSrc = map.getSource("shadow-overlay") as maplibregl.GeoJSONSource | undefined;
       if (shadowSrc) {
-        shadowSrc.setData(buildShadowGeoJSON(timeMinutes));
+        shadowSrc.setData(buildShadowGeoJSON(timeMinutes, centerLat, centerLng));
+      }
+      const userSrc = map.getSource("user-location") as maplibregl.GeoJSONSource | undefined;
+      if (userSrc) {
+        userSrc.setData({
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: { type: "Point", coordinates: [centerLng, centerLat] },
+            },
+          ],
+        });
       }
     } catch {
       // source might not exist yet
     }
-  }, [timeMinutes]);
+  }, [timeMinutes, centerLat, centerLng]);
+
+  // Fly map to user coordinates once geolocation resolves
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !geoCoords) return;
+    map.flyTo({ center: [geoCoords.lng, geoCoords.lat], zoom: 10, duration: 1200 });
+  }, [geoCoords]);
 
   // Toggle light pollution layer
   useEffect(() => {
@@ -552,7 +557,7 @@ export default function MapPage() {
 
   return (
     <>
-      <NavHeader />
+      <NavHeader locationName={locationName} />
       <div className="flex flex-col h-[calc(100vh-56px)] pt-14 relative">
         {/* Map container */}
         <div className="flex-1 relative">
@@ -733,8 +738,8 @@ export default function MapPage() {
               {" "}&middot;{" "}
               {Math.round(
                 Math.sqrt(
-                  Math.pow((selectedSpot.latitude - CENTER_LAT) * 69, 2) +
-                  Math.pow((selectedSpot.longitude - CENTER_LNG) * 54.6, 2)
+                  Math.pow((selectedSpot.latitude - centerLat) * 69, 2) +
+                  Math.pow((selectedSpot.longitude - centerLng) * 54.6, 2)
                 )
               )}{" "}
               mi away
