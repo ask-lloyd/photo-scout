@@ -185,10 +185,21 @@ export function recommendSettings(
         // Shutter speed limited to 30s max
         shutterSeconds = 1 / 60; // starting point, will be adjusted by exposure
       } else {
-        // Handheld: reciprocal rule adjusted for IS
-        const minHandheld =
-          1 / (effectiveFocalLength / Math.pow(2, totalISStops));
-        shutterSeconds = Math.max(minHandheld, 1 / 250);
+        // Handheld: reciprocal rule adjusted for IS, but capped at a
+        // practical minimum. 5+ second "IS-handheld" shots are theoretical
+        // nonsense — subject motion, breathing, and micro-tremor dominate
+        // long before the IS spec runs out. Photographers expect ~1/50
+        // for casual handheld landscape, slower only with great support.
+        const reciprocal = 1 / effectiveFocalLength;
+        const isAdjusted = reciprocal * Math.pow(2, totalISStops);
+        // Practical handheld floor: 1/15s (slower = motion blur risk)
+        const HANDHELD_FLOOR = 1 / 15;
+        // Practical handheld ceiling: 1/250 (no need to be faster for static)
+        const HANDHELD_CEILING = 1 / 250;
+        shutterSeconds = Math.max(
+          Math.min(isAdjusted, HANDHELD_FLOOR),
+          HANDHELD_CEILING
+        );
       }
       break;
     case "action":
