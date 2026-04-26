@@ -8,6 +8,7 @@ import { LightScore } from "@/components/light-score";
 import { MapPin, Star, Sunset, Waves, Moon, Loader2 } from "lucide-react";
 import { useGearProfile, useGeolocation } from "@/lib/hooks";
 import { QuickGearBar } from "@/components/quick-gear-bar";
+import { SpotTips } from "@/components/spot-tips";
 import { useLocale } from "@/lib/locale-context";
 import { formatTemp } from "@/lib/format";
 import type { Spot, SettingsRecommendation } from "@/lib/types";
@@ -479,6 +480,9 @@ function PlannerPageInner() {
 
               {/* Gear Bar */}
               <QuickGearBar />
+
+              {/* Spot Tips & Tricks */}
+              <SpotTips spotId={spot.id} spotName={spot.name} />
 
               {/* Vertical Timeline */}
               <div className="space-y-0">
