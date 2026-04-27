@@ -179,29 +179,29 @@ export function recommendSettings(
   const totalISStops = Math.min(ibisStops + lensISStops, 7);
 
   switch (style) {
-    case "landscape":
+    case "landscape": {
+      // Always solve for the correct shutter at base ISO and the chosen aperture:
+      //   EV = log2(N² / t)  =>  t = N² / 2^EV
+      // (At ISO 100. If base_iso != 100, scale t by base_iso/100.)
+      const correctShutter =
+        ((aperture * aperture) / Math.pow(2, ev)) * (camera.base_iso / 100);
+
       if (hasTripod) {
-        // Can go slow: pick a shutter that gives correct exposure
-        // Shutter speed limited to 30s max
-        shutterSeconds = 1 / 60; // starting point, will be adjusted by exposure
+        // Tripod: clamp only at the camera's max exposure (30s).
+        shutterSeconds = Math.min(correctShutter, 30);
       } else {
-        // Handheld: reciprocal rule adjusted for IS, but capped at a
-        // practical minimum. 5+ second "IS-handheld" shots are theoretical
-        // nonsense — subject motion, breathing, and micro-tremor dominate
-        // long before the IS spec runs out. Photographers expect ~1/50
-        // for casual handheld landscape, slower only with great support.
+        // Handheld: don't go slower than the IS-aware safe shutter.
+        // Reciprocal rule (1 / effective focal length) with IS gain, then a
+        // practical floor of 1/15s (subject motion / micro-tremor dominate
+        // beyond that regardless of IS spec).
         const reciprocal = 1 / effectiveFocalLength;
-        const isAdjusted = reciprocal * Math.pow(2, totalISStops);
-        // Practical handheld floor: 1/15s (slower = motion blur risk)
-        const HANDHELD_FLOOR = 1 / 15;
-        // Practical handheld ceiling: 1/250 (no need to be faster for static)
-        const HANDHELD_CEILING = 1 / 250;
-        shutterSeconds = Math.max(
-          Math.min(isAdjusted, HANDHELD_FLOOR),
-          HANDHELD_CEILING
-        );
+        const isSafe = Math.min(reciprocal * Math.pow(2, totalISStops), 1 / 15);
+        // If the scene is bright enough to need a faster shutter than isSafe,
+        // honor it. If the scene needs a slower shutter, cap at isSafe.
+        shutterSeconds = Math.min(correctShutter, isSafe);
       }
       break;
+    }
     case "action":
       shutterSeconds = 1 / 1000; // fast freeze
       break;
