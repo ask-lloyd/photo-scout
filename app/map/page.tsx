@@ -8,6 +8,9 @@ import { Layers, X } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
 import { useGeolocation } from "@/lib/hooks";
 import { useTheme } from "@/lib/theme-context";
+import { fetchHeightmap, type Heightmap } from "@/lib/terrain/heightmap";
+import { computeShadowMask } from "@/lib/terrain/shadow-client";
+import { renderShadowOverlay, removeShadowOverlay } from "@/lib/terrain/shadow-overlay";
 import type { Spot } from "@/lib/types";
 
 // Hard-coded fallback (Georgetown, TX) if geolocation fails.
@@ -175,6 +178,8 @@ export default function MapPage() {
     opportunitySpots: true,
     lightPollution: false,
     shadowOverlay: false,
+    terrainShadows: false,
+    alpenglow: false,
     cloudRadar: false,
     terrain3d: false,
   });
@@ -509,6 +514,112 @@ export default function MapPage() {
     } catch { /* layers might not exist yet */ }
   }, [layers.shadowOverlay, mapLoaded]);
 
+  // Terrain-aware shadow + alpenglow overlays (DEM ray-march in worker)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+    if (!layers.terrainShadows && !layers.alpenglow) {
+      removeShadowOverlay(map, "shadow");
+      removeShadowOverlay(map, "alpenglow");
+      return;
+    }
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const recompute = async () => {
+      if (cancelled || !map) return;
+      const b = map.getBounds();
+      const bbox = {
+        west: b.getWest(),
+        east: b.getEast(),
+        south: b.getSouth(),
+        north: b.getNorth(),
+      };
+      const zoom = map.getZoom();
+
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setMinutes(timeMinutes);
+      const sunPos = SunCalc.getPosition(
+        d,
+        (bbox.north + bbox.south) / 2,
+        (bbox.east + bbox.west) / 2
+      );
+
+      let hm: Heightmap;
+      try {
+        // Downsample heavily at low zoom (wide bbox = more tiles).
+        const ds = zoom < 10 ? 4 : zoom < 11 ? 2 : 1;
+        hm = await fetchHeightmap(bbox, zoom, { downsample: ds });
+      } catch (err) {
+        console.warn("[terrain] heightmap fetch failed", err);
+        return;
+      }
+      if (cancelled) return;
+
+      if (layers.terrainShadows) {
+        const mask = await computeShadowMask({
+          heightmap: hm,
+          sunAzimuth: sunPos.azimuth,
+          sunAltitude: sunPos.altitude,
+        });
+        if (!cancelled) {
+          renderShadowOverlay(map, hm, mask, {
+            id: "shadow",
+            rgb: [10, 14, 30],
+            opacity: 0.55,
+          });
+        }
+      } else {
+        removeShadowOverlay(map, "shadow");
+      }
+
+      if (layers.alpenglow) {
+        const altDeg = (sunPos.altitude * 180) / Math.PI;
+        if (altDeg > 0 && altDeg < 8) {
+          const mask = await computeShadowMask({
+            heightmap: hm,
+            sunAzimuth: sunPos.azimuth,
+            sunAltitude: sunPos.altitude,
+            alpenglow: true,
+            alpenglowMinElev: 1200,
+          });
+          // Warmer (redder) when sun is lower.
+          const t = altDeg / 8; // 0 at horizon, 1 at 8°
+          const rgb: [number, number, number] = [
+            255,
+            Math.round(120 + t * 80),
+            Math.round(60 + t * 60),
+          ];
+          if (!cancelled) {
+            renderShadowOverlay(map, hm, mask, {
+              id: "alpenglow",
+              rgb,
+              opacity: 0.65,
+            });
+          }
+        } else {
+          removeShadowOverlay(map, "alpenglow");
+        }
+      } else {
+        removeShadowOverlay(map, "alpenglow");
+      }
+    };
+
+    const debounced = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(recompute, 200);
+    };
+    debounced();
+    map.on("moveend", debounced);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      map.off("moveend", debounced);
+    };
+  }, [layers.terrainShadows, layers.alpenglow, timeMinutes, mapLoaded]);
+
   // Toggle cloud radar layer
   useEffect(() => {
     const map = mapRef.current;
@@ -608,7 +719,9 @@ export default function MapPage() {
               ["sunMoonPath", "Sun/Moon Path"],
               ["opportunitySpots", "Opportunity Spots"],
               ["lightPollution", "Light Pollution (Bortle)"],
-              ["shadowOverlay", "Shadow Overlay"],
+              ["shadowOverlay", "Shadow Overlay (flat)"],
+              ["terrainShadows", "Terrain Shadows"],
+              ["alpenglow", "Alpenglow"],
               ["cloudRadar", "Cloud Radar"],
               ["terrain3d", "3D Terrain"],
             ] as [keyof typeof layers, string][]).map(([key, label]) => (
@@ -729,7 +842,9 @@ export default function MapPage() {
                     ["sunMoonPath", "Sun/Moon Path"],
                     ["opportunitySpots", "Opportunity Spots"],
                     ["lightPollution", "Light Pollution (Bortle)"],
-                    ["shadowOverlay", "Shadow Overlay"],
+                    ["shadowOverlay", "Shadow Overlay (flat)"],
+                    ["terrainShadows", "Terrain Shadows"],
+                    ["alpenglow", "Alpenglow"],
                     ["cloudRadar", "Cloud Radar"],
                     ["terrain3d", "3D Terrain"],
                   ] as [keyof typeof layers, string][]).map(([key, label]) => (
