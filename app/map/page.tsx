@@ -698,8 +698,23 @@ export default function MapPage() {
       `M 0 0 L ${(-x).toFixed(2)} ${y.toFixed(2)} A ${r} ${r} 0 ${sweep} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`
     );
 
-    svg.style.transform = `rotate(${heading.toFixed(1)}deg)`;
+    // MapLibre markers stay viewport-aligned (they don't counter-rotate with
+    // the map), so we must subtract the current map bearing — otherwise the
+    // cone spins along with the map when the user rotates it instead of
+    // staying locked to true compass north.
+    const applyRotation = () => {
+      const bearing = mapRef.current?.getBearing() ?? 0;
+      svg.style.transform = `rotate(${(heading - bearing).toFixed(1)}deg)`;
+    };
+    applyRotation();
     svg.style.opacity = "1";
+
+    const map = mapRef.current;
+    if (!map) return;
+    map.on("rotate", applyRotation);
+    return () => {
+      map.off("rotate", applyRotation);
+    };
   }, [heading, gear.lenses]);
 
   // Toggle light pollution layer
