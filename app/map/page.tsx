@@ -167,6 +167,7 @@ export default function MapPage() {
   });
 
   const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const [layers, setLayers] = useState({
     sunMoonPath: true,
@@ -365,9 +366,11 @@ export default function MapPage() {
         layout: { visibility: "none" },
       });
 
+      setMapLoaded(true);
     });
 
     return () => {
+      setMapLoaded(false);
       userMarkerRef.current?.remove();
       userMarkerRef.current = null;
       map.remove();
@@ -421,7 +424,7 @@ export default function MapPage() {
   // Toggle sun path visibility
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     try {
       map.setLayoutProperty(
         "sun-path-line",
@@ -431,12 +434,12 @@ export default function MapPage() {
     } catch {
       // layer might not exist yet
     }
-  }, [layers.sunMoonPath]);
+  }, [layers.sunMoonPath, mapLoaded]);
 
   // Update sun path + shadow when time scrubber or center changes
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     try {
       const sunSrc = map.getSource("sun-path") as maplibregl.GeoJSONSource | undefined;
       if (sunSrc) {
@@ -452,7 +455,7 @@ export default function MapPage() {
     } catch {
       // source might not exist yet
     }
-  }, [timeMinutes, centerLat, centerLng]);
+  }, [timeMinutes, centerLat, centerLng, mapLoaded]);
 
   // Fly map to user coordinates once geolocation resolves
   useEffect(() => {
@@ -464,7 +467,7 @@ export default function MapPage() {
   // Toggle light pollution layer
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     try {
       map.setLayoutProperty(
         "bortle-circles",
@@ -472,23 +475,23 @@ export default function MapPage() {
         layers.lightPollution ? "visible" : "none"
       );
     } catch { /* layer might not exist yet */ }
-  }, [layers.lightPollution]);
+  }, [layers.lightPollution, mapLoaded]);
 
   // Toggle shadow overlay layers
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     const vis = layers.shadowOverlay ? "visible" : "none";
     try {
       map.setLayoutProperty("shadow-direction", "visibility", vis);
       map.setLayoutProperty("shadow-area", "visibility", vis);
     } catch { /* layers might not exist yet */ }
-  }, [layers.shadowOverlay]);
+  }, [layers.shadowOverlay, mapLoaded]);
 
   // Toggle cloud radar layer
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     try {
       map.setLayoutProperty(
         "cloud-circles",
@@ -496,12 +499,12 @@ export default function MapPage() {
         layers.cloudRadar ? "visible" : "none"
       );
     } catch { /* layer might not exist yet */ }
-  }, [layers.cloudRadar]);
+  }, [layers.cloudRadar, mapLoaded]);
 
   // Toggle 3D terrain
   useEffect(() => {
     const map = mapRef.current;
-    if (!map?.loaded()) return;
+    if (!map || !mapLoaded) return;
     try {
       if (layers.terrain3d) {
         if (!map.getSource("terrain-source")) {
@@ -514,7 +517,8 @@ export default function MapPage() {
         }
         const onSourceData = () => {
           try {
-            map.setTerrain({ source: "terrain-source", exaggeration: 1.5 });
+            map.setTerrain({ source: "terrain-source", exaggeration: 2.5 });
+            map.easeTo({ pitch: 60, duration: 600 });
           } catch (e) {
             console.warn("Terrain not available:", e);
           }
@@ -523,9 +527,10 @@ export default function MapPage() {
         map.on("sourcedata", onSourceData);
       } else {
         try { map.setTerrain(null); } catch {}
+        try { map.easeTo({ pitch: 0, duration: 400 }); } catch {}
       }
     } catch {}
-  }, [layers.terrain3d]);
+  }, [layers.terrain3d, mapLoaded]);
 
   return (
     <>
