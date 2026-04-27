@@ -36,6 +36,7 @@ function computeScore(spot: Spot): number {
 }
 
 import { LightScore, lightScoreColor } from "@/components/light-score";
+import { AlpenglowPill } from "@/components/alpenglow-pill";
 
 function scoreColor(score: number): string {
   if (score >= 70) return "#f97316";
@@ -894,6 +895,9 @@ export default function MapPage() {
             <div className="mt-3">
               <LightScore score={selectedSpot.score} variant="badge" showLabel />
             </div>
+
+            {/* Alpenglow window */}
+            <AlpenglowPill lat={selectedSpot.latitude} lng={selectedSpot.longitude} />
 
             {/* Description */}
             <p className="text-sm text-[var(--neutral-200)] mt-3 leading-relaxed">
