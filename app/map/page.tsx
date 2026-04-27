@@ -533,7 +533,7 @@ export default function MapPage() {
       <div className="fixed inset-0 top-14 flex flex-col">
         {/* Map container */}
         <div className="flex-1 relative">
-          <div ref={mapContainerRef} className="absolute inset-0" />
+          <div ref={mapContainerRef} className="w-full h-full" />
         </div>
 
         {/* ─── Top-left: Time Scrubber (desktop only) ─── */}
