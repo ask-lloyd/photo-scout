@@ -82,29 +82,30 @@ function formatShutterSpeed(seconds: number): string {
 function estimateEV(light: LightConditions): number {
   const alt = light.sunAltitude;
 
-  // Calibrated to match real camera meter readings (typical scenes meter
-  // ~1 stop below textbook Sunny-16, since they aren't 18% gray).
+  // Calibrated to match real camera meter readings on a Sony A7R V for
+  // typical landscape scenes (textbook Sunny-16 reads ~1 stop hot for
+  // most non-18%-gray subjects). Recalibrated 2026-04 after field test
+  // at Funes/Villnoß flagged 1/8s as too bright at golden hour.
   if (alt >= 45) {
-    return 14; // Bright sun / midday — meters at f/8, 1/250, ISO 100
+    return 14; // Bright sun / midday — f/8, 1/250, ISO 100
   }
-  if (alt >= 15 && alt < 45) {
-    const t = (alt - 15) / 30;
-    return 11 + t * 3; // EV 11-14
+  if (alt >= 15) {
+    return 11.5 + ((alt - 15) / 30) * 2.5; // EV 11.5-14
   }
-  if (alt >= 6 && alt < 15) {
-    return 10 + (alt - 6) / 9; // EV 10-11
+  if (alt >= 6) {
+    return 11 + ((alt - 6) / 9) * 0.5; // EV 11-11.5 (overcast-equivalent)
   }
-  if (alt >= 0 && alt < 6) {
-    return 8 + (alt / 6) * 2; // EV 8-10
+  if (alt >= 0) {
+    return 10 + (alt / 6) * 1; // EV 10-11 — golden hour
   }
-  if (alt >= -6 && alt < 0) {
-    return 2 + ((alt + 6) / 6) * 6; // EV 2-8
+  if (alt >= -6) {
+    return 5 + ((alt + 6) / 6) * 5; // EV 5-10 — sunset → civil twilight
   }
-  if (alt >= -12 && alt < -6) {
-    return ((alt + 12) / 6) * 2; // EV 0-2
+  if (alt >= -12) {
+    return 1 + ((alt + 12) / 6) * 4; // EV 1-5 — nautical twilight
   }
-  // Night
-  return -2 + ((Math.max(alt, -18) + 18) / 6) * 2; // EV -2 to 0
+  // Night / astro
+  return -2 + ((Math.max(alt, -18) + 18) / 6) * 3; // EV -2 to 1
 }
 
 /**
@@ -113,8 +114,11 @@ function estimateEV(light: LightConditions): number {
  */
 function adjustEVForClouds(ev: number, cloudScore: number): number {
   // cloudScore ranges from 5 (thick overcast) to 25 (dramatic broken).
-  // Map: 25 = no adjustment, 5 = -3 EV
-  const adjustment = -((25 - cloudScore) / 20) * 3;
+  // Map: 25 = no adjustment, 5 = up to -3 EV. Cap penalty at low light —
+  // a sky already at EV 7 shouldn't lose another 3 stops to cloud cover
+  // (real meters don't drop that fast at golden/blue hour).
+  const maxPenalty = Math.min(3, Math.max(0, ev - 6));
+  const adjustment = -((25 - cloudScore) / 20) * maxPenalty;
   return ev + adjustment;
 }
 
