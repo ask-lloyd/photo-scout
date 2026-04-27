@@ -7,6 +7,7 @@ import SunCalc from "suncalc";
 import { Layers, X } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
 import { useGeolocation } from "@/lib/hooks";
+import { useTheme } from "@/lib/theme-context";
 import type { Spot } from "@/lib/types";
 
 // Hard-coded fallback (Georgetown, TX) if geolocation fails.
@@ -151,8 +152,10 @@ export default function MapPage() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
+  const userMarkerRef = useRef<maplibregl.Marker | null>(null);
 
   const { coords: geoCoords, locationName } = useGeolocation();
+  const { resolvedTheme } = useTheme();
   const centerLat = geoCoords?.lat ?? FALLBACK_LAT;
   const centerLng = geoCoords?.lng ?? FALLBACK_LNG;
 
@@ -197,9 +200,14 @@ export default function MapPage() {
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    const isDark = resolvedTheme === "dark";
+    const styleUrl = isDark
+      ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+      : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+      style: styleUrl,
       center: [centerLng, centerLat],
       zoom: 10,
     });
@@ -209,23 +217,25 @@ export default function MapPage() {
     mapRef.current = map;
 
     map.on("load", () => {
-      // Issue 1: Make basemap features visible against dark background
-      try {
-        map.setPaintProperty("background", "background-color", "#151821");
-      } catch { /* layer may not exist */ }
-      map.getStyle().layers.forEach((layer) => {
+      // Issue 1: Make basemap features visible against background (dark mode tweaks only)
+      if (isDark) {
         try {
-          if (layer.type === "line" && layer.id.includes("road")) {
-            map.setPaintProperty(layer.id, "line-opacity", 0.8);
-          }
-          if (layer.type === "fill" && layer.id.includes("water")) {
-            map.setPaintProperty(layer.id, "fill-color", "#1a2233");
-          }
-          if (layer.type === "symbol") {
-            map.setPaintProperty(layer.id, "text-opacity", 0.9);
-          }
-        } catch { /* skip inaccessible layers */ }
-      });
+          map.setPaintProperty("background", "background-color", "#151821");
+        } catch { /* layer may not exist */ }
+        map.getStyle().layers.forEach((layer) => {
+          try {
+            if (layer.type === "line" && layer.id.includes("road")) {
+              map.setPaintProperty(layer.id, "line-opacity", 0.8);
+            }
+            if (layer.type === "fill" && layer.id.includes("water")) {
+              map.setPaintProperty(layer.id, "fill-color", "#1a2233");
+            }
+            if (layer.type === "symbol") {
+              map.setPaintProperty(layer.id, "text-opacity", 0.9);
+            }
+          } catch { /* skip inaccessible layers */ }
+        });
+      }
 
       // Sun path source and layer
       map.addSource("sun-path", {
@@ -244,46 +254,18 @@ export default function MapPage() {
         },
       });
 
-      // User location source
-      map.addSource("user-location", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              properties: {},
-              geometry: { type: "Point", coordinates: [centerLng, centerLat] },
-            },
-          ],
-        },
-      });
-      // Outer pulse ring
-      map.addLayer({
-        id: "user-location-pulse",
-        type: "circle",
-        source: "user-location",
-        paint: {
-          "circle-radius": 16,
-          "circle-color": "#3b82f6",
-          "circle-opacity": 0.2,
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#3b82f6",
-          "circle-stroke-opacity": 0.4,
-        },
-      });
-      // Inner dot
-      map.addLayer({
-        id: "user-location-dot",
-        type: "circle",
-        source: "user-location",
-        paint: {
-          "circle-radius": 6,
-          "circle-color": "#3b82f6",
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#ffffff",
-        },
-      });
+      // User location — DOM marker (always renders above other markers and shapes)
+      const userEl = document.createElement("div");
+      userEl.style.cssText = `
+        width: 18px; height: 18px; border-radius: 50%;
+        background: #3b82f6; border: 3px solid #ffffff;
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.25), 0 2px 6px rgba(0,0,0,0.4);
+        pointer-events: none;
+      `;
+      const userMarker = new maplibregl.Marker({ element: userEl })
+        .setLngLat([centerLng, centerLat])
+        .addTo(map);
+      userMarkerRef.current = userMarker;
 
       // ── Light Pollution (Bortle) source + layers ──
       // Synthetic illustrative zones around the user — real Bortle data
@@ -386,10 +368,12 @@ export default function MapPage() {
     });
 
     return () => {
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [resolvedTheme]);
 
   // Add/update spot markers
   useEffect(() => {
@@ -464,19 +448,7 @@ export default function MapPage() {
       if (shadowSrc) {
         shadowSrc.setData(buildShadowGeoJSON(timeMinutes, centerLat, centerLng));
       }
-      const userSrc = map.getSource("user-location") as maplibregl.GeoJSONSource | undefined;
-      if (userSrc) {
-        userSrc.setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              properties: {},
-              geometry: { type: "Point", coordinates: [centerLng, centerLat] },
-            },
-          ],
-        });
-      }
+      userMarkerRef.current?.setLngLat([centerLng, centerLat]);
     } catch {
       // source might not exist yet
     }
@@ -558,10 +530,10 @@ export default function MapPage() {
   return (
     <>
       <NavHeader locationName={locationName} />
-      <div className="flex flex-col h-[calc(100vh-56px)] pt-14 relative">
+      <div className="fixed inset-0 top-14 flex flex-col">
         {/* Map container */}
         <div className="flex-1 relative">
-          <div ref={mapContainerRef} className="w-full h-full" />
+          <div ref={mapContainerRef} className="absolute inset-0" />
         </div>
 
         {/* ─── Top-left: Time Scrubber (desktop only) ─── */}
