@@ -38,6 +38,8 @@ function computeScore(spot: Spot): number {
 import { LightScore, lightScoreColor } from "@/components/light-score";
 import { AlpenglowPill } from "@/components/alpenglow-pill";
 import { TimeScrubber } from "@/components/time-scrubber";
+import { useDeviceHeading } from "@/lib/use-device-heading";
+import { useGearProfile } from "@/lib/hooks";
 
 function scoreColor(score: number): string {
   if (score >= 70) return "#f97316";
@@ -158,9 +160,12 @@ export default function MapPage() {
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const userMarkerElRef = useRef<HTMLDivElement | null>(null);
 
   const { coords: geoCoords, locationName } = useGeolocation();
   const { resolvedTheme } = useTheme();
+  const { heading, supported: headingSupported, needsPermission: headingNeedsPermission, request: requestHeading } = useDeviceHeading();
+  const { gear } = useGearProfile();
   const centerLat = geoCoords?.lat ?? FALLBACK_LAT;
   const centerLng = geoCoords?.lng ?? FALLBACK_LNG;
 
@@ -284,14 +289,26 @@ export default function MapPage() {
         },
       });
 
-      // User location — DOM marker (always renders above other markers and shapes)
+      // User location — DOM marker (always renders above other markers and shapes).
+      // Includes a heading cone (initially hidden; rotated/shown by useEffect below).
       const userEl = document.createElement("div");
       userEl.style.cssText = `
-        width: 18px; height: 18px; border-radius: 50%;
-        background: #3b82f6; border: 3px solid #ffffff;
-        box-shadow: 0 0 0 4px rgba(59,130,246,0.25), 0 2px 6px rgba(0,0,0,0.4);
+        position: relative;
+        width: 120px; height: 120px;
+        display: flex; align-items: center; justify-content: center;
         pointer-events: none;
       `;
+      userEl.innerHTML = `
+        <svg class="ps-heading-cone" viewBox="-60 -60 120 120" width="120" height="120"
+             style="position:absolute; inset:0; transform: rotate(0deg); transform-origin: 50% 50%; transition: transform 0.12s linear; opacity: 0; will-change: transform, opacity;">
+          <!-- Cone fan: filled wedge centered on north (-Y), half-angle from CSS var -->
+          <path class="ps-heading-cone-path" d="" fill="rgba(59,130,246,0.18)" stroke="rgba(59,130,246,0.45)" stroke-width="1" />
+        </svg>
+        <div style="position:relative; width:18px; height:18px; border-radius:50%;
+                    background:#3b82f6; border:3px solid #ffffff;
+                    box-shadow:0 0 0 4px rgba(59,130,246,0.25), 0 2px 6px rgba(0,0,0,0.4);"></div>
+      `;
+      userMarkerElRef.current = userEl;
       const userMarker = new maplibregl.Marker({ element: userEl })
         .setLngLat([centerLng, centerLat])
         .addTo(map);
@@ -492,6 +509,55 @@ export default function MapPage() {
     if (!map || !geoCoords) return;
     map.flyTo({ center: [geoCoords.lng, geoCoords.lat], zoom: 10, duration: 1200 });
   }, [geoCoords]);
+
+  // ── Heading cone: rotate + size to active lens FOV ──
+  // FOV (horizontal, full-frame equivalent): 2*atan(36/(2*f)) degrees.
+  // Pick the WIDEST end of the first active lens so the cone shows the
+  // broadest possible framing for the user's chosen kit.
+  useEffect(() => {
+    const el = userMarkerElRef.current;
+    if (!el) return;
+    const svg = el.querySelector<SVGSVGElement>(".ps-heading-cone");
+    const path = el.querySelector<SVGPathElement>(".ps-heading-cone-path");
+    if (!svg || !path) return;
+
+    if (heading == null) {
+      svg.style.opacity = "0";
+      return;
+    }
+
+    // Active lens IDs persisted by the QuickGearBar
+    let focalMm = 24; // default = wide end of 24-70
+    try {
+      const raw = localStorage.getItem("ps_active_lens_ids");
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      const active = gear.lenses.find((l) => ids.includes(l.id)) ?? gear.lenses[0];
+      if (active) focalMm = active.focal_length_min ?? focalMm;
+    } catch {
+      // fall through
+    }
+    // Clamp so a 600mm tele doesn't render an invisible sliver and a fisheye
+    // doesn't render a near-full disc.
+    focalMm = Math.max(8, Math.min(400, focalMm));
+    const fovDeg = (2 * Math.atan(36 / (2 * focalMm)) * 180) / Math.PI;
+    const halfDeg = Math.max(2, Math.min(80, fovDeg / 2));
+    const halfRad = (halfDeg * Math.PI) / 180;
+
+    // Wedge radius in SVG units (viewBox is -60..60 → 120 wide)
+    const r = 55;
+    // Cone points up (-Y) so rotating the SVG by `heading` aligns with compass north.
+    const x = Math.sin(halfRad) * r;
+    const y = -Math.cos(halfRad) * r;
+    // Smooth arc rather than straight chord for the leading edge
+    const sweep = halfDeg > 45 ? 1 : 0;
+    path.setAttribute(
+      "d",
+      `M 0 0 L ${(-x).toFixed(2)} ${y.toFixed(2)} A ${r} ${r} 0 ${sweep} 1 ${x.toFixed(2)} ${y.toFixed(2)} Z`
+    );
+
+    svg.style.transform = `rotate(${heading.toFixed(1)}deg)`;
+    svg.style.opacity = "1";
+  }, [heading, gear.lenses]);
 
   // Toggle light pollution layer
   useEffect(() => {
@@ -753,6 +819,31 @@ export default function MapPage() {
             </div>
           )}
         </div>
+
+        {/* ─── Compass enable / status chip (top-right, mobile-friendly) ─── */}
+        {headingSupported && (headingNeedsPermission || heading != null) && (
+          <button
+            onClick={() => {
+              if (headingNeedsPermission) requestHeading();
+            }}
+            disabled={!headingNeedsPermission}
+            className="absolute top-18 right-4 z-10 glass rounded-full px-3 py-1.5 text-[12px] font-medium text-white flex items-center gap-1.5 cursor-pointer hover:bg-white/10 transition-colors disabled:cursor-default"
+            title={
+              headingNeedsPermission
+                ? "Tap to enable compass on this device"
+                : `Heading: ${heading != null ? `${Math.round(heading)}°` : "—"}`
+            }
+          >
+            <span aria-hidden>🧭</span>
+            <span>
+              {headingNeedsPermission
+                ? "Enable compass"
+                : heading != null
+                  ? `${Math.round(heading)}°`
+                  : "Compass"}
+            </span>
+          </button>
+        )}
 
         {/* ─── Bottom-left: Legend (desktop only) ─── */}
         <div className="hidden md:block absolute bottom-6 left-4 z-10 glass rounded-xl px-4 py-3">
