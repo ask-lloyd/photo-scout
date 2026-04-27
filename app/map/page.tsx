@@ -168,6 +168,7 @@ export default function MapPage() {
 
   const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [basemap, setBasemap] = useState<"streets" | "satellite">("streets");
 
   const [layers, setLayers] = useState({
     sunMoonPath: true,
@@ -202,13 +203,33 @@ export default function MapPage() {
     if (!mapContainerRef.current) return;
 
     const isDark = resolvedTheme === "dark";
-    const styleUrl = isDark
-      ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-      : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+    const isSatellite = basemap === "satellite";
+    const styleSpec: maplibregl.StyleSpecification | string = isSatellite
+      ? {
+          version: 8,
+          sources: {
+            "esri-imagery": {
+              type: "raster",
+              tiles: [
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+              ],
+              tileSize: 256,
+              maxzoom: 19,
+              attribution:
+                "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+            },
+          },
+          layers: [
+            { id: "esri-imagery", type: "raster", source: "esri-imagery" },
+          ],
+        }
+      : isDark
+        ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+        : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: styleUrl,
+      style: styleSpec as maplibregl.StyleSpecification,
       center: [centerLng, centerLat],
       zoom: 10,
     });
@@ -219,7 +240,7 @@ export default function MapPage() {
 
     map.on("load", () => {
       // Issue 1: Make basemap features visible against background (dark mode tweaks only)
-      if (isDark) {
+      if (isDark && !isSatellite) {
         try {
           map.setPaintProperty("background", "background-color", "#151821");
         } catch { /* layer may not exist */ }
@@ -376,7 +397,7 @@ export default function MapPage() {
       map.remove();
       mapRef.current = null;
     };
-  }, [resolvedTheme]);
+  }, [resolvedTheme, basemap]);
 
   // Add/update spot markers
   useEffect(() => {
@@ -565,6 +586,20 @@ export default function MapPage() {
 
         {/* ─── Left below scrubber: Layers Panel (desktop only) ─── */}
         <div className="hidden md:block absolute top-44 left-4 z-10 glass rounded-xl p-4 w-72">
+          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
+            BASEMAP
+          </div>
+          <div className="flex gap-1 mb-4 p-0.5 rounded-lg bg-neutral-800/60">
+            {(["streets", "satellite"] as const).map((b) => (
+              <button
+                key={b}
+                onClick={() => setBasemap(b)}
+                className={`flex-1 px-2 py-1 rounded-md text-[12px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-[var(--neutral-300)] hover:text-[var(--neutral-100)]"}`}
+              >
+                {b}
+              </button>
+            ))}
+          </div>
           <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
             LAYERS
           </div>
@@ -663,6 +698,24 @@ export default function MapPage() {
                     {minutesToTimeStr(timeMinutes)}
                   </span>
                   <span>11:59 PM</span>
+                </div>
+              </div>
+
+              {/* Basemap */}
+              <div className="mb-5">
+                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
+                  BASEMAP
+                </div>
+                <div className="flex gap-1 p-0.5 rounded-lg bg-neutral-800/60">
+                  {(["streets", "satellite"] as const).map((b) => (
+                    <button
+                      key={b}
+                      onClick={() => setBasemap(b)}
+                      className={`flex-1 px-2 py-1.5 rounded-md text-[13px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-[var(--neutral-300)]"}`}
+                    >
+                      {b}
+                    </button>
+                  ))}
                 </div>
               </div>
 
