@@ -35,6 +35,62 @@ function computeScore(spot: Spot): number {
   return Math.min(score, 95);
 }
 
+// Time-aware score modifier — boosts scores when the current time matches the
+// spot's best windows so markers visibly pulse as the time scrubber advances.
+// Returns the adjusted [0–99] score plus a "vibe" used to tint the marker.
+function timeAdjustedScore(
+  baseScore: number,
+  spot: Spot,
+  timeMinutes: number,
+  lat: number,
+  lng: number
+): { score: number; vibe: "alpenglow" | "golden" | "blue" | "day" | "night" } {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setMinutes(timeMinutes);
+  const sunPos = SunCalc.getPosition(d, lat, lng);
+  const altDeg = (sunPos.altitude * 180) / Math.PI;
+
+  // Classify the current solar phase at this lat/lng
+  let vibe: "alpenglow" | "golden" | "blue" | "day" | "night";
+  let phaseBoost = 0;
+  if (altDeg >= 10) {
+    vibe = "day";
+    phaseBoost = -8; // harsh midday light penalty
+  } else if (altDeg >= -0.833 && altDeg < 6) {
+    vibe = "golden";
+    phaseBoost = 18;
+  } else if (altDeg >= -6 && altDeg < -0.833) {
+    vibe = "alpenglow";
+    phaseBoost = 22;
+  } else if (altDeg >= -12 && altDeg < -6) {
+    vibe = "blue";
+    phaseBoost = 10;
+  } else {
+    vibe = "night";
+    phaseBoost = -15;
+  }
+
+  // Tag-aware bonus: spots tagged for the current phase get extra love
+  const tagBonus =
+    (vibe === "golden" && (spot.tags.includes("golden-hour") || spot.best_time.includes("golden_morning") || spot.best_time.includes("golden_evening")) ? 8 : 0) +
+    (vibe === "alpenglow" && (spot.tags.includes("sunset") || spot.tags.includes("sunrise") || spot.tags.includes("alpenglow")) ? 8 : 0) +
+    (vibe === "blue" && (spot.tags.includes("astro") || spot.tags.includes("dark-sky")) ? 10 : 0) +
+    (vibe === "night" && (spot.tags.includes("astro") || spot.tags.includes("dark-sky")) ? 14 : 0);
+
+  const score = Math.max(8, Math.min(99, Math.round(baseScore + phaseBoost + tagBonus)));
+  return { score, vibe };
+}
+
+function vibeColor(vibe: "alpenglow" | "golden" | "blue" | "day" | "night", score: number): string {
+  if (score < 50) return "#333333";
+  if (vibe === "alpenglow") return "#fb7185"; // rose-400
+  if (vibe === "golden") return "#f59e0b"; // amber-500
+  if (vibe === "blue") return "#6366f1"; // indigo-500
+  if (vibe === "night") return "#1e293b"; // slate-800
+  return score >= 70 ? "#f97316" : "#3b82f6";
+}
+
 import { LightScore, lightScoreColor } from "@/components/light-score";
 import { AlpenglowPill } from "@/components/alpenglow-pill";
 import { TimeScrubber } from "@/components/time-scrubber";
@@ -158,7 +214,7 @@ function buildSunPathGeoJSON(
 export default function MapPage() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
-  const markersRef = useRef<maplibregl.Marker[]>([]);
+  const markersRef = useRef<{ marker: maplibregl.Marker; el: HTMLDivElement; spot: SpotWithScore }[]>([]);
   const userMarkerRef = useRef<maplibregl.Marker | null>(null);
   const userMarkerElRef = useRef<HTMLDivElement | null>(null);
 
@@ -430,13 +486,14 @@ export default function MapPage() {
     if (!map || spots.length === 0) return;
 
     // Clear old markers
-    markersRef.current.forEach((m) => m.remove());
+    markersRef.current.forEach(({ marker }) => marker.remove());
     markersRef.current = [];
 
     if (!layers.opportunitySpots) return;
 
     spots.forEach((spot) => {
-      const color = scoreColor(spot.score);
+      const adj = timeAdjustedScore(spot.score, spot, timeMinutes, centerLat, centerLng);
+      const color = vibeColor(adj.vibe, adj.score);
       const el = document.createElement("div");
       el.style.cssText = `
         width: 32px; height: 32px; border-radius: 50%;
@@ -445,9 +502,9 @@ export default function MapPage() {
         font-weight: 700; cursor: pointer;
         border: 2px solid rgba(255,255,255,0.2);
         box-shadow: 0 0 6px rgba(0,0,0,0.5), 0 0 2px rgba(212,135,45,0.3);
-        transition: transform 0.15s;
+        transition: background-color 0.3s ease, transform 0.15s;
       `;
-      el.textContent = String(spot.score);
+      el.textContent = String(adj.score);
       el.addEventListener("mouseenter", () => {
         el.style.transform = "scale(1.2)";
       });
@@ -463,9 +520,18 @@ export default function MapPage() {
         .setLngLat([spot.longitude, spot.latitude])
         .addTo(map);
 
-      markersRef.current.push(marker);
+      markersRef.current.push({ marker, el, spot });
     });
   }, [spots, layers.opportunitySpots]);
+
+  // Re-color/re-score markers as timeMinutes changes (without recreating them).
+  useEffect(() => {
+    markersRef.current.forEach(({ el, spot }) => {
+      const adj = timeAdjustedScore(spot.score, spot, timeMinutes, centerLat, centerLng);
+      el.style.backgroundColor = vibeColor(adj.vibe, adj.score);
+      el.textContent = String(adj.score);
+    });
+  }, [timeMinutes, centerLat, centerLng]);
 
   // Toggle sun path visibility
   useEffect(() => {
