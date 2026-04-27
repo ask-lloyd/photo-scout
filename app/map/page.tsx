@@ -174,6 +174,7 @@ export default function MapPage() {
   const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [basemap, setBasemap] = useState<"streets" | "satellite">("streets");
+  const [layersPanelOpen, setLayersPanelOpen] = useState(false);
 
   const [layers, setLayers] = useState({
     sunMoonPath: true,
@@ -685,47 +686,72 @@ export default function MapPage() {
           />
         </div>
 
-        {/* ─── Left below scrubber: Layers Panel (desktop only) ─── */}
-        <div className="hidden md:block absolute top-44 left-4 z-10 glass rounded-xl p-4 w-72">
-          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
-            BASEMAP
-          </div>
-          <div className="flex gap-1 mb-4 p-0.5 rounded-lg bg-neutral-800/60">
-            {(["streets", "satellite"] as const).map((b) => (
-              <button
-                key={b}
-                onClick={() => setBasemap(b)}
-                className={`flex-1 px-2 py-1 rounded-md text-[12px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-[var(--neutral-300)] hover:text-[var(--neutral-100)]"}`}
-              >
-                {b}
-              </button>
-            ))}
-          </div>
-          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
-            LAYERS
-          </div>
-          <div className="space-y-2">
-            {([
-              ["sunMoonPath", "Sun/Moon Path"],
-              ["opportunitySpots", "Opportunity Spots"],
-              ["lightPollution", "Light Pollution (Bortle)"],
-              ["shadowOverlay", "Shadow Overlay (flat)"],
-              ["terrainShadows", "Terrain Shadows"],
-              ["alpenglow", "Alpenglow"],
-              ["cloudRadar", "Cloud Radar"],
-              ["terrain3d", "3D Terrain"],
-            ] as [keyof typeof layers, string][]).map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={layers[key]}
-                  onChange={() => toggleLayer(key)}
-                  className="accent-[#f97316]"
-                />
-                <span className="text-[var(--neutral-200)]">{label}</span>
-              </label>
-            ))}
-          </div>
+        {/* ─── Left below scrubber: Layers Toggle (desktop only) ─── */}
+        <div className="hidden md:block absolute top-44 left-4 z-10">
+          {!layersPanelOpen ? (
+            <button
+              onClick={() => setLayersPanelOpen(true)}
+              className="glass rounded-full px-3.5 py-2 flex items-center gap-2 text-[13px] font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
+              aria-label="Open layers panel"
+            >
+              <Layers size={16} className="text-[#f97316]" />
+              <span>Layers</span>
+            </button>
+          ) : (
+            <div className="glass rounded-xl p-3 w-64">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[12px] font-semibold tracking-widest text-white">
+                  MAP OPTIONS
+                </div>
+                <button
+                  onClick={() => setLayersPanelOpen(false)}
+                  className="text-white/70 hover:text-white cursor-pointer"
+                  aria-label="Close layers panel"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="text-[11px] font-semibold tracking-widest text-white/70 mb-1.5">
+                BASEMAP
+              </div>
+              <div className="flex gap-1 mb-3 p-0.5 rounded-lg bg-black/40">
+                {(["streets", "satellite"] as const).map((b) => (
+                  <button
+                    key={b}
+                    onClick={() => setBasemap(b)}
+                    className={`flex-1 px-2 py-1 rounded-md text-[12px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-white/80 hover:text-white"}`}
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+              <div className="text-[11px] font-semibold tracking-widest text-white/70 mb-1.5">
+                LAYERS
+              </div>
+              <div className="space-y-1.5">
+                {([
+                  ["sunMoonPath", "Sun/Moon Path"],
+                  ["opportunitySpots", "Opportunity Spots"],
+                  ["lightPollution", "Light Pollution"],
+                  ["shadowOverlay", "Shadow (flat)"],
+                  ["terrainShadows", "Terrain Shadows"],
+                  ["alpenglow", "Alpenglow"],
+                  ["cloudRadar", "Cloud Radar"],
+                  ["terrain3d", "3D Terrain"],
+                ] as [keyof typeof layers, string][]).map(([key, label]) => (
+                  <label key={key} className="flex items-center gap-2 text-[13px] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={layers[key]}
+                      onChange={() => toggleLayer(key)}
+                      className="accent-[#f97316]"
+                    />
+                    <span className="text-white/90">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ─── Bottom-left: Legend (desktop only) ─── */}
@@ -768,7 +794,7 @@ export default function MapPage() {
               onClick={() => setMobileControlsOpen(false)}
             />
             {/* Bottom sheet */}
-            <div className="absolute bottom-0 left-0 right-0 glass rounded-t-2xl p-4 pb-8 animate-slide-up">
+            <div className="absolute bottom-0 left-0 right-0 glass rounded-t-2xl p-4 pb-6 max-h-[80vh] overflow-y-auto animate-slide-up">
               {/* Drag handle */}
               <div className="flex justify-center mb-3">
                 <div className="w-10 h-1 rounded-full bg-neutral-600" />
@@ -794,15 +820,15 @@ export default function MapPage() {
 
               {/* Basemap */}
               <div className="mb-5">
-                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
+                <div className="text-[12px] font-semibold tracking-widest text-white/80 mb-2">
                   BASEMAP
                 </div>
-                <div className="flex gap-1 p-0.5 rounded-lg bg-neutral-800/60">
+                <div className="flex gap-1 p-0.5 rounded-lg bg-black/40">
                   {(["streets", "satellite"] as const).map((b) => (
                     <button
                       key={b}
                       onClick={() => setBasemap(b)}
-                      className={`flex-1 px-2 py-1.5 rounded-md text-[13px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-[var(--neutral-300)]"}`}
+                      className={`flex-1 px-2 py-1.5 rounded-md text-[13px] font-medium capitalize cursor-pointer transition-colors ${basemap === b ? "bg-[#f97316] text-white" : "text-white/80"}`}
                     >
                       {b}
                     </button>
@@ -812,15 +838,15 @@ export default function MapPage() {
 
               {/* Layers */}
               <div>
-                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-3">
+                <div className="text-[12px] font-semibold tracking-widest text-white/80 mb-3">
                   LAYERS
                 </div>
                 <div className="space-y-2">
                   {([
                     ["sunMoonPath", "Sun/Moon Path"],
                     ["opportunitySpots", "Opportunity Spots"],
-                    ["lightPollution", "Light Pollution (Bortle)"],
-                    ["shadowOverlay", "Shadow Overlay (flat)"],
+                    ["lightPollution", "Light Pollution"],
+                    ["shadowOverlay", "Shadow (flat)"],
                     ["terrainShadows", "Terrain Shadows"],
                     ["alpenglow", "Alpenglow"],
                     ["cloudRadar", "Cloud Radar"],
@@ -833,7 +859,7 @@ export default function MapPage() {
                         onChange={() => toggleLayer(key)}
                         className="accent-[#f97316]"
                       />
-                      <span className="text-[var(--neutral-200)]">{label}</span>
+                      <span className="text-white/95">{label}</span>
                     </label>
                   ))}
                 </div>
