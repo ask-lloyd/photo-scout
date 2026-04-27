@@ -29,7 +29,8 @@ export interface ShadowJobOpts {
   sunAzimuth: number;
   sunAltitude: number;
   alpenglow?: boolean;
-  alpenglowMinElev?: number;
+  alpenglowMinProminence?: number;
+  alpenglowProminenceRadiusM?: number;
   maxSteps?: number;
 }
 
@@ -53,7 +54,8 @@ export function computeShadowMask(opts: ShadowJobOpts): Promise<Uint8Array> {
         sunAzimuth: opts.sunAzimuth,
         sunAltitude: opts.sunAltitude,
         alpenglow: opts.alpenglow,
-        alpenglowMinElev: opts.alpenglowMinElev,
+        alpenglowMinProminence: opts.alpenglowMinProminence,
+        alpenglowProminenceRadiusM: opts.alpenglowProminenceRadiusM,
         maxSteps: opts.maxSteps,
       },
       [elevCopy.buffer]

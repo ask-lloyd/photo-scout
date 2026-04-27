@@ -15,7 +15,13 @@ interface Job {
   sunAzimuth: number; // suncalc convention: south=0, west=+pi/2
   sunAltitude: number; // radians
   alpenglow?: boolean;
-  alpenglowMinElev?: number;
+  /** Min prominence (meters) for a pixel to count as alpenglow-eligible terrain.
+   *  Prominence = baseElev - min(neighborhood within `alpenglowProminenceRadiusM`).
+   *  Filters out flat ground / water while letting any hill, ridge, or dune qualify.
+   *  Default: 50m */
+  alpenglowMinProminence?: number;
+  /** Neighborhood radius (meters) used to evaluate prominence. Default: 500m. */
+  alpenglowProminenceRadiusM?: number;
   maxSteps?: number;
 }
 
@@ -52,7 +58,45 @@ self.onmessage = (e: MessageEvent<Job>) => {
     Math.abs(stepY) * j.metersPerPixelLat;
   const dz = stepMeters * Math.tan(j.sunAltitude);
   const MAX_STEPS = j.maxSteps ?? 220;
-  const minElev = j.alpenglowMinElev ?? 1500;
+  const minProminence = j.alpenglowMinProminence ?? 50;
+  const promRadiusM = j.alpenglowProminenceRadiusM ?? 500;
+  // Convert prominence-radius to pixels using the smaller of the two axes.
+  const mPerPx = Math.min(j.metersPerPixelLng, j.metersPerPixelLat) || 1;
+  const promRadiusPx = Math.max(2, Math.min(40, Math.round(promRadiusM / mPerPx)));
+
+  // Precompute local-min elevation per pixel using a separable horizontal+vertical
+  // min filter (O(w*h*r), cheap). Used only for alpenglow prominence check.
+  let localMin: Float32Array | null = null;
+  if (j.alpenglow) {
+    const tmp = new Float32Array(w * h);
+    // Horizontal pass
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let m = Infinity;
+        const x0 = Math.max(0, x - promRadiusPx);
+        const x1 = Math.min(w - 1, x + promRadiusPx);
+        for (let xi = x0; xi <= x1; xi++) {
+          const v = elev[y * w + xi];
+          if (v < m) m = v;
+        }
+        tmp[y * w + x] = m;
+      }
+    }
+    // Vertical pass
+    localMin = new Float32Array(w * h);
+    for (let x = 0; x < w; x++) {
+      for (let y = 0; y < h; y++) {
+        let m = Infinity;
+        const y0 = Math.max(0, y - promRadiusPx);
+        const y1 = Math.min(h - 1, y + promRadiusPx);
+        for (let yi = y0; yi <= y1; yi++) {
+          const v = tmp[yi * w + x];
+          if (v < m) m = v;
+        }
+        localMin[y * w + x] = m;
+      }
+    }
+  }
 
   function sample(x: number, y: number): number {
     const x0 = x | 0;
@@ -92,7 +136,9 @@ self.onmessage = (e: MessageEvent<Job>) => {
         rz += dz;
       }
       if (j.alpenglow) {
-        out[py * w + px] = !inShadow && baseElev >= minElev ? 255 : 0;
+        const idx = py * w + px;
+        const prominence = localMin ? baseElev - localMin[idx] : 0;
+        out[idx] = !inShadow && prominence >= minProminence ? 255 : 0;
       } else {
         out[py * w + px] = inShadow ? 200 : 0;
       }

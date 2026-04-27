@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import SunCalc from "suncalc";
@@ -251,6 +251,83 @@ export default function MapPage() {
   const toggleLayer = useCallback((key: keyof typeof layers) => {
     setLayers((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
+
+  // Alpenglow status — describes whether the current time produces alpenglow
+  // light at the user's location, and offers to jump to the next window.
+  const alpenglowStatus = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setMinutes(timeMinutes);
+    const altDeg = (SunCalc.getPosition(d, centerLat, centerLng).altitude * 180) / Math.PI;
+    if (altDeg > 0 && altDeg < 8) {
+      return {
+        kind: "active" as const,
+        text: `Active · sun ${altDeg.toFixed(1)}° above horizon`,
+      };
+    }
+    // Find nearest 0–8° window (today or tomorrow). Track both window start
+    // (for "X min away" copy) and peak (closest to horizon — best moment to
+    // jump to, also avoids float-edge "still inactive" after the jump).
+    const now = new Date();
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    let bestDeltaMin = Infinity;
+    let bestType: "sunrise" | "sunset" = "sunset";
+    let bestPeakMin = 0;
+    for (const dayOffset of [0, 1]) {
+      const dayStart = new Date(todayStart);
+      dayStart.setDate(dayStart.getDate() + dayOffset);
+      for (const type of ["sunrise", "sunset"] as const) {
+        const times = SunCalc.getTimes(dayStart, centerLat, centerLng);
+        const anchor = type === "sunrise" ? times.sunrise : times.sunset;
+        if (!anchor || isNaN(anchor.getTime())) continue;
+        // Sweep ±90 min around anchor at 1-min resolution. Track first match
+        // (start) and the minimum |altitude| (peak).
+        let startMinOfDay: number | null = null;
+        let peakMinOfDay: number | null = null;
+        let peakAbsAlt = Infinity;
+        for (let dm = -90; dm <= 90; dm++) {
+          const t = new Date(anchor.getTime() + dm * 60_000);
+          const a =
+            (SunCalc.getPosition(t, centerLat, centerLng).altitude * 180) / Math.PI;
+          if (a > 0 && a < 8) {
+            const minOfDay = t.getHours() * 60 + t.getMinutes();
+            if (startMinOfDay == null) startMinOfDay = minOfDay;
+            if (Math.abs(a) < peakAbsAlt) {
+              peakAbsAlt = Math.abs(a);
+              peakMinOfDay = minOfDay;
+            }
+          }
+        }
+        if (startMinOfDay == null || peakMinOfDay == null) continue;
+        const absoluteStart = dayOffset * 1440 + startMinOfDay;
+        const delta = absoluteStart - timeMinutes;
+        if (delta > 0 && delta < bestDeltaMin) {
+          bestDeltaMin = delta;
+          bestType = type;
+          bestPeakMin = peakMinOfDay;
+        }
+      }
+    }
+    if (bestDeltaMin === Infinity) {
+      return { kind: "none" as const, text: "No alpenglow window in the next 24h" };
+    }
+    const label = bestType === "sunrise" ? "sunrise" : "sunset";
+    const hh = Math.floor(bestPeakMin / 60);
+    const mm = bestPeakMin % 60;
+    const ampm = hh >= 12 ? "PM" : "AM";
+    const h12 = hh % 12 === 0 ? 12 : hh % 12;
+    const timeStr = `${h12}:${mm.toString().padStart(2, "0")} ${ampm}`;
+    const hrsAway = Math.floor(bestDeltaMin / 60);
+    const minsAway = bestDeltaMin % 60;
+    const away =
+      hrsAway > 0 ? `${hrsAway}h ${minsAway}m away` : `${minsAway}m away`;
+    return {
+      kind: "waiting" as const,
+      text: `Inactive · next at ${timeStr} (${label}, ${away})`,
+      jumpTo: bestPeakMin,
+    };
+  }, [timeMinutes, centerLat, centerLng]);
 
   // Fetch spots
   useEffect(() => {
@@ -718,7 +795,8 @@ export default function MapPage() {
             sunAzimuth: sunPos.azimuth,
             sunAltitude: sunPos.altitude,
             alpenglow: true,
-            alpenglowMinElev: 1200,
+            alpenglowMinProminence: 50,
+            alpenglowProminenceRadiusM: 500,
           });
           // Warmer (redder) when sun is lower.
           const t = altDeg / 8; // 0 at horizon, 1 at 8°
@@ -871,15 +949,39 @@ export default function MapPage() {
                   ["cloudRadar", "Cloud Radar"],
                   ["terrain3d", "3D Terrain"],
                 ] as [keyof typeof layers, string][]).map(([key, label]) => (
-                  <label key={key} className="flex items-center gap-2 text-[13px] cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={layers[key]}
-                      onChange={() => toggleLayer(key)}
-                      className="accent-[#f97316]"
-                    />
-                    <span className="text-white/90">{label}</span>
-                  </label>
+                  <div key={key}>
+                    <label className="flex items-center gap-2 text-[13px] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={layers[key]}
+                        onChange={() => toggleLayer(key)}
+                        className="accent-[#f97316]"
+                      />
+                      <span className="text-white/90">{label}</span>
+                    </label>
+                    {key === "alpenglow" && layers.alpenglow && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (alpenglowStatus.kind === "waiting" && alpenglowStatus.jumpTo != null) {
+                            setTimeMinutes(alpenglowStatus.jumpTo);
+                          }
+                        }}
+                        disabled={alpenglowStatus.kind !== "waiting"}
+                        className={`block w-full text-left text-[11px] mt-1 ml-6 px-1.5 py-0.5 rounded transition-colors ${
+                          alpenglowStatus.kind === "active"
+                            ? "text-[#fb923c] cursor-default"
+                            : alpenglowStatus.kind === "waiting"
+                            ? "text-white/60 hover:text-white/90 hover:bg-white/5 cursor-pointer"
+                            : "text-white/40 cursor-default"
+                        }`}
+                        title={alpenglowStatus.kind === "waiting" ? "Tap to jump time scrubber here" : undefined}
+                      >
+                        {alpenglowStatus.text}
+                        {alpenglowStatus.kind === "waiting" && " ↗"}
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -1009,15 +1111,38 @@ export default function MapPage() {
                     ["cloudRadar", "Cloud Radar"],
                     ["terrain3d", "3D Terrain"],
                   ] as [keyof typeof layers, string][]).map(([key, label]) => (
-                    <label key={key} className="flex items-center gap-2 text-sm cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={layers[key]}
-                        onChange={() => toggleLayer(key)}
-                        className="accent-[#f97316]"
-                      />
-                      <span className="text-white/95">{label}</span>
-                    </label>
+                    <div key={key}>
+                      <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={layers[key]}
+                          onChange={() => toggleLayer(key)}
+                          className="accent-[#f97316]"
+                        />
+                        <span className="text-white/95">{label}</span>
+                      </label>
+                      {key === "alpenglow" && layers.alpenglow && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (alpenglowStatus.kind === "waiting" && alpenglowStatus.jumpTo != null) {
+                              setTimeMinutes(alpenglowStatus.jumpTo);
+                            }
+                          }}
+                          disabled={alpenglowStatus.kind !== "waiting"}
+                          className={`block w-full text-left text-[12px] mt-1 ml-6 px-1.5 py-0.5 rounded transition-colors ${
+                            alpenglowStatus.kind === "active"
+                              ? "text-[#fb923c] cursor-default"
+                              : alpenglowStatus.kind === "waiting"
+                              ? "text-white/65 hover:text-white/95 hover:bg-white/5 cursor-pointer"
+                              : "text-white/40 cursor-default"
+                          }`}
+                        >
+                          {alpenglowStatus.text}
+                          {alpenglowStatus.kind === "waiting" && " ↗"}
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
