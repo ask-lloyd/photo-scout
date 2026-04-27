@@ -68,8 +68,8 @@ export default function Dashboard() {
   }, [coords]);
 
   // Settings recommendation
-  const settings = useMemo(() => {
-    if (!lightData) return null;
+  const { settings, tripodIsNoOp } = useMemo(() => {
+    if (!lightData) return { settings: null, tripodIsNoOp: false };
     const camera = gear.camera || {
       id: "sony-a7rv", make: "Sony", model: "A7R V",
       sensor_size: "full_frame" as const, megapixels: 61, base_iso: 100,
@@ -82,10 +82,24 @@ export default function Dashboard() {
       max_aperture: 2.8, min_aperture: 22, has_is: false, is_stops: 0,
       weight_g: 695, filter_size_mm: 82, tags: ["standard-zoom", "professional"],
     };
-    return recommendSettings(lightData.conditions, camera, lens, {
+    const style = (gear.shootingStyles[0] as "landscape" | "action" | "portrait" | "astro") || "landscape";
+    const current = recommendSettings(lightData.conditions, camera, lens, {
       hasTripod: gear.hasTripod,
-      style: (gear.shootingStyles[0] as "landscape" | "action" | "portrait" | "astro") || "landscape",
+      style,
     });
+    // Compare against the opposite tripod state — if identical, the toggle has
+    // no effect at the current light level (scene is bright enough that the
+    // handheld safety floor never engages).
+    const counterfactual = recommendSettings(lightData.conditions, camera, lens, {
+      hasTripod: !gear.hasTripod,
+      style,
+    });
+    const tripodIsNoOp =
+      style === "landscape" &&
+      current.aperture === counterfactual.aperture &&
+      current.shutterSpeed === counterfactual.shutterSpeed &&
+      current.iso === counterfactual.iso;
+    return { settings: current, tripodIsNoOp };
   }, [lightData, gear]);
 
   // Timeline windows
@@ -349,6 +363,15 @@ export default function Dashboard() {
                           </span>
                         </div>
                       </div>
+                      {/* Tripod no-op hint */}
+                      {tripodIsNoOp && (
+                        <div
+                          className="mt-3 text-[12px]"
+                          style={{ color: "var(--neutral-300)", lineHeight: 1.4 }}
+                        >
+                          {gear.hasTripod ? "Tripod " : "No tripod "}— same settings either way in this light. A tripod only changes things below ~1/15s shutter (deep golden hour, blue hour, night).
+                        </div>
+                      )}
                       {/* Direction tip */}
                       <div
                         className="mt-4 px-3 py-2 rounded-lg text-[13px]"
