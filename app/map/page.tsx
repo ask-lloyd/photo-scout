@@ -686,8 +686,8 @@ export default function MapPage() {
           />
         </div>
 
-        {/* ─── Left below scrubber: Layers Toggle (desktop only) ─── */}
-        <div className="hidden md:block absolute top-44 left-4 z-10">
+        {/* ─── Top-right: Layers Toggle (desktop only) ─── */}
+        <div className="hidden md:block absolute top-4 right-4 z-10">
           {!layersPanelOpen ? (
             <button
               onClick={() => setLayersPanelOpen(true)}
