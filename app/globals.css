@@ -191,12 +191,29 @@ html:not(.dark) .glass {
 html:not(.dark) .glass .text-white {
   color: var(--white) !important;
 }
+/* Tailwind alpha variants of text-white (e.g. text-white/70, text-white/80,
+   text-white/90, text-white/95) compile to literal rgb(255 255 255 / x) and
+   ignore the override above. In light mode the .glass surface is white, so
+   these become invisible. Force them to dark text with proportional alpha. */
+html:not(.dark) .glass [class*="text-white/"] {
+  color: rgba(26, 31, 54, 0.92) !important;
+}
 html:not(.dark) .glass .text-neutral-300 {
   color: var(--neutral-300) !important;
 }
 html:not(.dark) .glass .text-neutral-400,
 html:not(.dark) .glass .text-neutral-500 {
   color: var(--neutral-200) !important;
+}
+/* Orange accent text used inside glass panels (e.g. AlpenglowPill in the
+   bottom spot-detail card) is nearly invisible on the white light-mode
+   surface. Force a darker, accessible orange when on light glass. */
+html:not(.dark) .glass .text-orange-100,
+html:not(.dark) .glass .text-orange-200,
+html:not(.dark) .glass .text-orange-300,
+html:not(.dark) .glass [class*="text-orange-200/"],
+html:not(.dark) .glass [class*="text-orange-100/"] {
+  color: #b45309 !important; /* amber-700 — readable on white */
 }
 
 /* ── Kitesurf / multi-activity surface helpers ──
