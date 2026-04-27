@@ -82,24 +82,26 @@ function formatShutterSpeed(seconds: number): string {
 function estimateEV(light: LightConditions): number {
   const alt = light.sunAltitude;
 
+  // Calibrated to match real camera meter readings (typical scenes meter
+  // ~1 stop below textbook Sunny-16, since they aren't 18% gray).
   if (alt >= 45) {
-    return 15; // Bright sun / midday
+    return 14; // Bright sun / midday — meters at f/8, 1/250, ISO 100
   }
   if (alt >= 15 && alt < 45) {
     const t = (alt - 15) / 30;
-    return 12 + t * 3; // EV 12-15
+    return 11 + t * 3; // EV 11-14
   }
   if (alt >= 6 && alt < 15) {
-    return 11 + (alt - 6) / 9; // EV 11-12
+    return 10 + (alt - 6) / 9; // EV 10-11
   }
   if (alt >= 0 && alt < 6) {
-    return 9 + (alt / 6) * 2; // EV 9-11
+    return 8 + (alt / 6) * 2; // EV 8-10
   }
   if (alt >= -6 && alt < 0) {
-    return 3 + ((alt + 6) / 6) * 6; // EV 3-9
+    return 2 + ((alt + 6) / 6) * 6; // EV 2-8
   }
   if (alt >= -12 && alt < -6) {
-    return ((alt + 12) / 6) * 3; // EV 0-3
+    return ((alt + 12) / 6) * 2; // EV 0-2
   }
   // Night
   return -2 + ((Math.max(alt, -18) + 18) / 6) * 2; // EV -2 to 0
