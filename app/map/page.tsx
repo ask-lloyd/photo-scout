@@ -843,76 +843,50 @@ export default function MapPage() {
         )}
 
         {/* ─── Right: Spot Detail Flyout ─── */}
+        {/* ─── Bottom-center: Spot Detail Card (compact, doesn't block map) ─── */}
         {selectedSpot && (
-          <div className="absolute top-18 right-4 z-10 glass rounded-xl p-3.5 w-64 max-h-[calc(100vh-120px)] overflow-y-auto">
-            {/* Close button */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 glass rounded-xl px-3 py-2 w-[min(92vw,560px)] flex items-center gap-3">
             <button
               onClick={() => setSelectedSpot(null)}
-              className="absolute top-2 right-2 text-[var(--neutral-300)] hover:text-[var(--neutral-100)] text-lg leading-none cursor-pointer"
+              className="text-[var(--neutral-300)] hover:text-white text-lg leading-none cursor-pointer flex-shrink-0"
               aria-label="Close"
             >
               &times;
             </button>
 
-            {/* Name + location */}
-            <h2 className="text-[15px] font-bold text-[var(--white)] pr-5 leading-tight">{selectedSpot.name}</h2>
-            <p className="text-[11px] text-[var(--neutral-300)] mt-0.5">
-              {selectedSpot.latitude.toFixed(3)}, {selectedSpot.longitude.toFixed(3)}
-              {" "}&middot;{" "}
-              {Math.round(
-                Math.sqrt(
-                  Math.pow((selectedSpot.latitude - centerLat) * 69, 2) +
-                  Math.pow((selectedSpot.longitude - centerLng) * 54.6, 2)
-                )
-              )}{" "}
-              mi away
-            </p>
-
-            {/* Score badge */}
-            <div className="mt-2">
-              <LightScore score={selectedSpot.score} variant="badge" showLabel />
+            {/* Score chip */}
+            <div className="flex-shrink-0">
+              <LightScore score={selectedSpot.score} variant="badge" />
             </div>
 
-            {/* Alpenglow window */}
-            <AlpenglowPill lat={selectedSpot.latitude} lng={selectedSpot.longitude} />
-
-            {/* Description */}
-            <p className="text-[12px] text-[var(--neutral-200)] mt-2 leading-snug line-clamp-3">
-              {selectedSpot.description}
-            </p>
-
-            {/* Info rows */}
-            <div className="mt-3 space-y-1 text-[12px]">
-              <div className="flex justify-between">
-                <span className="text-[var(--neutral-400)]">Best</span>
-                <span className="text-[var(--neutral-200)] text-right">
-                  {selectedSpot.best_time.map((t) => t.replace(/_/g, " ")).join(", ")}
-                </span>
+            {/* Name + key info */}
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white truncate">
+                {selectedSpot.name}
               </div>
-              <div className="flex justify-between">
-                <span className="text-[var(--neutral-400)]">Facing</span>
-                <span className="text-[var(--neutral-200)]">
-                  {bearingToLabel(selectedSpot.facing_direction)} ({selectedSpot.facing_direction}&deg;)
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[var(--neutral-400)]">Parking</span>
-                <span className="text-[var(--neutral-200)] capitalize">{selectedSpot.parking}</span>
+              <div className="text-[11px] text-[var(--neutral-300)] truncate">
+                {bearingToLabel(selectedSpot.facing_direction)} · {selectedSpot.best_time
+                  .map((t) => t.replace(/_/g, " "))
+                  .join(", ")}
               </div>
             </div>
 
-            {/* Buttons */}
-            <div className="mt-3 flex gap-1.5">
-              <a
-                href={`/planner?spot=${encodeURIComponent(selectedSpot.id)}`}
-                className="flex-1 text-center px-3 py-1.5 rounded-md bg-[#f97316] text-white text-[12px] font-semibold hover:bg-[#ea580c] transition-colors cursor-pointer"
-              >
-                Plan Shot &rarr;
-              </a>
-              <button className="px-3 py-1.5 rounded-md bg-neutral-700 text-white text-[12px] font-semibold hover:bg-neutral-600 transition-colors cursor-pointer">
-                Save
-              </button>
+            {/* Compact alpenglow inline */}
+            <div className="hidden sm:block flex-shrink-0 max-w-[180px]">
+              <AlpenglowPill
+                lat={selectedSpot.latitude}
+                lng={selectedSpot.longitude}
+                compact
+              />
             </div>
+
+            {/* Action */}
+            <a
+              href={`/planner?spot=${encodeURIComponent(selectedSpot.id)}`}
+              className="flex-shrink-0 px-3 py-1.5 rounded-md bg-[#f97316] text-white text-[12px] font-semibold hover:bg-[#ea580c] transition-colors cursor-pointer whitespace-nowrap"
+            >
+              Plan &rarr;
+            </a>
           </div>
         )}
       </div>

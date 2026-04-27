@@ -10,19 +10,47 @@ import {
 interface Props {
   lat: number;
   lng: number;
+  /** Compact single-line variant for inline use in bottom card */
+  compact?: boolean;
 }
 
-export function AlpenglowPill({ lat, lng }: Props) {
+export function AlpenglowPill({ lat, lng, compact = false }: Props) {
   const [win, setWin] = useState<AlpenglowWindow | null>(null);
 
   useEffect(() => {
     setWin(nextAlpenglowWindow(new Date(), lat, lng));
-    // refresh every minute so it stays current
     const t = setInterval(() => {
       setWin(nextAlpenglowWindow(new Date(), lat, lng));
     }, 60_000);
     return () => clearInterval(t);
   }, [lat, lng]);
+
+  if (compact) {
+    if (!win) {
+      return (
+        <div className="text-[11px] text-[var(--neutral-400)] truncate">
+          No alpenglow today
+        </div>
+      );
+    }
+    const intensity = 1 - win.peakAltitudeDeg / 8;
+    return (
+      <div className="leading-tight">
+        <div className="text-[10px] uppercase tracking-wider text-orange-300">
+          {win.type === "sunrise" ? "Sunrise glow" : "Sunset glow"}
+        </div>
+        <div
+          className="text-[12px] font-medium text-orange-100 truncate"
+          style={{ opacity: 0.7 + 0.3 * intensity }}
+        >
+          {formatTime(win.start)}–{formatTime(win.end)}
+          <span className="text-[var(--neutral-400)] ml-1">
+            ★ {formatTime(win.peak)}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   if (!win) {
     return (
@@ -38,8 +66,7 @@ export function AlpenglowPill({ lat, lng }: Props) {
   }
 
   const label = win.type === "sunrise" ? "Sunrise alpenglow" : "Sunset alpenglow";
-  // gradient from amber→deep-orange when very low sun
-  const intensity = 1 - win.peakAltitudeDeg / 8; // 0 high, 1 low
+  const intensity = 1 - win.peakAltitudeDeg / 8;
   const bg = `linear-gradient(135deg, rgba(255,${Math.round(
     140 + (1 - intensity) * 60
   )},${Math.round(70 + (1 - intensity) * 40)},0.25), rgba(255,${Math.round(
