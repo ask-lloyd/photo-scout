@@ -37,6 +37,7 @@ function computeScore(spot: Spot): number {
 
 import { LightScore, lightScoreColor } from "@/components/light-score";
 import { AlpenglowPill } from "@/components/alpenglow-pill";
+import { TimeScrubber } from "@/components/time-scrubber";
 
 function scoreColor(score: number): string {
   if (score >= 70) return "#f97316";
@@ -675,25 +676,13 @@ export default function MapPage() {
         </div>
 
         {/* ─── Top-left: Time Scrubber (desktop only) ─── */}
-        <div className="hidden md:block absolute top-18 left-4 z-10 glass rounded-xl p-4 w-72">
-          <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
-            TIME SCRUBBER
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={1440}
-            value={timeMinutes}
-            onChange={(e) => setTimeMinutes(Number(e.target.value))}
-            className="w-full accent-[#f97316] h-1.5 bg-neutral-700 rounded-full appearance-none cursor-pointer"
+        <div className="hidden md:block absolute top-18 left-4 z-10 glass rounded-xl p-3 w-72">
+          <TimeScrubber
+            timeMinutes={timeMinutes}
+            setTimeMinutes={setTimeMinutes}
+            lat={centerLat}
+            lng={centerLng}
           />
-          <div className="flex justify-between text-[13px] text-[var(--neutral-300)] mt-1">
-            <span>12 AM</span>
-            <span className="text-[var(--neutral-200)] font-medium">
-              {minutesToTimeStr(timeMinutes)}
-            </span>
-            <span>11:59 PM</span>
-          </div>
         </div>
 
         {/* ─── Left below scrubber: Layers Panel (desktop only) ─── */}
@@ -795,24 +784,12 @@ export default function MapPage() {
 
               {/* Time Scrubber */}
               <div className="mb-5">
-                <div className="text-[13px] font-semibold tracking-widest text-[var(--neutral-300)] mb-2">
-                  TIME SCRUBBER
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1440}
-                  value={timeMinutes}
-                  onChange={(e) => setTimeMinutes(Number(e.target.value))}
-                  className="w-full accent-[#f97316] h-1.5 bg-neutral-700 rounded-full appearance-none cursor-pointer"
+                <TimeScrubber
+                  timeMinutes={timeMinutes}
+                  setTimeMinutes={setTimeMinutes}
+                  lat={centerLat}
+                  lng={centerLng}
                 />
-                <div className="flex justify-between text-[13px] text-[var(--neutral-300)] mt-1">
-                  <span>12 AM</span>
-                  <span className="text-[var(--neutral-200)] font-medium">
-                    {minutesToTimeStr(timeMinutes)}
-                  </span>
-                  <span>11:59 PM</span>
-                </div>
               </div>
 
               {/* Basemap */}
@@ -867,20 +844,20 @@ export default function MapPage() {
 
         {/* ─── Right: Spot Detail Flyout ─── */}
         {selectedSpot && (
-          <div className="absolute top-18 right-4 z-10 glass rounded-xl p-5 w-80">
+          <div className="absolute top-18 right-4 z-10 glass rounded-xl p-3.5 w-64 max-h-[calc(100vh-120px)] overflow-y-auto">
             {/* Close button */}
             <button
               onClick={() => setSelectedSpot(null)}
-              className="absolute top-3 right-3 text-[var(--neutral-300)] hover:text-[var(--neutral-200)] text-lg leading-none cursor-pointer"
+              className="absolute top-2 right-2 text-[var(--neutral-300)] hover:text-[var(--neutral-100)] text-lg leading-none cursor-pointer"
               aria-label="Close"
             >
               &times;
             </button>
 
             {/* Name + location */}
-            <h2 className="text-lg font-bold text-[var(--white)] pr-6">{selectedSpot.name}</h2>
-            <p className="text-[13px] text-[var(--neutral-300)] mt-0.5">
-              {selectedSpot.latitude.toFixed(4)}, {selectedSpot.longitude.toFixed(4)}
+            <h2 className="text-[15px] font-bold text-[var(--white)] pr-5 leading-tight">{selectedSpot.name}</h2>
+            <p className="text-[11px] text-[var(--neutral-300)] mt-0.5">
+              {selectedSpot.latitude.toFixed(3)}, {selectedSpot.longitude.toFixed(3)}
               {" "}&middot;{" "}
               {Math.round(
                 Math.sqrt(
@@ -892,7 +869,7 @@ export default function MapPage() {
             </p>
 
             {/* Score badge */}
-            <div className="mt-3">
+            <div className="mt-2">
               <LightScore score={selectedSpot.score} variant="badge" showLabel />
             </div>
 
@@ -900,43 +877,39 @@ export default function MapPage() {
             <AlpenglowPill lat={selectedSpot.latitude} lng={selectedSpot.longitude} />
 
             {/* Description */}
-            <p className="text-sm text-[var(--neutral-200)] mt-3 leading-relaxed">
+            <p className="text-[12px] text-[var(--neutral-200)] mt-2 leading-snug line-clamp-3">
               {selectedSpot.description}
             </p>
 
             {/* Info rows */}
-            <div className="mt-4 space-y-2 text-sm">
+            <div className="mt-3 space-y-1 text-[12px]">
               <div className="flex justify-between">
-                <span className="text-[var(--neutral-300)]">Best Time</span>
-                <span className="text-[var(--neutral-200)]">
+                <span className="text-[var(--neutral-400)]">Best</span>
+                <span className="text-[var(--neutral-200)] text-right">
                   {selectedSpot.best_time.map((t) => t.replace(/_/g, " ")).join(", ")}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--neutral-300)]">Facing</span>
+                <span className="text-[var(--neutral-400)]">Facing</span>
                 <span className="text-[var(--neutral-200)]">
                   {bearingToLabel(selectedSpot.facing_direction)} ({selectedSpot.facing_direction}&deg;)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--neutral-300)]">Parking</span>
+                <span className="text-[var(--neutral-400)]">Parking</span>
                 <span className="text-[var(--neutral-200)] capitalize">{selectedSpot.parking}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[var(--neutral-300)]">Tags</span>
-                <span className="text-[var(--neutral-200)]">{selectedSpot.tags.join(", ")}</span>
               </div>
             </div>
 
             {/* Buttons */}
-            <div className="mt-5 flex gap-2">
+            <div className="mt-3 flex gap-1.5">
               <a
                 href={`/planner?spot=${encodeURIComponent(selectedSpot.id)}`}
-                className="flex-1 text-center px-4 py-2 rounded-lg bg-[#f97316] text-[#fff] text-sm font-semibold hover:bg-[#ea580c] transition-colors cursor-pointer"
+                className="flex-1 text-center px-3 py-1.5 rounded-md bg-[#f97316] text-white text-[12px] font-semibold hover:bg-[#ea580c] transition-colors cursor-pointer"
               >
                 Plan Shot &rarr;
               </a>
-              <button className="px-4 py-2 rounded-lg bg-neutral-700 text-[var(--neutral-200)] text-sm font-semibold hover:bg-neutral-600 transition-colors cursor-pointer">
+              <button className="px-3 py-1.5 rounded-md bg-neutral-700 text-white text-[12px] font-semibold hover:bg-neutral-600 transition-colors cursor-pointer">
                 Save
               </button>
             </div>
