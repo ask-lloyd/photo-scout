@@ -413,10 +413,12 @@ function PlannerPageInner() {
         const landscape = recommendSettings(raw.lightConditions, gear.camera, primaryLens, {
           hasTripod: gear.hasTripod,
           style: "landscape",
+          ownedFilters: gear.filters,
         });
         const action = recommendSettings(raw.lightConditions, gear.camera, primaryLens, {
           hasTripod: gear.hasTripod,
           style: "action",
+          ownedFilters: gear.filters,
         });
         return { ...raw, settings: { landscape, action } };
       }

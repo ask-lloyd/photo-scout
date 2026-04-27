@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera as CameraIcon } from "lucide-react";
-import type { LightConditions, Camera, Lens } from "@/lib/types";
+import type { LightConditions, Camera, Lens, Filter } from "@/lib/types";
 import { recommendSettings } from "@/lib/settings-advisor";
 import Link from "next/link";
 
@@ -13,9 +13,10 @@ interface SettingsCardProps {
   style: "landscape" | "action" | "portrait" | "astro";
   cameras: Camera[];
   lenses: Lens[];
+  ownedFilters?: Filter[];
 }
 
-export function SettingsCard({ conditions, camera, lens, hasTripod, style }: SettingsCardProps) {
+export function SettingsCard({ conditions, camera, lens, hasTripod, style, ownedFilters }: SettingsCardProps) {
   if (!camera || !lens) {
     return (
       <div
@@ -55,7 +56,7 @@ export function SettingsCard({ conditions, camera, lens, hasTripod, style }: Set
     );
   }
 
-  const settings = recommendSettings(conditions, camera, lens, { hasTripod, style });
+  const settings = recommendSettings(conditions, camera, lens, { hasTripod, style, ownedFilters });
 
   return (
     <div

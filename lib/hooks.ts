@@ -192,11 +192,34 @@ const DEFAULT_LENS: Lens = {
   weight_g: 695, filter_size_mm: 82, tags: ["standard-zoom", "professional"],
 };
 
+// Ryan's filters: 67mm CPL fits the Sigma 100-400 DGDN; 82mm Variable ND
+// fits the FE 24-70 f/2.8 GM II.
+const DEFAULT_FILTERS: Filter[] = [
+  {
+    id: "promaster-67mm-cpl",
+    make: "Promaster",
+    model: "67mm CPL",
+    type: "cpl",
+    filter_size_mm: 67,
+    tags: ["polarizer"],
+  },
+  {
+    id: "promaster-82mm-variable-nd",
+    make: "Promaster",
+    model: "82mm Variable ND",
+    type: "variable_nd",
+    filter_size_mm: 82,
+    nd_stops_min: 1,
+    nd_stops_max: 9,
+    tags: ["nd"],
+  },
+];
+
 export function useGearProfile() {
   const [gear, setGear] = useState<GearProfile>({
     camera: DEFAULT_CAMERA,
     lenses: [DEFAULT_LENS],
-    filters: [],
+    filters: DEFAULT_FILTERS,
     hasTripod: false,
     shootingStyles: ["landscape"],
   });
@@ -208,7 +231,9 @@ export function useGearProfile() {
       if (stored) {
         const parsed = JSON.parse(stored);
         // Backfill fields added after earlier saves
-        if (!parsed.filters) parsed.filters = [];
+        if (!parsed.filters || parsed.filters.length === 0) {
+          parsed.filters = DEFAULT_FILTERS;
+        }
         setGear(parsed);
       }
     } catch {

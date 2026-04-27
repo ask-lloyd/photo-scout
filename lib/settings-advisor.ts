@@ -1,5 +1,7 @@
 import type {
+  AppliedFilter,
   Camera,
+  Filter,
   Lens,
   LightConditions,
   SettingsRecommendation,
@@ -124,6 +126,80 @@ function adjustEVForClouds(ev: number, cloudScore: number): number {
 
 // ─── Public API ───
 
+/**
+ * Standard CPL light loss in stops. Modern multi-coated CPLs are typically
+ * 1.3-1.7 stops; we use 1.5 as a middle-ground.
+ */
+const CPL_LIGHT_LOSS_STOPS = 1.5;
+
+/**
+ * Decide whether a CPL would actually help in these conditions.
+ * Driven by light character (haze) + sun geometry (CPL is most effective
+ * 90° from the sun) + scene type. Skips when light is already too dim.
+ */
+function shouldUseCPL(
+  light: LightConditions,
+  ev: number,
+  style: string
+): { useful: boolean; reason: string } {
+  // CPL eats 1.5 stops — never worth it below EV ~6 (already noise-limited).
+  if (ev < 6) return { useful: false, reason: "" };
+
+  // Astro/action: never worth the light loss or rotation hassle.
+  if (style === "astro" || style === "action") {
+    return { useful: false, reason: "" };
+  }
+
+  const character = light.character ?? [];
+  if (character.includes("hazy")) {
+    return { useful: true, reason: "cuts haze, deepens distant detail" };
+  }
+  if (light.lightPhase === "daylight" || light.lightPhase === "midday") {
+    return { useful: true, reason: "deepens blue sky, cuts glare on water and foliage" };
+  }
+  if (style === "landscape" && ev >= 8) {
+    return { useful: true, reason: "boosts saturation, cuts reflections" };
+  }
+  return { useful: false, reason: "" };
+}
+
+/**
+ * Pick the user's best-fit filter for the given lens. Prefers exact thread
+ * match; falls back to a smaller filter (assumes user has a step-up ring is
+ * NOT made — only exact matches qualify as "owned and ready").
+ */
+function findOwnedFilter(
+  ownedFilters: Filter[],
+  lens: Lens | null,
+  type: Filter["type"] | Filter["type"][]
+): Filter | undefined {
+  if (!lens) return undefined;
+  const types = Array.isArray(type) ? type : [type];
+  return ownedFilters.find(
+    (f) => types.includes(f.type) && f.filter_size_mm === lens.filter_size_mm
+  );
+}
+
+/**
+ * Compute the variable-ND stops needed to land on a target shutter speed.
+ * Returns null if the target is outside the filter's range.
+ */
+function variableNdStopsFor(
+  filter: Filter,
+  currentShutter: number,
+  targetShutter: number
+): number | null {
+  if (filter.type !== "variable_nd") return null;
+  const min = filter.nd_stops_min ?? 1;
+  const max = filter.nd_stops_max ?? 9;
+  // Stops needed = log2(target / current)
+  const stops = Math.log2(targetShutter / currentShutter);
+  if (stops <= 0) return null;
+  if (stops < min) return min;
+  if (stops > max) return max;
+  return Math.round(stops * 2) / 2; // half-stop precision
+}
+
 export function recommendSettings(
   light: LightConditions,
   camera: Camera,
@@ -131,9 +207,13 @@ export function recommendSettings(
   options: {
     hasTripod: boolean;
     style: "landscape" | "action" | "portrait" | "astro";
+    /** Filters the user owns. When provided, suggestions reference owned gear
+     *  by name, and CPL light loss is reflected in shutter/ISO when applied. */
+    ownedFilters?: Filter[];
   }
 ): SettingsRecommendation {
   const { style, hasTripod } = options;
+  const ownedFilters = options.ownedFilters ?? [];
   const cropFactor = CROP_FACTOR[camera.sensor_size];
   const coc = CIRCLE_OF_CONFUSION[camera.sensor_size];
 
@@ -151,6 +231,25 @@ export function recommendSettings(
   // 1. Calculate EV
   let ev = estimateEV(light);
   ev = adjustEVForClouds(ev, light.components.cloud);
+
+  // 1b. If the user owns a matching CPL and conditions favor it, factor its
+  //     light loss into the EV used for the rest of the calculation. (For a
+  //     suggested-but-not-owned CPL we leave EV alone — the user will meter
+  //     without it on the lens.)
+  let appliedFilter: AppliedFilter | undefined;
+  const cplDecision = shouldUseCPL(light, ev, style);
+  const ownedCpl = cplDecision.useful
+    ? findOwnedFilter(ownedFilters, lens, "cpl")
+    : undefined;
+  if (cplDecision.useful && ownedCpl) {
+    ev -= CPL_LIGHT_LOSS_STOPS;
+    appliedFilter = {
+      type: "cpl",
+      lightLossStops: CPL_LIGHT_LOSS_STOPS,
+      ownedModel: `${ownedCpl.make} ${ownedCpl.model}`,
+      reason: cplDecision.reason,
+    };
+  }
 
   // 2. Choose aperture based on style
   let aperture: number;
@@ -266,31 +365,68 @@ export function recommendSettings(
     hyperfocalDistance = Math.round((hMm / 1000) * 100) / 100; // meters, 2 decimals
   }
 
-  // 6. Filter recommendations
+  // 6. Filter recommendations — prefer owned filters, otherwise suggest by spec
   const filterRecommendation: string[] = [];
+
+  function describeOwned(f: Filter): string {
+    return `✓ Use your ${f.make} ${f.model}`;
+  }
+  function describeSuggested(spec: string): string {
+    return `Suggested: ${spec}`;
+  }
+
+  // CPL — already decided above; surface it as a recommendation string
+  if (cplDecision.useful) {
+    const owned = findOwnedFilter(ownedFilters, lens, "cpl");
+    filterRecommendation.push(
+      owned
+        ? `${describeOwned(owned)} (CPL) — ${cplDecision.reason}`
+        : `${describeSuggested(`${lens.filter_size_mm}mm CPL`)} — ${cplDecision.reason}`
+    );
+  }
+
   if (style === "landscape") {
     // GND for golden/blue hour
     if (
       light.lightPhase === "golden hour" ||
       light.lightPhase === "blue hour"
     ) {
+      const owned = findOwnedFilter(ownedFilters, lens, "gnd");
       filterRecommendation.push(
-        "2-stop GND (graduated neutral density) — balance bright sky with darker foreground"
+        owned
+          ? `${describeOwned(owned)} (GND) — balance bright sky with foreground`
+          : `${describeSuggested(`${lens.filter_size_mm}mm 2-stop GND`)} — balance bright sky with foreground`
       );
     }
 
-    // ND for long exposure
+    // ND / Variable ND for long exposure when on a tripod and scene is bright
     if (hasTripod && ev > 8) {
-      filterRecommendation.push(
-        "ND filter (6-10 stop) — enables long exposure for smooth water/clouds"
-      );
-    }
+      const ownedFixed = findOwnedFilter(ownedFilters, lens, "nd");
+      const ownedVariable = findOwnedFilter(ownedFilters, lens, "variable_nd");
 
-    // CPL for haze / reflections
-    if (light.character.includes("hazy") || light.lightPhase === "daylight") {
-      filterRecommendation.push(
-        "CPL (circular polarizer) — reduce haze, cut reflections, deepen sky"
-      );
+      // Target a 1-4s exposure for silky water / streaky clouds
+      const targetShutter = 2; // seconds — sweet spot for most LE landscape
+
+      if (ownedVariable) {
+        const stops = variableNdStopsFor(ownedVariable, shutterSeconds, targetShutter);
+        if (stops !== null) {
+          filterRecommendation.push(
+            `${describeOwned(ownedVariable)} (Variable ND) — dial to ~${stops} stops for ${formatShutterSpeed(targetShutter)} long exposure`
+          );
+        } else {
+          filterRecommendation.push(
+            `${describeOwned(ownedVariable)} (Variable ND) — for smooth water/clouds`
+          );
+        }
+      } else if (ownedFixed) {
+        filterRecommendation.push(
+          `${describeOwned(ownedFixed)} (${ownedFixed.nd_stops ?? "?"}-stop ND) — for long exposure`
+        );
+      } else {
+        filterRecommendation.push(
+          `${describeSuggested(`${lens.filter_size_mm}mm 6-10 stop ND`)} — enables long exposure for smooth water/clouds`
+        );
+      }
     }
   }
 
@@ -381,6 +517,12 @@ export function recommendSettings(
     );
   }
 
+  if (appliedFilter?.type === "cpl") {
+    tips.push(
+      `CPL costs ~${appliedFilter.lightLossStops} stops — already factored into shutter/ISO above. Rotate the front ring while watching the sky/reflections to find peak effect.`
+    );
+  }
+
   if (
     light.lightPhase === "golden hour" ||
     light.lightPhase === "blue hour"
@@ -397,6 +539,7 @@ export function recommendSettings(
     whiteBalance,
     focalLengthSuggestion,
     filterRecommendation,
+    appliedFilter,
     exposureValue: Math.round(ev * 10) / 10,
     hyperfocalDistance,
     style,

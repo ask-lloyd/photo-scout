@@ -122,6 +122,17 @@ export interface WeatherData {
 }
 
 // ─── Settings Advisor ───
+export interface AppliedFilter {
+  type: "cpl" | "nd" | "variable_nd" | "gnd";
+  lightLossStops: number;
+  /** Filter the user already owns and that fits the current lens (preferred). */
+  ownedModel?: string;
+  /** Variable-ND only: which stops setting to dial in. */
+  variableNdStops?: number;
+  /** Why this filter was applied. */
+  reason: string;
+}
+
 export interface SettingsRecommendation {
   aperture: number;
   shutterSpeed: string;
@@ -129,6 +140,8 @@ export interface SettingsRecommendation {
   whiteBalance: number;
   focalLengthSuggestion: string;
   filterRecommendation: string[];
+  /** Filter whose light loss is already reflected in the exposure values above. */
+  appliedFilter?: AppliedFilter;
   exposureValue: number;
   hyperfocalDistance: number | null;
   style: string;

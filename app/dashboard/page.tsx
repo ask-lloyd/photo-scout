@@ -86,6 +86,7 @@ export default function Dashboard() {
     const current = recommendSettings(lightData.conditions, camera, lens, {
       hasTripod: gear.hasTripod,
       style,
+      ownedFilters: gear.filters,
     });
     // Compare against the opposite tripod state — if identical, the toggle has
     // no effect at the current light level (scene is bright enough that the
@@ -93,6 +94,7 @@ export default function Dashboard() {
     const counterfactual = recommendSettings(lightData.conditions, camera, lens, {
       hasTripod: !gear.hasTripod,
       style,
+      ownedFilters: gear.filters,
     });
     const tripodIsNoOp =
       style === "landscape" &&
@@ -370,6 +372,28 @@ export default function Dashboard() {
                           style={{ color: "var(--neutral-300)", lineHeight: 1.4 }}
                         >
                           {gear.hasTripod ? "Tripod " : "No tripod "}— same settings either way in this light. A tripod only changes things below ~1/15s shutter (deep golden hour, blue hour, night).
+                        </div>
+                      )}
+                      {/* Filter recommendations */}
+                      {settings.filterRecommendation.length > 0 && (
+                        <div className="mt-3 space-y-1.5">
+                          {settings.filterRecommendation.map((rec, i) => {
+                            const owned = rec.startsWith("✓");
+                            return (
+                              <div
+                                key={i}
+                                className="text-[12px] px-3 py-1.5 rounded-lg"
+                                style={{
+                                  background: owned ? "rgba(74, 222, 128, 0.08)" : "var(--dark-700)",
+                                  border: `1px solid ${owned ? "rgba(74, 222, 128, 0.25)" : "var(--dark-600)"}`,
+                                  color: owned ? "rgb(134, 239, 172)" : "var(--neutral-200)",
+                                  lineHeight: 1.4,
+                                }}
+                              >
+                                {rec}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                       {/* Direction tip */}
