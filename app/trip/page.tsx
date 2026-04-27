@@ -972,9 +972,12 @@ function AddStopPicker({
     );
   }, [query, annotated]);
 
-  // Split into nearby vs far when we have coords and no active query
+  // Split into nearby vs far. We always split when we have coords so that
+  // searching from Italy doesn't surface Texas spots above Dolomites spots.
+  // If the user has no nearby matches for their query, we auto-expand the
+  // far section so they still see results.
   const { nearby, far } = useMemo(() => {
-    if (!coords || query.trim()) {
+    if (!coords) {
       return { nearby: filtered, far: [] };
     }
     const n: typeof filtered = [];
@@ -984,7 +987,11 @@ function AddStopPicker({
       else f.push(a);
     });
     return { nearby: n, far: f };
-  }, [filtered, coords, query]);
+  }, [filtered, coords]);
+
+  // When searching and there are no nearby matches, auto-expand the far
+  // section so the user actually sees results instead of an empty list.
+  const farExpanded = showFar || (query.trim().length > 0 && nearby.length === 0);
 
   if (!open) {
     return (
@@ -1022,7 +1029,7 @@ function AddStopPicker({
         {/* Nearby section */}
         {nearby.length > 0 && (
           <>
-            {coords && !query.trim() && (
+            {coords && (
               <div className="px-2 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-orange-400/80 font-semibold">
                 Near you
               </div>
@@ -1050,10 +1057,10 @@ function AddStopPicker({
               onClick={() => setShowFar((v) => !v)}
               className="w-full text-left px-2 pt-2 pb-0.5 text-[10px] uppercase tracking-wider text-[var(--neutral-400)] font-semibold flex items-center gap-1 hover:text-[var(--neutral-200)] cursor-pointer"
             >
-              {showFar ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              {farExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
               Other regions ({far.length})
             </button>
-            {showFar &&
+            {farExpanded &&
               far.map(({ spot: s, distanceKm, region }) => (
                 <SpotRow
                   key={s.id}
